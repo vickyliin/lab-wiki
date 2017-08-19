@@ -15,6 +15,11 @@ $theme := {
 
 @import '../../node_modules/vuetify/src/stylus/main'
 
+.application.application--dark h
+  for i in (1..6)
+    &{i}
+      color: inherit
+
 td:after, td>span:after
   padding-left: .3rem
   color: $grey.lighten-1
@@ -22,3 +27,8 @@ td:after, td>span:after
 
 .link
   cursor: pointer
+
+.v-center
+  display: flex
+  align-content: center
+  align-items: center

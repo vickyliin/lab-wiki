@@ -1,57 +1,82 @@
 <template>
-  <v-layout>
-    <v-flex fluid>
-      <v-subheader class="pb-2">Workstations</v-subheader>
+  <v-flex>
+    <v-flex v-if="status == 0" row class="text-xs-center">
+      <v-progress-circular :indeterminate="true"></v-progress-circular>
+    </v-flex>
+    <template v-else-if="status == 200">
       <v-data-table
           :headers="headers"
           :items="items"
           hide-actions
           class="elevation-1"
           :pagination.sync="pagination"
-        >
+      >
         <template slot="headers" scope="props">
           <tr>
-            <th v-for="header in props.headers" :key="header.text"
-              :class="['column sortable', pagination.descending? 'desc':'asc', header.value === pagination.sortBy ? 'active' : '', header.text]"
-              @click="changeSort(header.value)">
+            <th v-for="header in props.headers" :key="header.value"
+                :class="['column sortable',
+                 pagination.descending? 'desc':'asc',
+                 header.value === pagination.sortBy ? 'active' : '',
+                 header.value]"
+                @click="changeSort(header.value)">
               {{ header.text }}
               <v-icon>arrow_upward</v-icon>
             </th>
           </tr>
         </template>
         <template slot="items" scope="props">
-          <td class="text-xs" :class="header.text"
+          <td class="text-xs" :class="header.value"
               v-for="header in headers"><span>{{props.item[header.value]}}</span></td>
         </template>
       </v-data-table>
-    </v-flex>
-  </v-layout>
+    </template>
+    <template v-else>
+      <p>
+        <v-icon class="mr-1">error</v-icon>
+        The data is unavailable now. Please <a :href="location.href">try again</a>
+        later or contact our web administrator.
+      </p>
+    </template>
+  </v-flex>
 </template>
 <script>
-  import csv from 'assets/workstations.csv'
-  
-
-  var items = [],
-      lines = csv.split(/\s*\n\s*/),
-      headers = lines.splice(0,1)[0].split(',').map(
-        value => ({text: value, value})
-      )
-  for(var row of lines.slice(0,-1)){
-    var item = {}
-    row.split(',').forEach((col, i) => item[headers[i].value] = col)
-    items.push(item)
-  }
+  import $ from 'ajax'
+  import {entry} from 'config'
 
   export default {
+    props: ['title'],
     data(){
       return {
-        headers,
-        items,
+        headers: 'server cpu cores clock mem gpu'.split(' ').map(value=>({text: value, value})),
+        items: null,
         pagination: {
           sortBy: 'server',
           rowsPerPage: -1,
         },
+        url: entry,
+        loading: 0,
+        location: window.location,
+        status: 0,
       }
+    },
+    created(){
+      $.get({
+        url: this.url,
+        type: 'json',
+        ready: (data, status) => {
+          if(status == 200){
+            this.items = data.map(d => ({
+              server: d.hostname.replace(/nlg-wks-/, ''),
+              cpu: d.cpuinfo.type.replace(/Intel|\(R\)|\(TM\)|CPU/g, ''),
+              clock: d.cpuinfo.clock,
+              cores: d.cpuinfo.cores,
+              mem: parseInt(d.cpu.mem_total/1000),
+              gpu: d.gpu.type,
+            }))
+          }
+          this.status = status
+        },
+      })
     },
     methods: {
       changeSort (column) {

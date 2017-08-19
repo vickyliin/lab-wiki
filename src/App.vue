@@ -17,7 +17,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  {{ item.text }}
+                  {{ item.path | spaceSeparated}}
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -34,44 +34,29 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <main>
-      <v-container fluid>
-        <v-slide-y-transition mode="out-in">
-          <router-view></router-view>
-        </v-slide-y-transition>
-      </v-container>
-    </main>
+    <page></page>
   </v-app>
 </template>
 
 <script>
 
-  import VueRouter from 'vue-router'
-  import * as pageComponents from './pages/*.vue'
-  var routes = Object.entries(pageComponents).map(
-    pair => ({path: '/'+pair[0], component: pair[1]})
-  )
-  window.routes = routes
-  const router = new VueRouter({
-    routes,
-    mode: 'history',
-  })
+  import page from 'page.vue'
 
   export default {
     data () {
       return {
         drawer: true,
         items: [
-          {icon: 'highlight', text: 'News', path: 'news'},
-          {icon: 'kitchen', text: 'Workstations', path: 'workstations'},
-          {icon: 'toys', text: 'GPU Usage', path: 'gpuUsage'},
-          {icon: 'local_library', text: 'Seminar', path: 'seminar'},
-          {icon: 'perm_contact_calendar', text: 'Contact List', path: 'contactList'},
+          {icon: 'highlight', path: 'news'},
+          {icon: 'kitchen', path: 'workstations'},
+          {icon: 'toys', path: 'gpuUsage'},
+          {icon: 'local_library', path: 'seminar'},
+          {icon: 'perm_contact_calendar', path: 'contactList'},
         ],
-        title: 'NTU NLP Lab. Wiki'
+        title: 'NTU NLP Lab. Wiki',
       }
     },
-    router
+    components: {page}
   }
 </script>
 
@@ -87,19 +72,17 @@
 
   .os, .cpu, .clock
     text-align: left
-  .server, .memory
+  .server, .memory, .gpu
     text-align: center
-  .cores, .mem, .loading, .temperature
+  .cores>span
+    padding-right: 1rem
+  .cores, .mem, .loading, .temp
     text-align: right
+    &:after
+      padding-right: 1rem
 
   th.column
     text-transform: uppercase
-  td.os, td.server
-    text-transform: capitalize
-
-  td.server:before
-    content: "wks-"
-    text-transform: initial
 
   .mem_usage, .mem_tot
     width: 40%
@@ -109,13 +92,15 @@
   td.clock>span, .mem_usage, .mem_tot
     display: inline-block
 
+  td.server:before
+    content: "wks-"
   td.clock:after
     content: "GHz"
   td.mem:after
     content: "GB"
   td.loading:after
     content: "%"
-  td.temperature:after
+  td.temp:after
     content: "\B0 C"
   .mem_usage, .mem_tot
     &:after

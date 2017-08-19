@@ -1,9 +1,9 @@
 <template>
-  <v-app light>
+  <v-app dark>
     <v-navigation-drawer
-      class="lighten-4 pb-0 pt-1"
+      class="pb-0 pt-1"
       persistent floating clipped enableResizeWatcher
-      light :scrollable="false"
+      :scrollable="false"
       v-model="drawer"
       height="100%"
       id="sidebar"
@@ -124,9 +124,5 @@
   .mem_usage:after
       content: "MB /"
 
-  td:after
-    padding-left: .3rem
-    color: #555
-    font-size: smaller
 
 </style>

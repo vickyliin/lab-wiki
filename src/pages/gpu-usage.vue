@@ -44,7 +44,7 @@
 
 <script>
   import $ from 'ajax'
-  import {entry, timeLocaleFormat} from 'config'
+  import {entry, timeLocaleFormat, queryInterval} from 'config'
 
   import datatable from 'components/datatable.vue'
   import chart from 'components/chart.vue'
@@ -112,12 +112,11 @@
       status: 0,
       pulling: false,
       interval: null,
-      queryInterval: 600000,
       sorting: true,
     }},
     created(){
       this.pullData((data, status) => this.status = status)
-      this.interval = setInterval(this.pullData, this.queryInterval)
+      this.interval = setInterval(this.pullData, queryInterval)
     },
     methods: {
       locTime(time){

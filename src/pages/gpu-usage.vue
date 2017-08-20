@@ -4,14 +4,21 @@
   </v-container>
   <v-container v-else-if="status == 200">
     <v-layout column>
-      <v-flex row class="mb-3 text-xs">
-        Last Update: {{lastUpdate.toLocaleString('haw-us')}}
-        <v-icon class="ml-1 link"
-                :class="{rotate: pulling}"
-                @click="if(pulling) return
-                        pulling = true;
-                        pullData(()=>pulling = false)">refresh</v-icon>
-      </v-flex>
+      <v-container fluid>
+        <v-layout row justify-center class="text-xs">
+          <v-flex>
+            Last Update: {{locTime(lastUpdate)}}
+            <v-icon class="ml-1 link"
+                    :class="{rotate: pulling}"
+                    @click="if(pulling) return
+                            pulling = true;
+                            pullData(()=>pulling = false)">refresh</v-icon>
+          </v-flex>
+          <v-flex class="text-xs-right">
+            Latest Logtime: {{locTime(latestLogtime)}}
+          </v-flex>
+        </v-layout>
+      </v-container>
       <v-flex>
         <v-container fluid>
           <chart v-bind="chart" @init="e => chartjs=e"></chart>
@@ -37,7 +44,7 @@
 
 <script>
   import $ from 'ajax'
-  import {entry} from 'config'
+  import {entry, timeLocaleFormat} from 'config'
 
   import datatable from 'components/datatable.vue'
   import chart from 'components/chart.vue'
@@ -51,6 +58,7 @@
         items: [],
         initSortBy: 'memory',
       },
+      sortedItems: null,
       chart: {
         type: 'bar',
         data: {
@@ -81,11 +89,26 @@
               }}
             ],
           },
-          tooltips: {mode: 'index'}
+          tooltips: {
+            mode: 'index',
+            callbacks: {
+              afterTitle: (tt, ch) => //console.log(tt, ch)
+                this.sortedItems[tt[0].index].gpu,
+              afterBody: (tt, ch) =>
+                `Total Memory: ${this.sortedItems[tt[0].index]
+                    .memory.display[1].value.toLocaleString()} MB`,
+              afterFooter: (tt, ch) =>
+                this.locTime(this.sortedItems[tt[0].index].logtime),
+            },
+            footerFontStyle: 'normal',
+            footerFontSize: 11,
+            bodySpacing: 3,
+          }
         },
       },
       chartjs: null,
       lastUpdate: null,
+      latestLogtime: null,
       status: 0,
       pulling: false,
       interval: null,
@@ -97,6 +120,9 @@
       this.interval = setInterval(this.pullData, this.queryInterval)
     },
     methods: {
+      locTime(time){
+        return time.toLocaleString(timeLocaleFormat)
+      },
       pullData(onready){
         $.get({
           url: this.entry,
@@ -115,14 +141,17 @@
                   ],
                 }),
                 temp: parseInt(d.gpu.temp),
+                logtime: new Date(d.logtime),
               }))
               this.lastUpdate = new Date()
+              this.latestLogtime = this.table.items.map(d=>d.logtime).sort().slice(-1)[0]
             }
           }
         })
       },
       onSorted(items){
         if(!this.sorting) return
+        this.sortedItems = items
         var chartData = this.chart.data
         chartData.labels = []
         for(let dataset of chartData.datasets)

@@ -16,7 +16,7 @@ const router = new VueRouter({
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.filter('localeString', data => {
-  if(!data) return ''
+  if(data === undefined) return ''
   if(data.toLocaleString) return data.toLocaleString()
   else return data
 })

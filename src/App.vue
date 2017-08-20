@@ -6,8 +6,7 @@
       :scrollable="false"
       v-model="drawer"
       height="100%"
-      id="sidebar"
-    >
+      id="sidebar">
       <v-list dense>
         <template v-for="(item, i) in items">
           <router-link :to="item.path">
@@ -66,6 +65,10 @@
     text-decoration: none
   td, th
     vertical-align: middle
+  .router-link-active>li
+    background-color: #303030
+  .navigation-drawer__border
+    width: 0
 </style>
 
 <style lang="stylus">
@@ -74,38 +77,39 @@
     text-align: left
   .server, .memory, .gpu
     text-align: center
-  .cores>span
-    padding-right: 1rem
-  .cores, .mem, .loading, .temp
-    text-align: right
-    &:after
-      padding-right: 1rem
+  .cores, .mem, .fan, .temp
+    td^[0]
+      text-align: center
+    &>span
+      text-align: right
+      min-width 2em
+      display: inline-block
 
   th.column
     text-transform: uppercase
 
   .mem_usage, .mem_tot
-    width: 40%
+    min-width: 5em
     text-align: right
   td.clock>span
-    min-width: 2rem
+    min-width: 2.2em
   td.clock>span, .mem_usage, .mem_tot
     display: inline-block
 
-  td.server:before
+  td>span.server:before
     content: "wks-"
   td.clock:after
     content: "GHz"
   td.mem:after
     content: "GB"
-  td.loading:after
+  td.fan:after
     content: "%"
   td.temp:after
     content: "\B0 C"
   .mem_usage, .mem_tot
     &:after
       content: "MB"
-      padding-left: .3rem
+      padding-left: .3em
   .mem_usage:after
       content: "MB /"
 

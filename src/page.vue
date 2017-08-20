@@ -1,8 +1,8 @@
 <template>
   <main>
-    <v-container>
+    <v-container fluid>
       <h5 class="mb-4">{{title | spaceSeparated}}</h5>
-      <router-view></router-view>
+      <router-view class="fluid"></router-view>
     </v-container>
   </main>
 </template>

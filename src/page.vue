@@ -1,9 +1,11 @@
 <template>
   <main>
-    <v-container fluid>
-      <h5 class="mb-4">{{title | spaceSeparated}}</h5>
-      <router-view class="fluid"></router-view>
-    </v-container>
+    <transition name="slide-y" mode="out-in" appear>
+      <v-container fluid :key="title">
+        <h5 class="mb-4">{{title | spaceSeparated}}</h5>
+        <router-view class="fluid"></router-view>
+      </v-container>
+    </transition>
   </main>
 </template>
 <script>
@@ -11,10 +13,12 @@
   import * as components from './pages/*.vue'
 
   export default{
-    data(){return{
-      get title(){return window.location.pathname.slice(1)}
-    }},
-    components
+    components,
+    computed: {
+      title(){
+        return this.$route.fullPath.slice(1)
+      }
+    }
   }
 
 </script>

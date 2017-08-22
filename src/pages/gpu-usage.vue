@@ -7,7 +7,7 @@
       <v-container fluid>
         <v-layout row justify-center class="text-xs">
           <v-flex>
-            Last Update: {{locTime(lastUpdate)}}
+            Last Update: {{lastUpdate | localeString}}
             <v-icon class="ml-1 link"
                     :class="{rotate: pulling}"
                     @click="if(pulling) return
@@ -15,7 +15,7 @@
                             pullData(()=>pulling = false)">refresh</v-icon>
           </v-flex>
           <v-flex class="text-xs-right">
-            Latest Logtime: {{locTime(latestLogtime)}}
+            Latest Logtime: {{latestLogtime | localeString}}
           </v-flex>
         </v-layout>
       </v-container>
@@ -124,7 +124,7 @@
       },
       pullData(onready){
         $.get({
-          url: this.entry,
+          url: this.url,
           type: 'json',
           ready: (data, status) => {
             if(onready) onready(data, status)
@@ -143,7 +143,7 @@
                 logtime: new Date(d.logtime),
               }))
               this.lastUpdate = new Date()
-              this.latestLogtime = this.table.items.map(d=>d.logtime).sort().slice(-1)[0]
+              this.latestLogtime = new Date(Math.max.apply(null, this.table.items.map(d=>d.logtime)))
             }
           }
         })
@@ -170,6 +170,11 @@
           this.chartjs.update()
         }
       },
+    },
+    computed: {
+      url(){
+        return this.entry + '/workstations'
+      }
     },
     destroyed(){
       clearInterval(this.interval)

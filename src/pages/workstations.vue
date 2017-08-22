@@ -36,7 +36,7 @@
     },
     created(){
       $.get({
-        url: this.entry,
+        url: this.url,
         type: 'json',
         ready: (data, status) => {
           if(status == 200){
@@ -53,5 +53,10 @@
         },
       })
     },
+    computed: {
+      url(){
+        return this.entry + this.$route.fullPath
+      }
+    }
   }
 </script>

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from 'App.vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
-import {routerMode} from 'config'
+import {routerMode, timeLocaleFormat} from 'config'
 
 import * as components from './pages/*.vue'
 var routes = Object.entries(components).map(
@@ -17,7 +17,7 @@ Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.filter('localeString', data => {
   if(data === undefined) return ''
-  if(data.toLocaleString) return data.toLocaleString()
+  if(data.toLocaleString) return data.toLocaleString(timeLocaleFormat)
   else return data
 })
 Vue.filter('spaceSeparated', camelCased => camelCased

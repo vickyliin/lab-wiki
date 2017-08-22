@@ -20,8 +20,6 @@ glob('data/*.json', function(er, files){
   }
 })
 
-app.sta
-
 app.get('/news', function(req, res){
   "use strict";
   res.json({

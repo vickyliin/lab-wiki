@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import {routerMode, timeLocaleFormat} from 'config'
 
 import * as components from './pages/*.vue'
+
 var routes = Object.entries(components).map(
     pair => ({path: '/'+pair[0], component: pair[1]})
 )

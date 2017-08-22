@@ -30,7 +30,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gif|svg|otf)$/,
         loader: 'file-loader',
         options: {
           objectAssign: 'Object.assign'
@@ -42,7 +42,17 @@ module.exports = {
       },
       {
         test: /\.styl$/,
-        loader: ['style-loader', 'css-loader', 'stylus-loader']
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'stylus-loader',
+          },
+        ],
       }
     ]
   },

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <transition-group name="slide-y" tag="div" class="layout" id="contact-layout">
-      <v-card v-for="(person, i) in contactData" :key="i" class="contact-card">
+      <v-card v-for="person in contactData" :key="person.name" class="contact-card">
         <v-container>
           <h6>{{person.name}}</h6>
           <v-divider></v-divider>
@@ -39,25 +39,37 @@
       }
     },
     created(){
-      $.get({
-        url: this.url,
-        type: 'json',
-        ready: (data, status) => {
-          if(status == 200){
-            this.contactData = data
-          }
-        },
-      })
+      this.pullData()
     },
     computed: {
       url(){
         return this.entry + this.$route.fullPath
       }
+    },
+    methods: {
+      pullData(){
+        $.get({
+          url: this.url,
+          type: 'json',
+          ready: (data, status) => {
+            if(status == 200){
+              let i = setInterval(() => {
+                if(data.length){
+                  this.contactData.push(data.pop())
+                }
+                else{
+                  clearInterval(i)
+                }
+              }, 50)
+            }
+          },
+        })
+      }
     }
   }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
   #contact-layout
     flex-wrap: wrap
     justify-content: space-around
@@ -66,8 +78,9 @@
     margin: 2rem
     >.container>.layout
       align-items: center
-  .list__tile
-    height: 2rem
-  h6
-    font-weight: 100
+    .list__tile
+      height: 2.3rem
+      font-size: inherit
+    h6
+      font-weight: normal
 </style>

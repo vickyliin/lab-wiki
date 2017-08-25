@@ -5,6 +5,7 @@
     :items="items"
     :pagination.sync="pagination"
     :customSort="customSort"
+    :search="search"
     @sorted="e => $emit('sorted', e)">
     <template slot="headers" scope="props">
       <tr>
@@ -38,7 +39,7 @@
 
 <script>
   export default{
-    props: ['headers', 'items', 'initSortBy'],
+    props: ['headers', 'items', 'initSortBy', 'search'],
     data(){
       let vheaders = this.headers.map(header => {
         if(header.constructor == String)

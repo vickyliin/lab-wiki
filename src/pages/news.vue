@@ -35,7 +35,7 @@
       let i = setInterval(()=>{
         this.pullData({n})
         n++
-        if(n == 3) clearInterval(i)
+        if(n === 3) clearInterval(i)
       }, 50)
     },
     methods: {
@@ -45,7 +45,7 @@
           data: params,
           type: 'json',
           ready: (data, status) => {
-            if(status == 200){
+            if(status === 200){
               data.date = new Date(data.date)
               this.newsData.push(data)
             }

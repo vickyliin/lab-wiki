@@ -103,7 +103,7 @@
             footerFontStyle: 'normal',
             footerFontSize: 11,
             bodySpacing: 3,
-          }
+          },
         },
       },
       chartjs: null,
@@ -128,7 +128,7 @@
           type: 'json',
           ready: (data, status) => {
             if(onready) onready(data, status)
-            if(status == 200){
+            if(status === 200){
               this.table.items = data.filter(d => Object.keys(d.gpu).length !== 0).map(d => ({
                 server: d.hostname.replace('nlg-wks-', ''),
                 gpu: d.gpu.type,
@@ -151,7 +151,7 @@
       onSorted(items){
         if(!this.sorting) return
         this.sortedItems = items
-        var chartData = this.chart.data
+        let chartData = this.chart.data
         chartData.labels = []
         for(let dataset of chartData.datasets)
           dataset.data = []

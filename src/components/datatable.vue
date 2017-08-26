@@ -100,16 +100,9 @@
         if(value.constructor === Object) {
           value = value.search
         }
-        if(value.constructor === Number) {
-          value = new Date(value).toJSON()
-        }
-
-        return value.search(new RegExp(search, 'gi')) !== -1
+        return value.search(new RegExp(search, 'i')) !== -1
       },
       highlight(value){
-        if(value.constructor === Number) {
-          value = new Date(value).toJSON().slice(0,10)
-        }
         return value.replace(new RegExp(`(${this.search})`, 'gi'), '<span class="highlight">$1</span>')
       }
     },

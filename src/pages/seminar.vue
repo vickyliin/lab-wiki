@@ -42,13 +42,9 @@
           ready: (data, status) => {
             if(status === 200){
               this.table.items = data.map(d => {
-                let date = new Date(d.date)
+                let date = new Date(d.date).toJSON().slice(0, 10)
                 return {
-                  date: Object.assign(date.valueOf(), {
-                    display: [
-                      {name: 'QAQ', value: date.toJSON().slice(0,10)}
-                    ]
-                  }),
+                  date: date,
                   presenter: d.presenter,
                   topic: d.topic,
                 };

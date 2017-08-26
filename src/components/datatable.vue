@@ -57,6 +57,7 @@
         pagination: {
           sortBy: this.initSortBy,
           rowsPerPage: -1,
+          descending: true
         },
         vheaders,
         customSort(items, index, desc){

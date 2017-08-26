@@ -27,6 +27,7 @@
             { value: 'topic' },
           ],
           items: [],
+          initSortBy: 'date'
         },
         search: '',
       }

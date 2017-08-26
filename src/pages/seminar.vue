@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <input type="text" v-model="table.search">
+    <input type="text" v-model="search">
     <datatable v-bind="table">
 
     </datatable>
@@ -12,6 +12,7 @@
   import {entry} from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
+  import _ from 'lodash'
 
   export default {
     components: {datatable},
@@ -27,6 +28,7 @@
           ],
           items: [],
         },
+        search: '',
       }
     },
     created(){
@@ -61,5 +63,10 @@
         return this.entry + '/seminar'
       }
     },
+    watch: {
+      search: _.debounce(function() {
+        this.table.search = this.search
+      }, 500)
+    }
   }
 </script>

@@ -101,10 +101,7 @@
           value = value.search
         }
         if(value.constructor === Number) {
-          //value = new Date(value).toJSON()
-
-          value = new Date(value).toLocaleString('haw-us')
-          console.log(value)
+          value = new Date(value).toJSON()
         }
 
         return value.search(new RegExp(search, 'gi')) !== -1
@@ -112,14 +109,7 @@
       highlight(value){
         return value.replace(new RegExp(`(${this.search})`, 'gi'), '<span class="highlight">$1</span>')
       }
-
     },
-    // computed: {
-    //   filteredItems(){
-    //     this.$emit('sorted', this.$children[0].filteredItems)
-    //     return this.$children[0].filteredItems
-    //   },
-    // },
   }
 </script>
 

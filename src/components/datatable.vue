@@ -25,7 +25,7 @@
       <tr>
         <td class="text-xs" :class="header.value" v-for="header in vheaders">
           <template v-if="props.item[header.value] === undefined"></template>
-          <div v-html="highlight(props.item[header.value])" v-else-if="search && props.item[header.value].indexOf && props.item[header.value].search(new RegExp(search, 'i')) !== -1">
+          <div v-html="highlight(props.item[header.value])" v-else-if="search">
           </div>
           <template v-else-if="props.item[header.value].display">
             <span v-for="d in props.item[header.value].display"
@@ -107,6 +107,9 @@
         return value.search(new RegExp(search, 'gi')) !== -1
       },
       highlight(value){
+        if(value.constructor === Number) {
+          value = new Date(value).toJSON().slice(0,10)
+        }
         return value.replace(new RegExp(`(${this.search})`, 'gi'), '<span class="highlight">$1</span>')
       }
     },

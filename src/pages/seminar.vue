@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <input type="text" v-model="table.search">
     <datatable v-bind="table">
 
     </datatable>

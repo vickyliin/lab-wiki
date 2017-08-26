@@ -6,7 +6,8 @@
     :pagination.sync="pagination"
     :customSort="customSort"
     :search="search"
-    @sorted="e => $emit('sorted', e)">
+    @sorted="e => $emit('sorted', e)"
+    :filter="filter">
     <template slot="headers" scope="props">
       <tr>
         <th v-for="header in props.headers" :key="header.text"
@@ -24,6 +25,8 @@
       <tr>
         <td class="text-xs" :class="header.value" v-for="header in vheaders">
           <template v-if="props.item[header.value] === undefined"></template>
+          <div v-html="highlight(props.item[header.value])" v-else-if="search && props.item[header.value].indexOf && props.item[header.value].search(new RegExp(search, 'i')) !== -1">
+          </div>
           <template v-else-if="props.item[header.value].display">
             <span v-for="d in props.item[header.value].display"
                 :class="d.name">{{d.value | localeString}}</span>
@@ -93,6 +96,23 @@
           this.pagination.descending = false
         }
       },
+      filter(value, search){
+        if(value.constructor === Object) {
+          value = value.search
+        }
+        if(value.constructor === Number) {
+          //value = new Date(value).toJSON()
+
+          value = new Date(value).toLocaleString('haw-us')
+          console.log(value)
+        }
+
+        return value.search(new RegExp(search, 'gi')) !== -1
+      },
+      highlight(value){
+        return value.replace(new RegExp(`(${this.search})`, 'gi'), '<span class="highlight">$1</span>')
+      }
+
     },
     // computed: {
     //   filteredItems(){
@@ -102,3 +122,9 @@
     // },
   }
 </script>
+
+<style lang="stylus">
+  .highlight
+    background-color: yellow
+    color: black
+</style>

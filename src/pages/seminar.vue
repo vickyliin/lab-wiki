@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <input type="text" v-model="search">
     <datatable v-bind="table">
 
     </datatable>
@@ -11,6 +12,7 @@
   import {entry} from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
+  import _ from 'lodash'
 
   export default {
     components: {datatable},
@@ -25,7 +27,9 @@
             { value: 'topic' },
           ],
           items: [],
+          initSortBy: 'date'
         },
+        search: '',
       }
     },
     created(){
@@ -39,13 +43,9 @@
           ready: (data, status) => {
             if(status === 200){
               this.table.items = data.map(d => {
-                let date = new Date(d.date)
+                let date = new Date(d.date).toJSON().slice(0, 10)
                 return {
-                  date: Object.assign(date.valueOf(), {
-                    display: [
-                      {name: 'QAQ', value: date.toJSON().slice(0,10)}
-                    ]
-                  }),
+                  date: date,
                   presenter: d.presenter,
                   topic: d.topic,
                 };
@@ -60,5 +60,10 @@
         return this.entry + '/seminar'
       }
     },
+    watch: {
+      search: _.debounce(function() {
+        this.table.search = this.search
+      }, 500)
+    }
   }
 </script>

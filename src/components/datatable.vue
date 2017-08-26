@@ -6,7 +6,8 @@
     :pagination.sync="pagination"
     :customSort="customSort"
     :search="search"
-    @sorted="e => $emit('sorted', e)">
+    @sorted="e => $emit('sorted', e)"
+    :filter="filter">
     <template slot="headers" scope="props">
       <tr>
         <th v-for="header in props.headers" :key="header.text"
@@ -24,6 +25,8 @@
       <tr>
         <td class="text-xs" :class="header.value" v-for="header in vheaders">
           <template v-if="props.item[header.value] === undefined"></template>
+          <div v-html="highlight(props.item[header.value])" v-else-if="search">
+          </div>
           <template v-else-if="props.item[header.value].display">
             <span v-for="d in props.item[header.value].display"
                 :class="d.name">{{d.value | localeString}}</span>
@@ -54,6 +57,7 @@
         pagination: {
           sortBy: this.initSortBy,
           rowsPerPage: -1,
+          descending: true
         },
         vheaders,
         customSort(items, index, desc){
@@ -93,12 +97,21 @@
           this.pagination.descending = false
         }
       },
+      filter(value, search){
+        if(value.constructor === Object) {
+          value = value.search
+        }
+        return value.search(new RegExp(search, 'i')) !== -1
+      },
+      highlight(value){
+        return value.replace(new RegExp(`(${this.search})`, 'gi'), '<span class="highlight">$1</span>')
+      }
     },
-    // computed: {
-    //   filteredItems(){
-    //     this.$emit('sorted', this.$children[0].filteredItems)
-    //     return this.$children[0].filteredItems
-    //   },
-    // },
   }
 </script>
+
+<style lang="stylus">
+  .highlight
+    background-color: yellow
+    color: black
+</style>

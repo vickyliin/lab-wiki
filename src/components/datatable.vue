@@ -1,12 +1,11 @@
 <template>
   <v-data-table
-    hide-actions
+    :hide-actions="!actions"
     :headers="vheaders"
     :items="items"
     :pagination.sync="pagination"
     :customSort="customSort"
     :search="search"
-    @sorted="e => $emit('sorted', e)"
     :filter="filter">
     <template slot="headers" scope="props">
       <tr>
@@ -25,15 +24,14 @@
       <tr>
         <td class="text-xs" :class="header.value" v-for="header in vheaders">
           <template v-if="props.item[header.value] === undefined"></template>
-          <div v-html="highlight(props.item[header.value])" v-else-if="search">
-          </div>
-          <template v-else-if="props.item[header.value].display">
-            <span v-for="d in props.item[header.value].display"
-                :class="d.name">{{d.value | localeString}}</span>
-          </template>
-          <span v-else :class="header.value">{{
-            props.item[header.value] | localeString
-          }}</span>
+          <span v-else-if="search"
+                v-html="highlight(props.item[header.value], header.display)"></span>
+          <span v-else-if="props.item[header.value].display"
+                v-html="props.item[header.value].display"></span>
+          <span v-else-if="header.display"
+                v-html="header.display(props.item[header.value], props.item[header.value].text)"></span>
+          <span v-else :class="header.value"
+                v-html="$options.filters.localeString(props.item[header.value])"></span>
         </td>
       </tr>
     </template>
@@ -41,55 +39,55 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default{
-    props: ['headers', 'items', 'initSortBy', 'search'],
+    props: ['headers', 'items', 'initPagination', 'search', 'actions'],
     data(){
       let vheaders = this.headers.map(header => {
-        if(header.constructor == String)
+        if(header.constructor === String)
           return {text: header, value: header}
         else if(!header.text)
           return Object.assign(header, {text: header.value})
         else
           return header
       })
-      var vm = this
       return {
-        pagination: {
-          sortBy: this.initSortBy,
-          rowsPerPage: -1,
-          descending: true
-        },
+        pagination: this.initPagination,
         vheaders,
-        customSort(items, index, desc){
-          let out = items.sort((r, l) => {
-            if(index === null) return 0
-            r = r[index]
-            l = l[index]
-            if(r == l) return 0
-            var out = null
-            if(isNaN(l) && isNaN(r)){
-              if(r == undefined)
-                out = false
-              else if(l == undefined)
-                out = true
-              else
-                out = r.replace(/^\s+|\s+$/g, '') > l.replace(/^\s+|\s+$/g, '')
-            }
-            else if(!isNaN(l) && !isNaN(r))
-              out = parseFloat(r) > parseFloat(l)
-            else
-              out = isNaN(r)
-            out = out || -1
-            return desc? -out:out
-          })
-          vm.$emit('sorted', out)
-          return out
-        },
       }
     },
     methods: {
+      customSort(items, index, sortDesc){
+        if(index === null) return items
+        let sortedItems = items.sort((r, l) => {
+          let data = {r, l}
+          for(let pos in data){
+            let cellData = data[pos][index]
+            if(cellData === undefined) data[pos] = -Infinity
+            else if(!isNaN(cellData)) data[pos] = parseFloat(cellData)
+            else if(cellData.constructor === String) data[pos] = cellData.replace(/^\s+|\s+$/g, '')
+            else if(cellData.sort !== undefined) data[pos] = cellData.sort
+            else if(cellData.text !== undefined) data[pos] = cellData.text
+            if(data[pos].constructor !== String && isNaN(data[pos])){
+              console.log('cellData', cellData)
+              console.log('data[pos]', data[pos])
+              console.log('!isNaN(cellData)', !isNaN(cellData))
+              console.log('cellData.constructor === String', cellData.constructor === String)
+              throw new TypeError('The cell data of datatable should be strings/numbers, or a sort/text property should be provided.')
+            }
+          }
+          r = data.r; l = data.l
+          if(r == l) return 0
+          let isDesc
+          if(r.constructor === l.constructor) isDesc = r < l
+          else isDesc = r.constructor === Number // strings > numbers
+          isDesc = isDesc? 1:-1
+          return sortDesc? isDesc:-isDesc
+        })
+        this.$emit('sorted', sortedItems)
+        return sortedItems
+      },
       changeSort(column){
-        this.$emit('clickSort')
         if(this.pagination.sortBy === column)
           this.pagination.descending = !this.pagination.descending
         else{
@@ -97,15 +95,37 @@
           this.pagination.descending = false
         }
       },
-      filter(value, search){
-        if(value.constructor === Object) {
-          value = value.search
+      filter(value){
+        if(value.constructor !== String){
+          if(value.search !== undefined){
+            value = value.search
+          }
+          else if(value.text !== undefined){
+            value = value.text
+          }
         }
-        return value.search(new RegExp(search, 'i')) !== -1
+        return this.searchRegex.test(value)
       },
-      highlight(value){
-        return value.replace(new RegExp(`(${this.search})`, 'gi'), '<span class="highlight">$1</span>')
+      highlight(value, display){
+        let highlightText = text => text.replace(this.searchRegex, '<span class="highlight">$1</span>')
+        if(display !== undefined){
+          let text = highlightText(value.text)
+          return display(value, text)
+        }
+        else{
+          return highlightText(value)
+        }
       }
+    },
+    computed: {
+      searchRegex(){
+        try{
+          return new RegExp(`(${this.search})`, 'ig')
+        }
+        catch(e){
+          return new RegExp(`(${_.escapeRegExp(this.search)})`, 'ig')
+        }
+      },
     },
   }
 </script>

@@ -55,7 +55,7 @@
     },
     computed: {
       url(){
-        return this.entry + this.$route.path
+        return this.entry + this.$route.fullPath
       }
     }
   }

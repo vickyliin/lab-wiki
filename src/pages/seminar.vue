@@ -1,9 +1,16 @@
 <template>
   <v-container>
-    <input type="text" v-model="search">
-    <datatable v-bind="table">
-
-    </datatable>
+    <v-layout>
+      <v-spacer></v-spacer>
+      <v-text-field
+          append-icon="search"
+          label="Search (support regex)"
+          single-line
+          hide-details
+          v-model="search"
+      ></v-text-field>
+    </v-layout>
+    <datatable v-bind="table"></datatable>
   </v-container>
 </template>
 
@@ -22,12 +29,17 @@
         table: {
           search: '',
           headers: [
-            { value: 'date' },
-            { value: 'presenter' },
-            { value: 'topic' },
+            {value: 'date'},
+            {value: 'presenter'},
+            {value: 'topic', display: (value, text) => text.replace(/slide/gi, ` <a href="${value.slides}" target="_blank">Slide</a>`), },
           ],
           items: [],
-          initSortBy: 'date'
+          initPagination: {
+            sortBy: 'date',
+            rowsPerPage: 10,
+            descending: true
+          },
+          actions: true,
         },
         search: '',
       }
@@ -43,11 +55,14 @@
           ready: (data, status) => {
             if(status === 200){
               this.table.items = data.map(d => {
-                let date = new Date(d.date).toJSON().slice(0, 10)
                 return {
-                  date: date,
+                  date: new Date(d.date).toJSON().slice(0, 10),
                   presenter: d.presenter,
-                  topic: d.topic,
+                  topic: {
+                    sort: d.topic,
+                    text: d.topic,
+                    slides: d.slides,
+                  },
                 };
               })
             }
@@ -57,7 +72,7 @@
     },
     computed: {
       url(){
-        return this.entry + '/seminar'
+        return this.entry + this.$route.fullPath
       }
     },
     watch: {
@@ -67,3 +82,11 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  td.date
+    width: 9rem
+    text-align: center
+  td.presenter
+    text-align: center
+</style>

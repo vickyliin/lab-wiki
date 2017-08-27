@@ -6,7 +6,7 @@
           <h6>{{person.name}}</h6>
           <v-divider></v-divider>
           <v-list>
-            <v-list-tile v-for="field in fields" :key="field.name">
+            <v-list-tile v-for="field in fields" :key="field.name" :href="field.href? field.href(person[field.name]): undefined">
               <v-list-tile-action>
                 <v-icon>{{field.icon}}</v-icon>
               </v-list-tile-action>
@@ -33,8 +33,8 @@
         contactData: [],
         fields: [
           {name: 'account', icon: 'account_circle'},
-          {name: 'email', icon: 'email'},
-          {name: 'phone', icon: 'phone'}
+          {name: 'email', icon: 'email', href: email => 'mailto:'+email},
+          {name: 'phone', icon: 'phone', href: phone => 'tel:'+phone}
         ],
       }
     },
@@ -52,7 +52,7 @@
           url: this.url,
           type: 'json',
           ready: (data, status) => {
-            if(status == 200){
+            if(status === 200){
               let i = setInterval(() => {
                 if(data.length){
                   this.contactData.push(data.pop())

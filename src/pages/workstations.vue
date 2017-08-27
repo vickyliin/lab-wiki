@@ -29,7 +29,11 @@
         table: {
           headers: 'server cpu cores clock mem gpu'.split(' '),
           items: [],
-          initSortBy: 'server',
+          initPagination: {
+            sortBy: 'server',
+            rowsPerPage: -1,
+            descending: false
+          },
         },
         status: 0,
       }
@@ -39,7 +43,7 @@
         url: this.url,
         type: 'json',
         ready: (data, status) => {
-          if(status == 200){
+          if(status === 200){
             this.table.items = data.map(d => ({
               server: d.hostname.replace(/nlg-wks-/, ''),
               cpu: d.cpuinfo.type.replace(/Intel|\(R\)|\(TM\)|CPU/g, ''),

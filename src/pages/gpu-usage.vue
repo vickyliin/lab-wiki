@@ -21,12 +21,12 @@
       </v-container>
       <v-flex>
         <v-container fluid>
-          <chart v-bind="chart" @init="e => chartjs=e"></chart>
+          <chart v-bind="chart"></chart>
         </v-container>
       </v-flex>
       <v-flex>
         <v-container fluid>
-          <datatable v-bind="table" @sorted="e => onSorted(e)" @clickSort="sorting=true">
+          <datatable v-bind="table" @sorted="items => this.sortedItems = items" @clickSort="sorting=true">
           </datatable>
         </v-container>
       </v-flex>
@@ -44,7 +44,7 @@
 
 <script>
   import $ from 'ajax'
-  import {entry, timeLocaleFormat, queryInterval} from 'config'
+  import {entry, queryInterval} from 'config'
 
   import datatable from 'components/datatable.vue'
   import chart from 'components/chart.vue'
@@ -56,7 +56,11 @@
       table: {
         headers: 'server gpu fan memory temp'.split(' '), 
         items: [],
-        initSortBy: 'memory',
+        initPagination: {
+          sortBy: 'memory',
+          rowsPerPage: -1,
+          descending: true
+        },
       },
       sortedItems: null,
       chart: {
@@ -96,7 +100,7 @@
                 this.sortedItems[tt[0].index].gpu,
               afterBody: (tt, ch) =>
                 `Total Memory: ${this.sortedItems[tt[0].index]
-                    .memory.display[1].value.toLocaleString()} MB`,
+                    .memory.total.toLocaleString()} MB`,
               afterFooter: (tt, ch) =>
                 this.locTime(this.sortedItems[tt[0].index].logtime),
             },
@@ -106,13 +110,11 @@
           },
         },
       },
-      chartjs: null,
       lastUpdate: null,
       latestLogtime: null,
       status: 0,
       pulling: false,
       interval: null,
-      sorting: true,
     }},
     created(){
       this.pullData((data, status) => this.status = status)
@@ -120,7 +122,18 @@
     },
     methods: {
       locTime(time){
-        return time.toLocaleString(timeLocaleFormat)
+        return this.$options.filters.localeString(time)
+      },
+      setMemory(mem){
+        return {
+          sort: mem.total - mem.usage,
+          usage: mem.usage,
+          total: mem.total,
+          display: `
+            <span class="mem_usage">${this.locTime(mem.usage)}</span>
+            <span class="mem_tot">${this.locTime(mem.total)}</span>
+          `
+        }
       },
       pullData(onready){
         $.get({
@@ -133,11 +146,9 @@
                 server: d.hostname.replace('nlg-wks-', ''),
                 gpu: d.gpu.type,
                 fan: parseInt(d.gpu.fan),
-                memory: Object.assign(d.gpu.mem_total-d.gpu.mem_usage, {
-                  display: [
-                    {name: 'mem_usage', value: d.gpu.mem_usage},
-                    {name: 'mem_tot', value: d.gpu.mem_total},
-                  ],
+                memory: this.setMemory({
+                  usage: d.gpu.mem_usage,
+                  total: d.gpu.mem_total,
                 }),
                 temp: parseInt(d.gpu.temp),
                 logtime: new Date(d.logtime),
@@ -148,28 +159,23 @@
           }
         })
       },
-      onSorted(items){
-        if(!this.sorting) return
-        this.sortedItems = items
+    },
+    watch: {
+      sortedItems(items){
         let chartData = this.chart.data
         chartData.labels = []
         for(let dataset of chartData.datasets)
           dataset.data = []
         for(let item of items){
           chartData.labels.push('wks-'+item.server)
-
-          let free = item.memory.valueOf()
+          let free = item.memory.sort
           chartData.datasets[0].data.push(free)
-          let used = item.memory.display[0].value
+          let used = item.memory.usage
           chartData.datasets[1].data.push(used)
           let temp = item.temp
           chartData.datasets[2].data.push(temp)
         }
-        if(this.chartjs){
-          this.sorting = false
-          this.chartjs.update()
-        }
-      },
+      }
     },
     computed: {
       url(){

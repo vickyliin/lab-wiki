@@ -28,8 +28,16 @@
       this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
       this.$emit('init', this.chart)
     },
+    computed: {
+      dataWatched(){
+        return {
+          datasets: this.data.datasets,
+          label: this.data.labels,
+        }
+      }
+    },
     watch: {
-      data(){
+      dataWatched(){
         this.chart.update()
       }
     }

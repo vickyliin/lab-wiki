@@ -3,6 +3,15 @@
 @import 'assets/css/NotoSansTC.css'
 
 $body-font-family := 'Roboto', 'Noto Sans TC', sans-serif
+$theme := {
+  primary: $blue.lighten-1
+  accent: $blue.accent-2
+  secondary: $grey.darken-3
+  info: $blue.base
+  warning: $amber.base
+  error: $red.accent-2
+  success: $green.base
+}
 
 @import '../../node_modules/vuetify/src/stylus/main'
 
@@ -11,7 +20,7 @@ $body-font-family := 'Roboto', 'Noto Sans TC', sans-serif
     &{i}
       color: inherit
 
-td:after, td>span:after
+td:after, td span:after
   padding-left: .3rem
   color: $grey.lighten-1
   font-size: smaller

@@ -1,8 +1,8 @@
 <template>
-  <v-container v-if="status == 0" row class="text-xs-center">
+  <v-container v-if="status === 0" row class="text-xs-center">
     <v-progress-circular :indeterminate="true"></v-progress-circular>
   </v-container>
-  <v-container v-else-if="status == 200">
+  <v-container v-else-if="status === 200">
     <v-layout column>
       <v-container fluid>
         <v-layout row justify-center class="text-xs">
@@ -99,10 +99,10 @@
               afterTitle: (tt, ch) => //console.log(tt, ch)
                 this.sortedItems[tt[0].index].gpu,
               afterBody: (tt, ch) =>
-                `Total Memory: ${this.sortedItems[tt[0].index]
-                    .memory.total.toLocaleString()} MB`,
+                `Total Memory: ${this.localeString(
+                    this.sortedItems[tt[0].index].memory.total)} MB`,
               afterFooter: (tt, ch) =>
-                this.locTime(this.sortedItems[tt[0].index].logtime),
+                this.localeString(this.sortedItems[tt[0].index].logtime),
             },
             footerFontStyle: 'normal',
             footerFontSize: 11,
@@ -121,19 +121,35 @@
       this.interval = setInterval(this.pullData, queryInterval)
     },
     methods: {
-      locTime(time){
+      localeString(time){
         return this.$options.filters.localeString(time)
       },
       setMemory(mem){
+        let free = mem.total - mem.usage
         return {
-          sort: mem.total - mem.usage,
+          free, sort: free,
           usage: mem.usage,
           total: mem.total,
           display: `
-            <span class="mem_usage">${this.locTime(mem.usage)}</span>
-            <span class="mem_tot">${this.locTime(mem.total)}</span>
+            <span class="mem_usage">${this.localeString(mem.usage)}</span>
+            <span class="mem_tot">${this.localeString(mem.total)}</span>
           `
         }
+      },
+      setTableItems(data){
+        this.table.items = data
+            .filter(d => Object.keys(d.gpu).length !== 0)
+            .map(d => ({
+              server: d.hostname.replace('nlg-wks-', ''),
+              gpu: d.gpu.type,
+              fan: parseInt(d.gpu.fan),
+              memory: this.setMemory({
+                usage: d.gpu.mem_usage,
+                total: d.gpu.mem_total,
+              }),
+              temp: parseInt(d.gpu.temp),
+              logtime: new Date(d.logtime),
+            }))
       },
       pullData(onready){
         $.get({
@@ -142,19 +158,10 @@
           ready: (data, status) => {
             if(onready) onready(data, status)
             if(status === 200){
-              this.table.items = data.filter(d => Object.keys(d.gpu).length !== 0).map(d => ({
-                server: d.hostname.replace('nlg-wks-', ''),
-                gpu: d.gpu.type,
-                fan: parseInt(d.gpu.fan),
-                memory: this.setMemory({
-                  usage: d.gpu.mem_usage,
-                  total: d.gpu.mem_total,
-                }),
-                temp: parseInt(d.gpu.temp),
-                logtime: new Date(d.logtime),
-              }))
+              this.setTableItems(data)
               this.lastUpdate = new Date()
-              this.latestLogtime = new Date(Math.max.apply(null, this.table.items.map(d=>d.logtime)))
+              this.latestLogtime = new Date(
+                  Math.max.apply(null, this.table.items.map(d=>d.logtime)))
             }
           }
         })
@@ -168,12 +175,9 @@
           dataset.data = []
         for(let item of items){
           chartData.labels.push('wks-'+item.server)
-          let free = item.memory.sort
-          chartData.datasets[0].data.push(free)
-          let used = item.memory.usage
-          chartData.datasets[1].data.push(used)
-          let temp = item.temp
-          chartData.datasets[2].data.push(temp)
+          chartData.datasets[0].data.push(item.memory.free)
+          chartData.datasets[1].data.push(item.memory.usage)
+          chartData.datasets[2].data.push(item.temp)
         }
       }
     },

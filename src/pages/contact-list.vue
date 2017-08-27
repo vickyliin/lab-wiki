@@ -1,7 +1,17 @@
 <template>
   <v-container>
+    <v-layout>
+      <v-spacer></v-spacer>
+      <v-text-field
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+          v-model="search"
+      ></v-text-field>
+    </v-layout>
     <transition-group name="slide-y" tag="div" class="layout" id="contact-layout">
-      <v-card v-for="person in contactData" :key="person.name" class="contact-card">
+      <v-card v-for="person in filteredData" :key="person.name" class="contact-card">
         <v-container>
           <h6>{{person.name}}</h6>
           <v-divider></v-divider>
@@ -21,12 +31,11 @@
   </v-container>
 </template>
 <script>
-  import VCardMedia from "vuetify/src/components/cards/VCardMedia"
   import $ from 'ajax'
+  import _ from 'lodash'
   import {entry} from 'config'
 
   export default{
-    components: {VCardMedia},
     data(){
       return {
         entry,
@@ -36,36 +45,53 @@
           {name: 'email', icon: 'email', href: email => 'mailto:'+email},
           {name: 'phone', icon: 'phone', href: phone => 'tel:'+phone}
         ],
+        search: '',
+        debouncedSearch: '',
       }
     },
     created(){
       this.pullData()
     },
-    computed: {
-      url(){
-        return this.entry + this.$route.fullPath
-      }
-    },
     methods: {
+      setContactData(data){
+        let i = setInterval(() => {
+          if(data.length){
+            this.contactData.push(data.pop())
+          }
+          else{
+            clearInterval(i)
+          }
+        }, 50)
+      },
       pullData(){
         $.get({
           url: this.url,
           type: 'json',
           ready: (data, status) => {
-            if(status === 200){
-              let i = setInterval(() => {
-                if(data.length){
-                  this.contactData.push(data.pop())
-                }
-                else{
-                  clearInterval(i)
-                }
-              }, 50)
-            }
+            if(status === 200) this.setContactData(data)
           },
         })
       }
-    }
+    },
+    computed: {
+      url(){
+        return this.entry + this.$route.fullPath
+      },
+      filteredData(){
+        return this.contactData.filter(person => {
+          for(let key in person){
+            if(person[key].toString().indexOf(this.debouncedSearch) !== -1)
+              return true
+          }
+          return false
+        })
+      },
+    },
+    watch: {
+      search: _.debounce(function(){
+        this.debouncedSearch = this.search
+      }, 500)
+    },
   }
 </script>
 

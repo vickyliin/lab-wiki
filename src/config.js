@@ -5,4 +5,5 @@ module.exports = {
   routerMode: 'history',
   timeLocaleFormat: 'haw-us',
   queryInterval: 300000, //ms
+  googleAuthClientID: '904848968355-qqd08ni3a2pjgfe5hoc53tslnam7t12j.apps.googleusercontent.com',
 }

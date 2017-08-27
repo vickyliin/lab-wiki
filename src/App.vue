@@ -55,7 +55,7 @@
         title: 'NTU NLP Lab. Wiki',
       }
     },
-    components: {page}
+    components: {page},
   }
 </script>
 

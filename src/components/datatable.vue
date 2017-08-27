@@ -63,7 +63,7 @@
           let data = {r, l}
           for(let pos in data){
             let cellData = data[pos][index]
-            if(cellData === undefined) data[pos] = -Infinity
+            if(!cellData && cellData !== 0) data[pos] = -Infinity
             else if(!isNaN(cellData)) data[pos] = parseFloat(cellData)
             else if(cellData.constructor === String) data[pos] = cellData.replace(/^\s+|\s+$/g, '')
             else if(cellData.sort !== undefined) data[pos] = cellData.sort

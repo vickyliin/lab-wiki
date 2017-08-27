@@ -31,7 +31,8 @@
           headers: [
             {value: 'date'},
             {value: 'presenter'},
-            {value: 'topic', display: (value, text) => text.replace(/slide/gi, ` <a href="${value.slides}" target="_blank">Slide</a>`), },
+            {value: 'topic', display: (value, text) => text.replace(/slide/gi, 
+                ` <a href="${value.slides}" target="_blank">Slide</a>`) },
           ],
           items: [],
           initPagination: {
@@ -48,25 +49,22 @@
       this.pullData()
     },
     methods: {
+      setTableItems(data){
+        this.table.items = data.map(d => ({
+          date: new Date(d.date).toJSON().slice(0, 10),
+          presenter: d.presenter,
+          topic: {
+            sort: d.topic,
+            text: d.topic,
+            slides: d.slides,
+          },
+        }))
+      },
       pullData(){
         $.get({
           url: this.url,
           type: 'json',
-          ready: (data, status) => {
-            if(status === 200){
-              this.table.items = data.map(d => {
-                return {
-                  date: new Date(d.date).toJSON().slice(0, 10),
-                  presenter: d.presenter,
-                  topic: {
-                    sort: d.topic,
-                    text: d.topic,
-                    slides: d.slides,
-                  },
-                };
-              })
-            }
-          }
+          ready: (data, status) => { if(status === 200) this.setTableItems(data) }
         })
       },
     },
@@ -76,7 +74,7 @@
       }
     },
     watch: {
-      search: _.debounce(function() {
+      search: _.debounce(function(){
         this.table.search = this.search
       }, 500)
     }

@@ -42,7 +42,7 @@
         contactData: [],
         fields: [
           {name: 'account', icon: 'account_circle'},
-          {name: 'email', icon: 'email', href: email => 'mailto:'+email},
+          {name: 'email', icon: 'email'},
           {name: 'phone', icon: 'phone', href: phone => 'tel:'+phone}
         ],
         search: '',

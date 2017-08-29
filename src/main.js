@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from 'App.vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
-import {routerMode, timeLocaleFormat} from 'config'
+import {routerMode, timeLocaleFormat, googleAuthClientID, entry} from 'config'
 
 import * as components from './pages/*.vue'
 
@@ -29,4 +29,28 @@ new Vue({
   el: '#app',
   render: h => h(App),
   router
+})
+
+import 'assets/js/google.api-client'
+import $ from 'ajax'
+gapi.load('auth2', () => {
+  var auth2 = gapi.auth2.init({
+    client_id: googleAuthClientID,
+    cookiepolicy: 'single_host_origin',
+  })
+  auth2.signIn()
+  auth2.currentUser.listen(user => {
+    $.post({
+      url: entry + '/login',
+      data: {
+        id_token: user.getAuthResponse().id_token
+      },
+      ready: (data, status) => {
+        if(status === 403){
+          auth2.signOut()
+          auth2.signIn()
+        }
+      }
+    })
+  })
 })

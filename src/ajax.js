@@ -9,7 +9,7 @@ function XhrWrapper(opt){
   xhr.open(opt.type, opt.url, true)
   if(opt.contentType) xhr.setRequestHeader('Content-type', opt.contentType)
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-  xhr.setRequestHeader('Access-Control-Request-Method', opt.type)
+  xhr.withCredentials = true;
   this.send = data => xhr.send(data)
 }
 export default {

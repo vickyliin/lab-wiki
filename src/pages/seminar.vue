@@ -60,12 +60,13 @@
           },
         }))
       },
-      pullData(){
-        $.get({
+      async pullData(){
+        let {response, status} = await $.get({
           url: this.url,
           type: 'json',
-          ready: (data, status) => { if(status === 200) this.setTableItems(data) }
         })
+        if(status === 200) this.setTableItems(response)
+        this.$store.commit('status', status)
       },
     },
     computed: {

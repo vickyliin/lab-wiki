@@ -11,6 +11,7 @@
   export default{
     methods: {
       loginSucceed(){
+        this.$store.commit('status', 200)
       }
     },
     created(){

@@ -53,25 +53,19 @@
       this.pullData()
     },
     methods: {
-      setContactData(data){
-        let i = setInterval(() => {
-          if(data.length){
-            this.contactData.push(data.pop())
-          }
-          else{
-            clearInterval(i)
-          }
-        }, 50)
-      },
-      pullData(){
-        $.get({
+      async pullData(){
+        let {response, status} = await $.get({
           url: this.url,
           type: 'json',
-          ready: (data, status) => {
-            if(status === 200) this.setContactData(data)
-          },
         })
-      }
+        if(status === 200) this.setContactData(response)
+      },
+      async setContactData(data){
+        for(let d of data){
+          this.contactData.push(d)
+          await this.$nextTick()
+        }
+      },
     },
     computed: {
       url(){

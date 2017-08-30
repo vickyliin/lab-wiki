@@ -4,5 +4,9 @@
       "es2015": { "modules": false }
     }]
   ],
-  "plugins": ["import-glob"]
+  "plugins": [
+    "import-glob",
+    "transform-object-rest-spread",
+    "transform-async-to-generator"
+  ]
 }

@@ -5,7 +5,7 @@
         <v-flex v-for="(news,i) in newsData" :key="i">
           <v-container>
             <h6>{{news.title}}</h6>
-            <v-subheader>{{news.date | localeString}}</v-subheader>
+            <v-subheader>{{news.date | date}}</v-subheader>
             <v-container>
               <vue-markdown>{{news.content}}</vue-markdown>
             </v-container>
@@ -30,27 +30,25 @@
         newsData: []
       }
     },
-    created(){
-      let n = 0
-      let i = setInterval(()=>{
-        this.pullData({n})
-        n++
-        if(n === 3) clearInterval(i)
-      }, 50)
+    mounted(){
+      this.pullData()
     },
     methods: {
-      pullData(params){
-        $.get({
+      async setNewsData(data){
+        for(let d of data.slice(0,10)){
+          d.date = new Date(d.date)
+          this.newsData.push(d)
+          await this.$nextTick()
+        }
+      },
+      async pullData(){
+        let {response, status} = await $.get({
           url: this.url,
-          data: params,
           type: 'json',
-          ready: (data, status) => {
-            if(status === 200){
-              data.date = new Date(data.date)
-              this.newsData.push(data)
-            }
-          }
         })
+        if(status === 200) this.setNewsData(response)
+        console.log(response, status)
+        this.$store.commit('status', status)
       }
     },
     computed: {

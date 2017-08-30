@@ -52,7 +52,6 @@
           {icon: 'local_library', path: 'seminar'},
           {icon: 'perm_contact_calendar', path: 'contactList'},
         ],
-        title: 'NTU NLP Lab. Wiki',
       }
     },
     components: {page},

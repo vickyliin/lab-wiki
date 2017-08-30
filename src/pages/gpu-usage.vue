@@ -1,8 +1,5 @@
 <template>
-  <v-container v-if="status === 0" row class="text-xs-center">
-    <v-progress-circular :indeterminate="true"></v-progress-circular>
-  </v-container>
-  <v-container v-else-if="status === 200">
+  <v-container>
     <v-layout column>
       <v-container fluid>
         <v-layout row justify-center class="text-xs">
@@ -10,9 +7,7 @@
             Last Update: {{lastUpdate | localeString}}
             <v-icon class="ml-1 link"
                     :class="{rotate: pulling}"
-                    @click="if(pulling) return
-                            pulling = true;
-                            pullData(()=>pulling = false)">refresh</v-icon>
+                    @click="onClickRefresh()">refresh</v-icon>
           </v-flex>
           <v-flex class="text-xs-right">
             Latest Logtime: {{latestLogtime | localeString}}
@@ -32,14 +27,6 @@
       </v-flex>
     </v-layout>
   </v-container>
-  <v-container v-else row class="v-center">
-    <p>
-      <v-icon class="mr-1">error</v-icon>
-      The GPU usage data is unavailable now. Please
-      <a :href="$route.fullPath">try again</a>
-      later or contact our web administrator.
-    </p>
-  </v-container>
 </template>
 
 <script>
@@ -51,6 +38,7 @@
 
   export default {
     components: {datatable, chart},
+    props: ['data'],
     data(){return {
       entry,
       table: {
@@ -117,7 +105,7 @@
       interval: null,
     }},
     created(){
-      this.pullData((data, status) => this.status = status)
+      this.assignPulledData(this.data)
       this.interval = setInterval(this.pullData, queryInterval)
     },
     methods: {
@@ -151,20 +139,28 @@
               logtime: new Date(d.logtime),
             }))
       },
-      pullData(onready){
+      pullData(){
+        this.pulling = true
         $.get({
           url: this.url,
           type: 'json',
           ready: (data, status) => {
-            if(onready) onready(data, status)
+            this.pulling = false
             if(status === 200){
-              this.setTableItems(data)
-              this.lastUpdate = new Date()
-              this.latestLogtime = new Date(
-                  Math.max.apply(null, this.table.items.map(d=>d.logtime)))
+              this.assignPulledData(data)
             }
           }
         })
+      },
+      assignPulledData(data){
+        this.setTableItems(data)
+        this.lastUpdate = new Date()
+        this.latestLogtime = new Date(
+            Math.max.apply(null, this.table.items.map(d=>d.logtime)))
+      },
+      onClickRefresh(){
+        if(this.pulling) return
+        this.pullData()
       },
     },
     watch: {
@@ -183,7 +179,7 @@
     },
     computed: {
       url(){
-        return this.entry + '/workstations'
+        return this.entry + this.$route.fullPath
       }
     },
     destroyed(){

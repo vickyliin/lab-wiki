@@ -20,14 +20,14 @@ glob('data/*.json', function(er, files){
   }
 })
 
-app.get('/news', function(req, res){
-  "use strict";
-  res.json({
-    title: loremIpsum({sentenceUpperBound: 10}),
-    content: loremIpsum({units: 'paragraphs'}),
-    date: new Date(),
-  })
-})
+// app.get('/news', function(req, res){
+//   "use strict";
+//   res.json({
+//     title: loremIpsum({sentenceUpperBound: 10}),
+//     content: loremIpsum({units: 'paragraphs'}),
+//     date: new Date(),
+//   })
+// })
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')

@@ -1,16 +1,20 @@
 function XhrWrapper(opt){
   let xhr = this.xhr = new XMLHttpRequest()
-  xhr.onreadystatechange = (e => {
-    if(xhr.readyState === 4 && opt.ready){
-      opt.ready(xhr.response, xhr.status)
-    }
-  })
   xhr.responseType = opt.resType || 'json'
   xhr.open(opt.type, opt.url, true)
   if(opt.contentType) xhr.setRequestHeader('Content-type', opt.contentType)
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-  xhr.withCredentials = true;
-  this.send = data => xhr.send(data)
+  xhr.withCredentials = true
+  this.send = data => new Promise( resolve => {
+    xhr.onreadystatechange = (() => {
+      let {response, status} = xhr
+      if(xhr.readyState === 4){
+        if(opt.ready) opt.ready(response, status)
+        console.log(response, status)
+        resolve({response, status})
+      }
+    })
+    xhr.send(data)
+  })
 }
 export default {
   params(data){
@@ -30,13 +34,13 @@ export default {
     opt.type = 'GET'
     opt.url = `${opt.url}?${this.params(opt.data)}`
     let xhr = new XhrWrapper(opt)
-    xhr.send()
+    return xhr.send()
   },
   post(opt){
     opt.contentType = opt.contentType || 'application/x-www-form-urlencoded'
     opt.resType = opt.type
     opt.type = 'POST'
     let xhr = new XhrWrapper(opt)
-    xhr.send(this.params(opt.data))
+    return xhr.send(this.params(opt.data))
   }
 }

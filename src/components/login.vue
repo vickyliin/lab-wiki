@@ -15,7 +15,7 @@
     }},
     methods: {
       login(){
-        let user = this.$store.dispatch('gSignIn')
+        let user = this.$store.dispatch('signIn')
 //        console.log(user)
       }
     },

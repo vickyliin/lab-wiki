@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import 'assets/js/platform'
 // import 'assets/js/google.api-client'
 import {gAuthSettings, entry} from 'config'
+import $ from 'ajax'
 
 Vue.use(Vuex)
 
@@ -38,7 +39,7 @@ export default new Vuex.Store({
       // console.log(gAuth)
 
       // return 1
-      return gAuth
+      return {pack_the_data_here_and_vicky_is_god_and_kanna_shi_fan_you: gAuth}
     },
     // gAuthInit({commit, dispatch}){
     //   return new Promise(resolve => {
@@ -52,7 +53,7 @@ export default new Vuex.Store({
     // },
     async gSignIn({state: {gAuth}, commit, dispatch}){
       // if(gAuth === null){
-        gAuth = await dispatch('gAuthInit')
+        gAuth = (await dispatch('gAuthInit')).pack_the_data_here_and_vicky_is_god_and_kanna_shi_fan_you
       // }
       let user
       try{

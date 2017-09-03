@@ -50,7 +50,6 @@
     },
     methods: {
       setTableItems(data){
-        if(!data) return
         this.table.items = data.map(d => ({
           date: new Date(d.date).toJSON().slice(0, 10),
           presenter: d.presenter,
@@ -67,6 +66,7 @@
           type: 'json',
         })
         this.$store.commit('status', status)
+        if(status !== 200) return
         this.setTableItems(response)
       },
     },

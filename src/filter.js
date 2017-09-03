@@ -2,7 +2,7 @@ import Vue from 'vue'
 import {timeLocaleFormat} from 'config'
 
 Vue.filter('localeString', data => {
-  if(!data) return ''
+  if(!data && data !== 0) return ''
   if(data.toLocaleString) return data.toLocaleString(timeLocaleFormat)
   else return data
 })

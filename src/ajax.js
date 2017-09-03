@@ -3,7 +3,7 @@ function XhrWrapper(opt){
   xhr.responseType = opt.resType || 'json'
   xhr.open(opt.type, opt.url, true)
   if(opt.contentType) xhr.setRequestHeader('Content-type', opt.contentType)
-  xhr.withCredentials = true
+  xhr.withCredentials = opt.credential === undefined? true: opt.credential
   this.send = data => new Promise( resolve => {
     xhr.onreadystatechange = (() => {
       let {response, status} = xhr

@@ -40,10 +40,10 @@
           type: 'json',
         })
         this.$store.commit('status', status)
+        if(status !== 200) return
         this.setNewsData(response)
       },
       async setNewsData(data){
-        if(!data) return
         for(let d of data.slice(0,10)){
           d.date = new Date(d.date)
           this.newsData.push(d)

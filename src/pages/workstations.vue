@@ -6,7 +6,7 @@
 <script>
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
-  import {entry} from 'config'
+  import {wsDataEntry} from 'config'
 
   export default {
     components: {datatable},
@@ -28,8 +28,7 @@
     },
     methods: {
       setItems(data){
-        if(!data) return
-        this.items = data.map(d => ({
+        this.table.items = data.map(d => ({
           server: d.hostname.replace(/nlg-wks-/, ''),
           cpu: d.cpuinfo.type.replace(/Intel|\(R\)|\(TM\)|CPU/g, ''),
           clock: d.cpuinfo.clock,
@@ -42,14 +41,16 @@
         let {response, status} = await $.get({
           url: this.url,
           type: 'json',
+          credential: false,
         })
         this.$store.commit('status', status)
+        if(status !== 200) return
         this.setItems(response)
       },
     },
     computed: {
       url(){
-        return entry + this.$route.fullPath
+        return wsDataEntry
       },
     }
   }

@@ -31,7 +31,7 @@
 
 <script>
   import $ from 'ajax'
-  import {entry, queryInterval} from 'config'
+  import {wsDataEntry, queryInterval} from 'config'
 
   import datatable from 'components/datatable.vue'
   import chart from 'components/chart.vue'
@@ -143,8 +143,10 @@
         let {response, status} = await $.get({
           url: this.url,
           type: 'json',
+          credential: false,
         })
         this.$store.commit('status', status)
+        if(status !== 200) return
         this.pulling = false
         this.assignPulledData(response)
       },
@@ -176,7 +178,7 @@
     },
     computed: {
       url(){
-        return entry + this.$route.fullPath
+        return wsDataEntry
       }
     },
     destroyed(){

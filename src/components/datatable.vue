@@ -35,6 +35,9 @@
         </td>
       </tr>
     </template>
+    <template slot="footer">
+      <slot name="footer"></slot>
+    </template>
   </v-data-table>
 </template>
 

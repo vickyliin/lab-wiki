@@ -38,9 +38,7 @@
 
   export default {
     components: {datatable, chart},
-    props: ['data'],
     data(){return {
-      entry,
       table: {
         headers: 'server gpu fan memory temp'.split(' '), 
         items: [],
@@ -105,7 +103,7 @@
       interval: null,
     }},
     created(){
-      this.assignPulledData(this.data)
+      this.pullData()
       this.interval = setInterval(this.pullData, queryInterval)
     },
     methods: {
@@ -125,6 +123,7 @@
         }
       },
       setTableItems(data){
+        if(!data) return
         this.table.items = data
             .filter(d => Object.keys(d.gpu).length !== 0)
             .map(d => ({
@@ -139,20 +138,18 @@
               logtime: new Date(d.logtime),
             }))
       },
-      pullData(){
+      async pullData(){
         this.pulling = true
-        $.get({
+        let {response, status} = await $.get({
           url: this.url,
           type: 'json',
-          ready: (data, status) => {
-            this.pulling = false
-            if(status === 200){
-              this.assignPulledData(data)
-            }
-          }
         })
+        this.$store.commit('status', status)
+        this.pulling = false
+        this.assignPulledData(response)
       },
       assignPulledData(data){
+        if(!data) return
         this.setTableItems(data)
         this.lastUpdate = new Date()
         this.latestLogtime = new Date(
@@ -179,7 +176,7 @@
     },
     computed: {
       url(){
-        return this.entry + this.$route.fullPath
+        return entry + this.$route.fullPath
       }
     },
     destroyed(){

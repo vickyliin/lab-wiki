@@ -58,9 +58,11 @@
           url: this.url,
           type: 'json',
         })
-        if(status === 200) this.setContactData(response)
+        this.$store.commit('status', status)
+        this.setContactData(response)
       },
       async setContactData(data){
+        if(!data) return
         for(let d of data){
           this.contactData.push(d)
           await this.$nextTick()

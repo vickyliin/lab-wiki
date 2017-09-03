@@ -50,6 +50,7 @@
     },
     methods: {
       setTableItems(data){
+        if(!data) return
         this.table.items = data.map(d => ({
           date: new Date(d.date).toJSON().slice(0, 10),
           presenter: d.presenter,
@@ -60,14 +61,13 @@
           },
         }))
       },
-      pullData(){
-        $.get({
+      async pullData(){
+        let {response, status} = await $.get({
           url: this.url,
           type: 'json',
-        }).then( ({response, status}) =>{
-          if(status === 200) this.setTableItems(response)
-          this.$store.commit('status', status)
         })
+        this.$store.commit('status', status)
+        this.setTableItems(response)
       },
     },
     computed: {

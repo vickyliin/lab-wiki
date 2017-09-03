@@ -6,9 +6,21 @@ Vue.use(VueRouter)
 
 import * as components from './pages/*.vue'
 
+const pages = Object.entries(components).map(
+    ([name, component]) => ({
+      path: '/'+name,
+      component,
+      name,
+    })
+)
+
 export default new VueRouter({
-  routes: Object.entries(components).map(
-      pair => ({path: '/'+pair[0], component: pair[1]})
-  ),
+  routes: [
+    {
+      path: '/',
+      redirect: '/gpuUsage',
+    },
+    ...pages,
+  ],
   mode: routerMode,
 })

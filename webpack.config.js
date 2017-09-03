@@ -30,7 +30,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(png|jpg|gif|svg|otf)$/,
+        test: /\.(png|jpg|gif|svg|otf|eot|ttf|woff|woff2)($|\?)/,
         loader: 'file-loader',
         options: {
           objectAssign: 'Object.assign'

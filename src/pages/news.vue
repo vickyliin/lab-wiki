@@ -30,26 +30,26 @@
         newsData: []
       }
     },
-    mounted(){
+    created(){
       this.pullData()
     },
     methods: {
+      async pullData(){
+        let {response, status} = await $.get({
+          url: this.url,
+          type: 'json',
+        })
+        this.$store.commit('status', status)
+        this.setNewsData(response)
+      },
       async setNewsData(data){
+        if(!data) return
         for(let d of data.slice(0,10)){
           d.date = new Date(d.date)
           this.newsData.push(d)
           await this.$nextTick()
         }
       },
-      async pullData(){
-        let {response, status} = await $.get({
-          url: this.url,
-          type: 'json',
-        })
-        if(status === 200) this.setNewsData(response)
-        console.log(response, status)
-        this.$store.commit('status', status)
-      }
     },
     computed: {
       url(){

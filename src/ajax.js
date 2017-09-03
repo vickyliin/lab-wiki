@@ -9,7 +9,6 @@ function XhrWrapper(opt){
       let {response, status} = xhr
       if(xhr.readyState === 4){
         if(opt.ready) opt.ready(response, status)
-        console.log(response, status)
         resolve({response, status})
       }
     })

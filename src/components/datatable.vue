@@ -107,7 +107,7 @@
         return this.searchRegex.test(value)
       },
       highlight(value, display){
-        let highlightText = text => text.replace(this.searchRegex, '<span class="highlight">$1</span>')
+        let highlightText = text => text.replace(this.searchRegex, '<mark>$1</mark>')
         if(display !== undefined){
           let text = highlightText(value.text)
           return display(value, text)
@@ -129,9 +129,3 @@
     },
   }
 </script>
-
-<style lang="stylus">
-  .highlight
-    background-color: yellow
-    color: black
-</style>

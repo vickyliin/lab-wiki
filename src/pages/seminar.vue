@@ -10,22 +10,53 @@
           v-model="search"
       ></v-text-field>
     </v-layout>
-    <datatable v-bind="table"></datatable>
+    <datatable v-bind="table">
+    </datatable>
+    <v-dialog width="30rem">
+      <v-btn fab small fixed primary bottom right slot="activator">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-card>
+        <v-card-title>
+          <span class="headline">New Seminar</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container fluid>
+            <v-layout column>
+              <date-picker label="Date"
+                           required
+                           v-model="newEntry.date"></date-picker>
+              <member-selector label="Presenter"
+                               icon="account_circle"
+                               required
+                               v-model="newEntry.presenter"></member-selector>
+              <file-picker label="Slide"
+                           icon="slideshow"
+                           v-model="newEntry.slide"></file-picker>
+              <v-text-field label="Topic" multi-line v-model="newEntry.topic">
+              </v-text-field>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 
+  import _ from 'lodash'
   import {entry} from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
-  import _ from 'lodash'
+  import filePicker from 'components/file-picker.vue'
+  import datePicker from 'components/date-picker.vue'
+  import memberSelector from 'components/member-selector.vue'
 
   export default {
-    components: {datatable},
+    components: {datatable, filePicker, datePicker, memberSelector},
     data(){
       return {
-        entry,
         table: {
           search: '',
           headers: [
@@ -43,13 +74,19 @@
           actions: true,
         },
         search: '',
+        newEntry: {
+          date: null,
+          presenter: null,
+          topic: null,
+          slide: null
+        },
       }
     },
     created(){
       this.pullData()
     },
     methods: {
-      setTableItems(data){
+      setData(data){
         this.table.items = data.map(d => ({
           date: new Date(d.date).toJSON().slice(0, 10),
           presenter: d.presenter,
@@ -60,20 +97,6 @@
           },
         }))
       },
-      async pullData(){
-        let {response, status} = await $.get({
-          url: this.url,
-          type: 'json',
-        })
-        this.$store.commit('status', status)
-        if(status !== 200) return
-        this.setTableItems(response)
-      },
-    },
-    computed: {
-      url(){
-        return this.entry + this.$route.fullPath
-      }
     },
     watch: {
       search: _.debounce(function(){

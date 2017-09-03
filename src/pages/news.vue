@@ -34,16 +34,7 @@
       this.pullData()
     },
     methods: {
-      async pullData(){
-        let {response, status} = await $.get({
-          url: this.url,
-          type: 'json',
-        })
-        this.$store.commit('status', status)
-        if(status !== 200) return
-        this.setNewsData(response)
-      },
-      async setNewsData(data){
+      async setData(data){
         for(let d of data.slice(0,10)){
           d.date = new Date(d.date)
           this.newsData.push(d)
@@ -51,10 +42,5 @@
         }
       },
     },
-    computed: {
-      url(){
-        return this.entry + this.$route.fullPath
-      }
-    }
   }
 </script>

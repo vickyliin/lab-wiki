@@ -27,7 +27,7 @@
       this.pullData()
     },
     methods: {
-      setItems(data){
+      setData(data){
         this.table.items = data.map(d => ({
           server: d.hostname.replace(/nlg-wks-/, ''),
           cpu: d.cpuinfo.type.replace(/Intel|\(R\)|\(TM\)|CPU/g, ''),
@@ -37,21 +37,6 @@
           gpu: d.gpu.type,
         }))
       },
-      async pullData(){
-        let {response, status} = await $.get({
-          url: this.url,
-          type: 'json',
-          credential: false,
-        })
-        this.$store.commit('status', status)
-        if(status !== 200) return
-        this.setItems(response)
-      },
     },
-    computed: {
-      url(){
-        return wsDataEntry
-      },
-    }
   }
 </script>

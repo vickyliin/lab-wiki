@@ -1,16 +1,17 @@
 <template>
-  <v-text-field label="Slide"
-                :value="filePath"
+  <v-text-field :value="filePath"
                 readonly
+                :label="label"
                 :single-line="singleLine"
                 class="file-picker"
+                :prepend-icon="icon"
                 @click.prevent="selectFile">
   </v-text-field>
 </template>
 
 <script>
   export default{
-    props: ['value'],
+    props: ['value', 'label', 'icon'],
     data(){
       return {
         input: null,

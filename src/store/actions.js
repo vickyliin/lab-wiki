@@ -13,8 +13,8 @@ export default {
   async gAuthInit({commit, dispatch}){
     await dispatch('gLoadAuth')
     let gAuth = gapi.auth2.init(gAuthSettings)
-    await gAuth.then()
     commit('gAuth', gAuth)
+    await gAuth.then()
 
     let user = gAuth.currentUser.get()
     if(user) commit('user', user)
@@ -22,8 +22,11 @@ export default {
     return [gAuth]
   },
   async gSignIn({state: {gAuth}, commit, dispatch}){
-    if(gAuth === null){
+    if(!gapi.auth2){
       gAuth = (await dispatch('gAuthInit'))[0]
+    }
+    else{
+      await gAuth.then()
     }
     let user
     try{

@@ -4,10 +4,11 @@ import $ from 'ajax'
 
 const loginUrl = entry + '/login'
 const logoutUrl = entry + '/logout'
-export default {
+
+let authentications = {
   gLoadAuth(){
     return new Promise(resolve =>
-      gapi.load('auth2', resolve)
+        gapi.load('auth2', resolve)
     )
   },
   async gAuthInit({commit, dispatch}){
@@ -70,5 +71,17 @@ export default {
     await dispatch('gSignOut')
     await $.post({url: logoutUrl})
     commit('status', 401)
-  },
+  }
+}
+
+export default {
+  ...authentications,
+  async getData({commit}, model){
+    let {response, status} = await $.get({
+      url: entry + model
+    })
+    commit('status', status)
+    if(status !== 200) return null
+    return response
+  }
 }

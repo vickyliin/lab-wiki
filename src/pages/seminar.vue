@@ -73,7 +73,7 @@
           headers: [
             {value: 'date'},
             {value: 'presenter'},
-            {value: 'topic', display: (value, text) => text.replace(/slide/gi, 
+            {value: 'topic', display: (value, text) => text.replace(/slide/gi,
                 ` <a href="${value.slides}" target="_blank">Slide</a>`) },
           ],
           items: [],
@@ -114,6 +114,45 @@
           },
         }))
       },
+      async uploadFile(file){
+        const boundary = '-------vicky_is_god__duckingod_is_god';
+        const delimiter = `\r\n--${boundary}\r\n`;
+        const close_delim = `\r\n--${boundary}--`;
+
+        return new Promise((resolve, reject) => {
+          let reader = new FileReader()
+
+          reader.readAsBinaryString(file)
+          reader.onload = () => {
+            let metadata = {
+              name: file.name,
+              parents: ['0B0PoejLXnl7lU2kyN21UVzFrTk0'], // Upload to 'slides'
+              mimeType: file.type+'\r\n'
+            }
+            let fileContent = btoa(reader.result) //base64 encoding
+            // BJ4
+            let multipartRequestBody = delimiter +
+              'Content-Type: application/json\r\n\r\n' +
+              JSON.stringify(metadata) + delimiter +
+              'Content-Type: ' + `${file.type}\r\n` +
+              'Content-Transfer-Encoding: base64\r\n\r\n' +
+              fileContent + close_delim
+
+            gapi.client.request({
+                'path': '/upload/drive/v3/files',
+                'method': 'POST',
+                'params': {
+                    'uploadType': 'multipart'
+                },
+                'headers': {
+                    'Content-Type': `multipart/related; boundary="${boundary}"`,
+                    'Content-Length': multipartRequestBody.length
+                },
+                'body': multipartRequestBody
+            }).then(response => resolve(response))
+          }
+        })
+      },
       clearForm(data){
         for(let key in data){
           data[key] = null
@@ -121,8 +160,28 @@
       },
       postNewEntry(){
         if(!this.validate) return
-        console.log('validate ok')
-      },
+        // This part is terribly coded by Henry, plz forgive me vickygod :(
+        let data = {
+          slides: '',
+          presenter: this.newEntry.presenter.name,
+          date: this.newEntry.date,
+          topic: this.newEntry.topic || ''
+        }
+        if(this.newEntry.slide){
+          this.uploadFile(this.newEntry.slide).then(resp => {
+            if(resp.status === 200){
+              let slide_url = `https://drive.google.com/open?id=${resp.result.id}`
+              console.log(slide_url)
+              data.slides = slide_url
+              data.topic += ' Slide'
+              console.log(JSON.stringify(data))
+              $.post({url: entry + '/seminar', data: data}).then()
+            }
+          })
+        } else{
+          $.post({url: entry + '/seminar', data: data}).then()
+        }
+      }
     },
     computed: {
       error(){
@@ -133,13 +192,13 @@
         return error
       },
       validate(){
-        return Object.values(this.error).every(x=>x)
+        return !Object.values(this.error).every(x=>x)
       },
     },
     watch: {
       search: _.debounce(function(){
         this.table.search = this.search
-      }, 500)
+      }, 500),
     }
   }
 </script>

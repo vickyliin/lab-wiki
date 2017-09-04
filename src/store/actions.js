@@ -1,5 +1,5 @@
 import 'assets/js/platform'
-import {gAuthSettings, entry} from 'config'
+import {gAuthSettings, gClientSettings, entry} from 'config'
 import $ from 'ajax'
 
 const loginUrl = entry + '/login'
@@ -8,12 +8,13 @@ const logoutUrl = entry + '/logout'
 let authentications = {
   gLoadAuth(){
     return new Promise(resolve =>
-        gapi.load('auth2', resolve)
+        gapi.load('client:auth2', resolve)
     )
   },
   async gAuthInit({commit, dispatch}){
     await dispatch('gLoadAuth')
-    let gAuth = gapi.auth2.init(gAuthSettings)
+    await gapi.client.init(gClientSettings)
+    let gAuth = gapi.auth2.getAuthInstance()
     commit('gAuth', gAuth)
     await gAuth.then()
 

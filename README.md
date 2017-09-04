@@ -102,7 +102,7 @@ src\
 - [ ] Seminar
   - [x] Table
   - [x] Search/Highlight
-  - [ ] Add/Update/Remove
-    - [ ] Admin
-    - [ ] Owner
-    - [ ] Google Drive Upload
+  - [ ] Admin Add/Update/Remove
+  - [ ] Owner Add/Update/Remove
+  - [ ] Google Drive Upload
+

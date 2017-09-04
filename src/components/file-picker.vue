@@ -36,7 +36,15 @@
       singleLine(){
         return !this.filePath
       }
-    }
+    },
+    watch: {
+      value(newVal){
+        if(newVal === null){
+          this.input.value = ''
+          this.filePath = ''
+        }
+      },
+    },
   }
 </script>
 

@@ -12,13 +12,15 @@
     </v-layout>
     <datatable v-bind="table">
     </datatable>
-    <v-dialog width="30rem">
+    <v-dialog width="35rem">
       <v-btn fab small fixed primary bottom right slot="activator">
         <v-icon>add</v-icon>
       </v-btn>
       <v-card>
         <v-card-title>
-          <span class="headline">New Seminar</span>
+          <v-container class="headline" fluid>
+            New Seminar
+          </v-container>
         </v-card-title>
         <v-card-text>
           <v-container fluid>
@@ -38,6 +40,11 @@
             </v-layout>
           </v-container>
         </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="clearForm(newEntry)">Clear</v-btn>
+          <v-btn flat primary @click="postNewEntry()">Submit</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
@@ -96,6 +103,14 @@
             slides: d.slides,
           },
         }))
+      },
+      clearForm(data){
+        for(let key in data){
+          data[key] = null
+        }
+      },
+      postNewEntry(){
+        
       },
     },
     watch: {

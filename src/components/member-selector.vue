@@ -9,6 +9,7 @@
       item-text="name"
       max-height="20rem"
       return-object
+      :error="error"
       autocomplete>
     <template slot="item" scope="data">
       <v-list-tile-content>
@@ -20,7 +21,7 @@
 </template>
 <script>
   export default {
-    props: ['icon', 'label', 'value', 'required'],
+    props: ['icon', 'label', 'value', 'required', 'error'],
     data(){
       return {
         people: [],

@@ -5,13 +5,14 @@
                 :single-line="singleLine"
                 class="file-picker"
                 :prepend-icon="icon"
+                :error="error"
                 @click.prevent="selectFile">
   </v-text-field>
 </template>
 
 <script>
   export default{
-    props: ['value', 'label', 'icon'],
+    props: ['value', 'label', 'icon', 'error'],
     data(){
       return {
         input: null,

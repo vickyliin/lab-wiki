@@ -1,19 +1,20 @@
 <template>
   <v-menu :close-on-content-click="true"
           class="date-picker"
-          max-width="290px"
-          offset-y>
+          offset-y fullWidth>
     <v-text-field
         slot="activator"
         :label="label"
         :value="value"
+        :name="name"
         prepend-icon="event"
         readonly
+        :error="error"
         :required="required !== undefined"
     ></v-text-field>
     <v-date-picker :value="value"
                    @input="e => $emit('input', e)"
-                   no-title
+                   no-title dark
                    scrollable>
     </v-date-picker>
   </v-menu>
@@ -21,15 +22,6 @@
 
 <script>
   export default {
-    props: ['value', 'label', 'required'],
+    props: ['value', 'label', 'required', 'name', 'error'],
   }
 </script>
-
-<style lang="stylus">
-  .application--dark
-  .picker--date__header
-  .picker--date table th
-    color: white
-  .date-picker input
-    cursor: pointer
-</style>

@@ -26,24 +26,28 @@
           <v-container fluid>
             <v-layout column>
               <date-picker label="Date"
-                           required
+                           :required="required.date"
+                           :error="error.date"
                            v-model="newEntry.date"></date-picker>
-              <member-selector label="Presenter"
-                               icon="account_circle"
-                               required
+              <member-selector label="Presenter" icon="account_circle"
+                               :required="required.presenter"
+                               :error="error.presenter"
                                v-model="newEntry.presenter"></member-selector>
-              <file-picker label="Slide"
-                           icon="slideshow"
+              <file-picker label="Slide" icon="slideshow"
+                           :required="required.slide"
+                           :error="error.slide"
                            v-model="newEntry.slide"></file-picker>
-              <v-text-field label="Topic" multi-line v-model="newEntry.topic">
-              </v-text-field>
+              <v-text-field label="Topic"
+                            multi-line :error="error.topic"
+                            :required="required.topic"
+                            v-model="newEntry.topic"></v-text-field>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="clearForm(newEntry)">Clear</v-btn>
-          <v-btn flat primary @click="postNewEntry()">Submit</v-btn>
+          <v-btn flat primary @click="postNewEntry">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -87,6 +91,12 @@
           topic: null,
           slide: null
         },
+        required: {
+          date: true,
+          presenter: true,
+          topic: false,
+          slide: false
+        },
       }
     },
     created(){
@@ -110,7 +120,20 @@
         }
       },
       postNewEntry(){
-        
+        if(!this.validate) return
+        console.log('validate ok')
+      },
+    },
+    computed: {
+      error(){
+        let error = {}
+        Object.entries(this.required).forEach(([field, required]) => {
+          error[field] = required && !this.newEntry[field]
+        })
+        return error
+      },
+      validate(){
+        return Object.values(this.error).every(x=>x)
       },
     },
     watch: {

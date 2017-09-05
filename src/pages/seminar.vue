@@ -13,7 +13,7 @@
     <datatable v-bind="table">
     </datatable>
     <v-dialog width="35rem" v-model="newEntryDialog">
-      <v-btn fab small fixed primary bottom right slot="activator">
+      <v-btn fab small fixed primary bottom right ripple slot="activator">
         <v-icon>add</v-icon>
       </v-btn>
       <v-card>
@@ -57,7 +57,8 @@
 <script>
 
   import _ from 'lodash'
-  import {entry, gDriveSlidesFolderID, gClientSettings} from 'config'
+  import {mapGetters} from 'vuex'
+  import {entry, gDriveSlidesFolderID, gSuiteDomain} from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
   import filePicker from 'components/file-picker.vue'
@@ -83,6 +84,20 @@
             descending: true
           },
           actions: true,
+          actionIcons: [
+            {
+              icon: 'mode_edit',
+              color: 'teal',
+              show: item => item.editable,
+              action: item => this.editData(item),
+            },
+            {
+              icon: 'delete',
+              color: 'grey',
+              show: item => item.editable,
+              action: item => this.deleteData(item),
+            },
+          ]
         },
         search: '',
         newEntry: {
@@ -116,6 +131,8 @@
             text: d.topic,
             slides: d.slides,
           },
+          owner: d.owner,
+          editable: d.owner === this.userEmail
         }))
       },
       uploadFile(file){
@@ -170,7 +187,7 @@
           presenter: this.newEntry.presenter.name,
           date: this.newEntry.date,
           topic: this.newEntry.topic || '',
-          owner: this.newEntry.presenter.account + gClientSettings
+          owner: this.newEntry.presenter.account + '@' + gSuiteDomain
         }
         if(this.newEntry.slide){
           let {result, status} = await this.uploadFile(this.newEntry.slide)
@@ -184,7 +201,13 @@
         this.posting.newEntry = false
         this.setData(await this.getData(this.model))
         this.clearForm(this.newEntry)
-      }
+      },
+      editData(){
+        console.log('edit')
+      },
+      deleteData(){
+        console.log('delete')
+      },
     },
     computed: {
       error(){
@@ -197,6 +220,7 @@
       validate(){
         return !Object.values(this.error).every(x=>x)
       },
+      ...mapGetters(['userEmail']),
     },
     watch: {
       search: _.debounce(function(){

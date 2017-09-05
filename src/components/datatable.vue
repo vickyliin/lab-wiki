@@ -34,8 +34,8 @@
           <span v-else :class="header.value"
                 v-html="$options.filters.localeString(props.item[header.value])"></span>
         </td>
-        <td style="padding-right: 0">
-          <v-btn icon small @click="actionIcon.action(props.item)"
+        <td style="padding-right: 1.2rem" align=right>
+          <v-btn icon small @click.stop="actionIcon.action(props.item)"
                  style="margin: 0" :key="i"
                  :class="actionIcon.color+'--text'"
                  v-for="(actionIcon,i) in actionIcons"
@@ -109,7 +109,9 @@
         }
       },
       filter(value){
-        if(value.constructor !== String){
+        if(value !== undefined
+            && value !== null
+            && value.constructor !== String){
           if(value.search !== undefined){
             value = value.search
           }

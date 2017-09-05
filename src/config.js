@@ -1,6 +1,6 @@
 module.exports = {
   wsDataEntry: 'http://nlg17.csie.ntu.edu.tw:5566',
-  entry: 'http://localhost:3000',
+  entry: 'http://localhost:3000/api',
   routerMode: 'history',
   timeLocaleFormat: 'haw-us',
   queryInterval: 300000, //ms

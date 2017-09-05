@@ -6,13 +6,17 @@
                 class="file-picker"
                 :prepend-icon="icon"
                 :error="error"
+                :rules="rules"
+                @focus="$emit('focus')"
+                @blur="$emit('blur')"
                 @click.prevent="selectFile">
   </v-text-field>
 </template>
 
 <script>
   export default{
-    props: ['value', 'label', 'icon', 'error'],
+    name: 'file-picker',
+    props: ['value', 'label', 'icon', 'error', 'rules'],
     data(){
       return {
         input: null,
@@ -40,7 +44,7 @@
     },
     watch: {
       value(newVal){
-        if(newVal === null){
+        if(!newVal){
           this.input.value = ''
           this.filePath = ''
         }

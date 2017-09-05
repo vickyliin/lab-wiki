@@ -1,7 +1,7 @@
 <template>
   <v-menu :close-on-content-click="true"
           class="date-picker"
-          offset-y fullWidth>
+          offset-y maxWidth="290px">
     <v-text-field
         slot="activator"
         :label="label"

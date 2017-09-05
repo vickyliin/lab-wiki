@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout>
+    <v-layout mb-3>
       <v-spacer></v-spacer>
       <v-text-field
           append-icon="search"

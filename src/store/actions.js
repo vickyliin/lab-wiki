@@ -1,20 +1,22 @@
 import 'assets/js/platform'
-import {gAuthSettings, entry} from 'config'
+import {gAuthSettings, gClientSettings, entry} from 'config'
 import $ from 'ajax'
 
 const loginUrl = entry + '/login'
 const logoutUrl = entry + '/logout'
-export default {
+
+let authentications = {
   gLoadAuth(){
     return new Promise(resolve =>
-      gapi.load('auth2', resolve)
+        gapi.load('client:auth2', resolve)
     )
   },
   async gAuthInit({commit, dispatch}){
     await dispatch('gLoadAuth')
-    let gAuth = gapi.auth2.init(gAuthSettings)
-    await gAuth.then()
+    await gapi.client.init(gClientSettings)
+    let gAuth = gapi.auth2.getAuthInstance()
     commit('gAuth', gAuth)
+    await gAuth.then()
 
     let user = gAuth.currentUser.get()
     if(user) commit('user', user)
@@ -22,8 +24,11 @@ export default {
     return [gAuth]
   },
   async gSignIn({state: {gAuth}, commit, dispatch}){
-    if(gAuth === null){
+    if(!gapi.auth2){
       gAuth = (await dispatch('gAuthInit'))[0]
+    }
+    else{
+      await gAuth.then()
     }
     let user
     try{
@@ -67,5 +72,17 @@ export default {
     await dispatch('gSignOut')
     await $.post({url: logoutUrl})
     commit('status', 401)
-  },
+  }
+}
+
+export default {
+  ...authentications,
+  async getData({commit}, model){
+    let {response, status} = await $.get({
+      url: entry + model
+    })
+    commit('status', status)
+    if(status !== 200) return null
+    return response
+  }
 }

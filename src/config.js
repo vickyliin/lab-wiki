@@ -2,7 +2,6 @@ module.exports = {
   wsDataEntry: 'http://nlg17.csie.ntu.edu.tw:5566',
   entry: 'http://localhost:3000',
   routerMode: 'history',
-  // routerMode: 'hash',
   timeLocaleFormat: 'haw-us',
   queryInterval: 300000, //ms
   gAuthSettings: {
@@ -10,4 +9,11 @@ module.exports = {
     cookiepolicy: 'single_host_origin',
   },
   gSuiteDomain: 'nlg.csie.ntu.edu.tw',
+  gClientSettings: {
+    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+    clientId: '128291458390-1rjai5msiieuad8ofmeje5eonoplsmf5.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/drive',
+    cookiepolicy: 'single_host_origin'
+  },
+  gDriveSlidesFolderID: ['0B0PoejLXnl7lU2kyN21UVzFrTk0'],
 }

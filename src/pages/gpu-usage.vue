@@ -138,19 +138,7 @@
               logtime: new Date(d.logtime),
             }))
       },
-      async pullData(){
-        this.pulling = true
-        let {response, status} = await $.get({
-          url: this.url,
-          type: 'json',
-          credential: false,
-        })
-        this.$store.commit('status', status)
-        if(status !== 200) return
-        this.pulling = false
-        this.assignPulledData(response)
-      },
-      assignPulledData(data){
+      setData(data){
         if(!data) return
         this.setTableItems(data)
         this.lastUpdate = new Date()
@@ -174,11 +162,6 @@
           chartData.datasets[1].data.push(item.memory.usage)
           chartData.datasets[2].data.push(item.temp)
         }
-      }
-    },
-    computed: {
-      url(){
-        return wsDataEntry
       }
     },
     destroyed(){

@@ -31,6 +31,7 @@
   </v-container>
 </template>
 <script>
+  import {mapActions} from 'vuex'
   import $ from 'ajax'
   import _ from 'lodash'
   import {entry} from 'config'
@@ -53,16 +54,7 @@
       this.pullData()
     },
     methods: {
-      async pullData(){
-        let {response, status} = await $.get({
-          url: this.url,
-          type: 'json',
-        })
-        this.$store.commit('status', status)
-        if(status !== 200) return
-        this.setContactData(response)
-      },
-      async setContactData(data){
+      async setData(data){
         for(let d of data){
           this.contactData.push(d)
           await this.$nextTick()
@@ -70,9 +62,6 @@
       },
     },
     computed: {
-      url(){
-        return this.entry + this.$route.fullPath
-      },
       filteredData(){
         return this.contactData.filter(person => {
           for(let key in person){

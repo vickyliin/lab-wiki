@@ -15,5 +15,6 @@ module.exports = {
     clientId: '128291458390-1rjai5msiieuad8ofmeje5eonoplsmf5.apps.googleusercontent.com',
     scope: 'https://www.googleapis.com/auth/drive',
     cookiepolicy: 'single_host_origin'
-  }
+  },
+  gDriveSlidesFolderID: ['0B0PoejLXnl7lU2kyN21UVzFrTk0'],
 }

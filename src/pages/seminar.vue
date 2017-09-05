@@ -57,7 +57,7 @@
 <script>
 
   import _ from 'lodash'
-  import {entry} from 'config'
+  import {entry, gDriveSlidesFolderID, gClientSettings} from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
   import filePicker from 'components/file-picker.vue'
@@ -114,19 +114,19 @@
           },
         }))
       },
-      async uploadFile(file){
-        const boundary = '-------vicky_is_god__duckingod_is_god';
+      uploadFile(file){
+        const boundary = '-------henry_is_god__henrygod_is_god';
         const delimiter = `\r\n--${boundary}\r\n`;
-        const close_delim = `\r\n--${boundary}--`;
+        const closeDelim = `\r\n--${boundary}--`;
 
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
           let reader = new FileReader()
 
           reader.readAsBinaryString(file)
           reader.onload = () => {
             let metadata = {
               name: file.name,
-              parents: ['0B0PoejLXnl7lU2kyN21UVzFrTk0'], // Upload to 'slides'
+              parents: gDriveSlidesFolderID, // Upload to 'slides'
               mimeType: file.type+'\r\n'
             }
             let fileContent = btoa(reader.result) //base64 encoding
@@ -136,7 +136,7 @@
               JSON.stringify(metadata) + delimiter +
               'Content-Type: ' + `${file.type}\r\n` +
               'Content-Transfer-Encoding: base64\r\n\r\n' +
-              fileContent + close_delim
+              fileContent + closeDelim
 
             gapi.client.request({
                 'path': '/upload/drive/v3/files',
@@ -158,29 +158,23 @@
           data[key] = null
         }
       },
-      postNewEntry(){
+      async postNewEntry(){
         if(!this.validate) return
-        // This part is terribly coded by Henry, plz forgive me vickygod :(
         let data = {
           slides: '',
           presenter: this.newEntry.presenter.name,
           date: this.newEntry.date,
-          topic: this.newEntry.topic || ''
+          topic: this.newEntry.topic || '',
+//          owner: this.newEntry.presenter.account + gClientSettings
         }
         if(this.newEntry.slide){
-          this.uploadFile(this.newEntry.slide).then(resp => {
-            if(resp.status === 200){
-              let slide_url = `https://drive.google.com/open?id=${resp.result.id}`
-              console.log(slide_url)
-              data.slides = slide_url
-              data.topic += ' Slide'
-              console.log(JSON.stringify(data))
-              $.post({url: entry + '/seminar', data: data}).then()
-            }
-          })
-        } else{
-          $.post({url: entry + '/seminar', data: data}).then()
+          let {result, status} = await this.uploadFile(this.newEntry.slide)
+          if(status === 200){
+            data.slides = `https://drive.google.com/open?id=${result.id}`
+            data.topic += ' Slide'
+          }
         }
+        $.post({url: entry + this.model, data})
       }
     },
     computed: {

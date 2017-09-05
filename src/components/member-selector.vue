@@ -6,7 +6,7 @@
       :value="value"
       :required="required !== undefined"
       @input="e => $emit('input', e)"
-      item-text="name"
+      item-text="text"
       max-height="20rem"
       return-object
       :error="error"
@@ -33,6 +33,9 @@
     methods: {
       async pullData(){
         let data = await this.getData('/contactList')
+        for(let d of data){
+          d.text = `${d.name} /${d.account}`
+        }
         this.people = data
       },
     },

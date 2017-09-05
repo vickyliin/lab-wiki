@@ -81,28 +81,54 @@ src\
 
 ## Features
 
-- [x] Google Sign In
-  - [ ] Check Role
-- [ ] Contact List
-  - [x] Display
-  - [x] Search/Highlight
-  - [ ] Add/Update/Remove
-- [x] GPU Usage
-  - [x] Table
-  - [x] Chart
-- [x] Workstations
-  - [x] Table
-- [ ] CPU/MEM Usage
-  - [ ] Table
-  - [ ] Chart
-- [ ] News
-  - [x] Display
-  - [ ] Pagination
-  - [ ] Add/Update/Remove
-- [ ] Seminar
-  - [x] Table
-  - [x] Search/Highlight
-  - [ ] Admin Add/Update/Remove
-  - [ ] Owner Add/Update/Remove
-  - [ ] Google Drive Upload
+### Google Sign In :heavy_check_mark:
 
+- Check Role
+
+### Contact List
+
+- Display :heavy_check_mark:
+- Search/Highlight :heavy_check_mark:
+- Add/Update/Remove
+
+### GPU Usage :heavy_check_mark:
+
+- Table :heavy_check_mark:
+- Chart :heavy_check_mark:
+
+### Workstations :heavy_check_mark:
+
+- Table :heavy_check_mark:
+
+### CPU/MEM Usage
+
+- Table
+- Chart
+
+### News
+
+- Display :heavy_check_mark:
+- Pagination
+- Add/Update/Remove
+
+### Seminar
+
+- Table :heavy_check_mark:
+- Search, Highlight :heavy_check_mark:
+- Admin Add, Update, Remove :zap:
+- Owner Add, Update, Remove
+- Seminar postpone, advance, exchange
+- Google Drive Upload :heavy_check_mark:
+- Auto email
+
+### Take out garbage
+
+- Table
+- Auto Schedule
+- Auto email
+
+### Call for Papers
+
+- Table 
+- Add: Search from [WikiCFP](http://www.wikicfp.com/cfp/) and select
+- Auto complete when, where, deadline, link

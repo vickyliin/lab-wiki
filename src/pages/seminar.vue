@@ -12,7 +12,7 @@
     </v-layout>
     <datatable v-bind="table">
     </datatable>
-    <v-dialog width="35rem">
+    <v-dialog width="35rem" v-model="newEntryDialog">
       <v-btn fab small fixed primary bottom right slot="activator">
         <v-icon>add</v-icon>
       </v-btn>
@@ -47,7 +47,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="clearForm(newEntry)">Clear</v-btn>
-          <v-btn flat primary @click="postNewEntry">Submit</v-btn>
+          <v-btn flat primary @click="postNewEntry" :loading="posting.newEntry">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -96,6 +96,10 @@
           presenter: true,
           topic: false,
           slide: false
+        },
+        newEntryDialog: false,
+        posting: {
+          newEntry: false,
         },
       }
     },
@@ -159,13 +163,14 @@
         }
       },
       async postNewEntry(){
+        this.posting.newEntry = true
         if(!this.validate) return
         let data = {
           slides: '',
           presenter: this.newEntry.presenter.name,
           date: this.newEntry.date,
           topic: this.newEntry.topic || '',
-//          owner: this.newEntry.presenter.account + gClientSettings
+          owner: this.newEntry.presenter.account + gClientSettings
         }
         if(this.newEntry.slide){
           let {result, status} = await this.uploadFile(this.newEntry.slide)
@@ -174,7 +179,11 @@
             data.topic += ' Slide'
           }
         }
-        $.post({url: entry + this.model, data})
+        await $.post({url: entry + this.model, data})
+        this.newEntryDialog = false
+        this.posting.newEntry = false
+        this.setData(await this.getData(this.model))
+        this.clearForm(this.newEntry)
       }
     },
     computed: {

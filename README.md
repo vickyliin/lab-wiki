@@ -95,6 +95,7 @@ src\
 
 - Table :heavy_check_mark:
 - Chart :heavy_check_mark:
+- Multiple GPU in one machine
 
 ### Workstations :heavy_check_mark:
 

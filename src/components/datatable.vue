@@ -10,13 +10,14 @@
     <template slot="headers" scope="props">
       <tr>
         <th v-for="header in props.headers" :key="header.text"
-            :class="['column sortable',
+            :class="['column',
+            header.disableSort? '':'sortable',
             pagination.descending? 'desc':'asc',
             header.value === pagination.sortBy ? 'active' : '',
             header.text]"
             @click="changeSort(header.value)">
           {{ header.text }}
-          <v-icon>arrow_upward</v-icon>
+          <v-icon v-if="!header.disableSort">arrow_upward</v-icon>
         </th>
       </tr>
     </template>
@@ -33,6 +34,15 @@
           <span v-else :class="header.value"
                 v-html="$options.filters.localeString(props.item[header.value])"></span>
         </td>
+        <td style="padding-right: 0">
+          <v-btn icon small @click="actionIcon.action(props.item)"
+                 style="margin: 0" :key="i"
+                 :class="actionIcon.color+'--text'"
+                 v-for="(actionIcon,i) in actionIcons"
+                 v-if="actionIcon.show(props.item)">
+            <v-icon>{{actionIcon.icon}}</v-icon>
+          </v-btn>
+        </td>
       </tr>
     </template>
     <template slot="footer">
@@ -44,12 +54,12 @@
 <script>
   import _ from 'lodash'
   export default{
-    props: ['headers', 'items', 'initPagination', 'search', 'actions'],
+    props: ['headers', 'items', 'initPagination', 'search', 'actions', 'actionIcons'],
     data(){
       let vheaders = this.headers.map(header => {
         if(header.constructor === String)
           return {text: header, value: header}
-        else if(!header.text)
+        else if(header.text === undefined)
           return Object.assign(header, {text: header.value})
         else
           return header

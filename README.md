@@ -81,8 +81,9 @@ src\
 
 ## Features
 
-### Google Sign In :heavy_check_mark:
+### Google Authentication
 
+- Sign In :heavy_check_mark:
 - Check Role
 
 ### Contact List
@@ -117,9 +118,9 @@ src\
 - Table :heavy_check_mark:
 - Search, Highlight :heavy_check_mark:
 - Admin Add, Update, Remove :zap:
-  - Highlight Changed Rows
 - Owner Add, Update, Remove
-- Seminar postpone, advance, exchange
+- Highlight Changed Rows
+- Postpone, advance, exchange dates
 - Google Drive Upload :heavy_check_mark:
 - Auto email
 

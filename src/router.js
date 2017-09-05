@@ -23,4 +23,5 @@ export default new VueRouter({
     ...pages,
   ],
   mode: routerMode,
+  scrollBehavior: (to ,from, savePosition) => savePosition? savePosition: {x:0,y:0}
 })

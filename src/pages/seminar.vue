@@ -12,60 +12,28 @@
     </v-layout>
     <datatable v-bind="table">
     </datatable>
-    <v-dialog width="35rem" v-model="newEntryDialog">
-      <v-btn fab small fixed primary bottom right slot="activator">
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-card>
-        <v-card-title>
-          <v-container class="headline" fluid>
-            New Seminar
-          </v-container>
-        </v-card-title>
-        <v-card-text>
-          <v-container fluid>
-            <v-layout column>
-              <date-picker label="Date"
-                           :required="required.date"
-                           :error="error.date"
-                           v-model="newEntry.date"></date-picker>
-              <member-selector label="Presenter" icon="account_circle"
-                               :required="required.presenter"
-                               :error="error.presenter"
-                               v-model="newEntry.presenter"></member-selector>
-              <file-picker label="Slide" icon="slideshow"
-                           :required="required.slide"
-                           :error="error.slide"
-                           v-model="newEntry.slide"></file-picker>
-              <v-text-field label="Topic"
-                            multi-line :error="error.topic"
-                            :required="required.topic"
-                            v-model="newEntry.topic"></v-text-field>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat @click="clearForm(newEntry)">Clear</v-btn>
-          <v-btn flat primary @click="postNewEntry" :loading="posting.newEntry">Submit</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <post-dialog :title="dialog.title"
+                 :fields="dialog.fields"
+                 :display.sync="dialog.display"
+                 v-model="dialog.value"
+                 @submit="dialog.onSubmit"
+                 @activate="beforeCreateData"
+                 width="35rem">
+    </post-dialog>
   </v-container>
 </template>
 
 <script>
 
   import _ from 'lodash'
-  import {entry, gDriveSlidesFolderID, gClientSettings} from 'config'
+  import {mapGetters} from 'vuex'
+  import {entry, gDriveSlidesFolderID, gSuiteDomain} from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
-  import filePicker from 'components/file-picker.vue'
-  import datePicker from 'components/date-picker.vue'
-  import memberSelector from 'components/member-selector.vue'
+  import postDialog from 'components/post-dialog.vue'
 
   export default {
-    components: {datatable, filePicker, datePicker, memberSelector},
+    components: {datatable, postDialog},
     data(){
       return {
         table: {
@@ -73,8 +41,8 @@
           headers: [
             {value: 'date'},
             {value: 'presenter'},
-            {value: 'topic', display: (value, text) => text.replace(/slide/gi,
-                ` <a href="${value.slides}" target="_blank">Slide</a>`) },
+            {value: 'topic', display: (value, text) =>
+                text + (value.slides? ` <a href="${value.slides}" target="_blank">Slide</a>`: '')},
           ],
           items: [],
           initPagination: {
@@ -83,23 +51,28 @@
             descending: true
           },
           actions: true,
+          actionIcons: [
+            {
+              icon: 'mode_edit',
+              color: 'teal',
+              show: item => this.editable(item),
+              action: item => this.beforeUpdateData(item),
+            },
+          ]
         },
         search: '',
-        newEntry: {
-          date: null,
-          presenter: null,
-          topic: null,
-          slide: null
-        },
-        required: {
-          date: true,
-          presenter: true,
-          topic: false,
-          slide: false
-        },
-        newEntryDialog: false,
-        posting: {
-          newEntry: false,
+        dialog: {
+          title: null,
+          fields: [
+            {name: 'date', label: 'Date', required: true, component: 'date-picker'},
+            {name: 'presenter', label: 'Presenter', required: true, icon: 'account_circle', component: 'member-selector'},
+            {name: 'slide', label: 'Slide', icon: 'slideshow', component: 'file-picker'},
+            {name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field'}
+          ],
+          value: null,
+          onSubmit: x => x,
+          display: false,
+          item: null,
         },
       }
     },
@@ -116,6 +89,8 @@
             text: d.topic,
             slides: d.slides,
           },
+          owner: d.owner,
+          id: d.id,
         }))
       },
       uploadFile(file){
@@ -157,46 +132,60 @@
           }
         })
       },
-      clearForm(data){
-        for(let key in data){
-          data[key] = null
-        }
+      beforeCreateData(){
+        Object.assign(this.dialog, {
+          title: 'Add Seminar',
+          value: null,
+          onSubmit: this.updateData,
+          item: null
+        })
       },
-      async postNewEntry(){
-        this.posting.newEntry = true
-        if(!this.validate) return
-        let data = {
-          slides: '',
-          presenter: this.newEntry.presenter.name,
-          date: this.newEntry.date,
-          topic: this.newEntry.topic || '',
-          owner: this.newEntry.presenter.account + gClientSettings
-        }
-        if(this.newEntry.slide){
-          let {result, status} = await this.uploadFile(this.newEntry.slide)
+      async beforeUpdateData(item){
+        Object.assign(this.dialog, {
+          title: 'Update Seminar',
+          value: {
+            date: item.date,
+            presenter: item.presenter,
+            slide: null,
+            topic: item.topic.text
+          },
+          onSubmit: this.updateData,
+          item
+        })
+        await this.$nextTick()
+        this.dialog.display = true
+      },
+      async updateData(resolve){
+        let data = this.serverFormatData
+        let {slide} = this.dialog.value
+        if(slide){
+          let {result, status} = await this.uploadFile(slide)
           if(status === 200){
             data.slides = `https://drive.google.com/open?id=${result.id}`
-            data.topic += ' Slide'
           }
         }
-        await $.post({url: entry + this.model, data})
-        this.newEntryDialog = false
-        this.posting.newEntry = false
+        let itemID = this.dialog.item? this.dialog.item.id : ''
+        await $.post({url: `${entry}${this.model}/${itemID}`, data})
         this.setData(await this.getData(this.model))
-        this.clearForm(this.newEntry)
-      }
+        resolve()
+      },
+      editable(item){
+        return item.owner === this.userEmail || this.userRole === 'admin'
+      },
     },
     computed: {
-      error(){
-        let error = {}
-        Object.entries(this.required).forEach(([field, required]) => {
-          error[field] = required && !this.newEntry[field]
-        })
-        return error
+      serverFormatData(){
+        let {date, presenter, topic} = this.dialog.value
+        let {item} = this.dialog
+        return {
+          date,
+          slides: item? item.topic.slides : '',
+          topic: topic || '',
+          presenter: presenter.name,
+          owner: presenter.account + '@' + gSuiteDomain
+        }
       },
-      validate(){
-        return !Object.values(this.error).every(x=>x)
-      },
+      ...mapGetters(['userEmail']),
     },
     watch: {
       search: _.debounce(function(){

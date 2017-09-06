@@ -4,6 +4,12 @@ import $ from 'ajax'
 
 const loginUrl = entry + '/login'
 const logoutUrl = entry + '/logout'
+const userUrl = entry + '/user'
+
+const getUserRole = async () =>{
+  let {response: user} = await $.get({url: userUrl})
+  return user.role
+}
 
 let authentications = {
   gLoadAuth(){
@@ -19,7 +25,10 @@ let authentications = {
     await gAuth.then()
 
     let user = gAuth.currentUser.get()
-    if(user) commit('user', user)
+    if(user){
+      commit('user', user)
+      commit('userRole', await getUserRole())
+    }
 
     return [gAuth]
   },
@@ -54,6 +63,7 @@ let authentications = {
       url: loginUrl,
       data: {id_token: user.getAuthResponse().id_token}
     })
+    commit('userRole', await getUserRole())
     commit('status', status)
   },
   async gSignOut({state: {gAuth}, commit, dispatch}){

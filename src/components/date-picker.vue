@@ -10,6 +10,9 @@
         prepend-icon="event"
         readonly
         :error="error"
+        :rules="rules"
+        @focus="$emit('focus')"
+        @blur="$emit('blur')"
         :required="required !== undefined"
     ></v-text-field>
     <v-date-picker :value="value"
@@ -22,6 +25,7 @@
 
 <script>
   export default {
-    props: ['value', 'label', 'required', 'name', 'error'],
+    name: 'date-picker',
+    props: ['value', 'label', 'required', 'name', 'error', 'rules'],
   }
 </script>

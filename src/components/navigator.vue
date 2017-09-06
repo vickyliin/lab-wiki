@@ -35,6 +35,7 @@
         {icon: 'local_library', path: 'seminar'},
         {icon: 'perm_contact_calendar', path: 'contactList'},
         {icon: 'highlight', path: 'news'},
+        {icon: 'delete', path: 'takeOutGarbage'},
       ],
     }},
   }

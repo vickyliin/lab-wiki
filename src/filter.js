@@ -12,5 +12,5 @@ Vue.filter('date', data => {
   else return date.toLocaleDateString(timeLocaleFormat)
 })
 Vue.filter('spaceSeparated', camelCased => camelCased
-    .replace(/(\B[A-Z])/, ' $1')
+    .replace(/(\B[A-Z])/g, ' $1')
     .replace(/^./, match => match.toUpperCase()))

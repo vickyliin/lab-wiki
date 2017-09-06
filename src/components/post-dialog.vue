@@ -3,7 +3,7 @@
     <v-btn fab small fixed primary bottom right ripple
            slot="activator"
            @click="$emit('activate')"
-           v-if="userRole === 2"
+           v-if="userRole === 'admin'"
     >
       <v-icon>add</v-icon>
     </v-btn>

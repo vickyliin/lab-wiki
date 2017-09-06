@@ -170,7 +170,7 @@
         resolve()
       },
       editable(item){
-        return item.owner === this.userEmail || this.userRole === 2
+        return item.owner === this.userEmail || this.userRole === 'admin'
       },
     },
     computed: {

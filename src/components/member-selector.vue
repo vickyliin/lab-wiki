@@ -39,6 +39,7 @@
     methods: {
       async pullData(){
         let data = await this.getData('/contactList')
+        if(!data) return
         this.people = data.map(d => ({
           name: d.name,
           account: d.account,

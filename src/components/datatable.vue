@@ -9,7 +9,8 @@
     :filter="filter">
     <template slot="headers" scope="props">
       <tr>
-        <th v-for="header in props.headers" :key="header.text"
+        <th v-for="(header,i) in props.headers" :key="header.text"
+            :colspan="i === props.headers.length-1? 2:1"
             :class="['column',
             header.disableSort? '':'sortable',
             pagination.descending? 'desc':'asc',
@@ -23,7 +24,10 @@
     </template>
     <template slot="items" scope="props">
       <tr>
-        <td class="text-xs" :class="header.value" v-for="header in vheaders">
+        <td class="text-xs"
+            :class="header.value"
+            v-for="(header,i) in vheaders"
+            :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
           <template v-if="props.item[header.value] === undefined"></template>
           <span v-else-if="search"
                 v-html="highlight(props.item[header.value], header.display)"></span>
@@ -34,8 +38,10 @@
           <span v-else :class="header.value"
                 v-html="$options.filters.localeString(props.item[header.value])"></span>
         </td>
-        <td style="padding-right: 1.2rem" align=right>
-          <v-btn icon small @click.stop="actionIcon.action(props.item)"
+        <td style="padding-right: 1.2rem" align=right v-if="hasIcon(props.item)">
+          <v-btn icon small
+                 :href="actionIcon.href? actionIcon.href(props.item): ''"
+                 @click.stop="actionIcon.action(props.item)"
                  style="margin: 0" :key="i"
                  :class="actionIcon.color+'--text'"
                  v-for="(actionIcon,i) in actionIcons"
@@ -130,6 +136,12 @@
         else{
           return highlightText(value)
         }
+      },
+      hasIcon(item){
+        return this.actionIcons
+            && !this.actionIcons
+                    .map(icon => icon.show(item))
+                    .every(show => !show)
       }
     },
     computed: {

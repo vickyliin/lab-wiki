@@ -2,7 +2,7 @@
   <v-container>
     <h6>On duty this week: <b>{{ duty }}</b></h6>
     <v-layout column>
-      <datatable v-bind="table" @sorted="items => this.sortedItems = items" @clickSort="sorting=true">
+      <datatable v-bind="table" class="garbage">
       </datatable>
     </v-layout>
   </v-container>
@@ -17,11 +17,10 @@ export default {
   components: { datatable },
   data() {
     return {
-      entry,
       table: {
         headers: [
           { value: 'date' },
-          { value: 'contact' },
+          { value: 'name', text: 'contact' },
         ],
         items: [],
         initPagination: {
@@ -30,29 +29,57 @@ export default {
           descending: false
         },
         actions: true,
+        actionIcons: [
+          {
+            icon: 'phone',
+            color: 'green',
+            show: item => true,
+            href: item => 'tel:' + item.contact.phone
+          },
+          {
+            icon: 'email',
+            color: 'grey',
+            show: item => true,
+            href: item => 'mailto:' + item.contact.email
+          },
+        ],
       },
-      duty: '林瑋柔 God (Forever)',
     }
   },
   created() {
     this.pullData()
   },
   methods: {
-    async setData(data) {
-      console.log(data)
+    setData(data) {
       this.table.items = data.map(d => ({
         date: `${new Date(d.startDate).toJSON().slice(0, 10)} ~ ${new Date(d.endDate).toJSON().slice(0, 10)}`,
         startDate: new Date(d.startDate),
         endDate: new Date(d.endDate),
-        contact: d.contact.name,
+        contact: d.contact,
+        name: d.contact.name,
       }))
+    },
+  },
+  computed: {
+    duty(){
       let now = new Date()
       for (let item of this.table.items) {
         if (item.startDate <= now && now <= item.endDate) {
-          this.duty = `${item.contact} (${item.date})`
+          return `${item.contact.name} (${item.date})`
         }
       }
     },
   },
 }
 </script>
+
+<style lang="stylus">
+  .garbage
+    th, td
+      &.date
+        width: 15rem
+    td.contact span
+      &.phone
+        font-size: smaller
+        margin-left: 2rem
+</style>

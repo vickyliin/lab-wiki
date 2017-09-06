@@ -5,6 +5,8 @@ import $ from 'ajax'
 const loginUrl = entry + '/login'
 const logoutUrl = entry + '/logout'
 
+const getUserRole = () => parseInt(document.cookie.match(/G_AUTHUSER_H=(1|2)/)[1])
+
 let authentications = {
   gLoadAuth(){
     return new Promise(resolve =>
@@ -19,7 +21,10 @@ let authentications = {
     await gAuth.then()
 
     let user = gAuth.currentUser.get()
-    if(user) commit('user', user)
+    if(user){
+      commit('user', user)
+      commit('userRole', getUserRole())
+    }
 
     return [gAuth]
   },
@@ -54,6 +59,7 @@ let authentications = {
       url: loginUrl,
       data: {id_token: user.getAuthResponse().id_token}
     })
+    commit('userRole', getUserRole())
     commit('status', status)
   },
   async gSignOut({state: {gAuth}, commit, dispatch}){

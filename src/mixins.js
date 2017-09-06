@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 
 Vue.mixin({
   data(){return{
@@ -17,6 +17,7 @@ Vue.mixin({
   computed: {
     model(){
       return this.$route.fullPath
-    }
+    },
+    ...mapState(['userRole'])
   }
 })

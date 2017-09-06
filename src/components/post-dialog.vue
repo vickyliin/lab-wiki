@@ -1,6 +1,10 @@
 <template>
   <v-dialog :width="width" :value="display" @input="e => $emit('update:display', e)">
-    <v-btn fab small fixed primary bottom right ripple slot="activator" @click="$emit('activate')">
+    <v-btn fab small fixed primary bottom right ripple
+           slot="activator"
+           @click="$emit('activate')"
+           v-if="userRole === 2"
+    >
       <v-icon>add</v-icon>
     </v-btn>
     <v-card>

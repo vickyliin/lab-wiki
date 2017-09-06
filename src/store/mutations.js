@@ -14,5 +14,5 @@ export default{
     if(user) state.userProfile = user.getBasicProfile()
     else state.userProfile = null
   },
-  ...setStateMutation ('status gAuth'.split(' '))
+  ...setStateMutation ('status gAuth userRole'.split(' '))
 }

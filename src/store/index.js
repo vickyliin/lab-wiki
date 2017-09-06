@@ -13,6 +13,7 @@ export default new Vuex.Store({
     gAuth: null,
     user: null,
     userProfile: null,
+    userRole: 0,
   },
   mutations,
   actions,

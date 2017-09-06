@@ -55,7 +55,7 @@
             {
               icon: 'mode_edit',
               color: 'teal',
-              show: item => item.editable,
+              show: item => this.editable(item),
               action: item => this.beforeUpdateData(item),
             },
           ]
@@ -90,7 +90,6 @@
             slides: d.slides,
           },
           owner: d.owner,
-          editable: d.owner === this.userEmail,
           id: d.id,
         }))
       },
@@ -165,9 +164,13 @@
             data.slides = `https://drive.google.com/open?id=${result.id}`
           }
         }
-        await $.post({url: `${entry}${this.model}/${this.dialog.item.id}`, data})
+        let itemID = this.dialog.item? this.dialog.item.id : ''
+        await $.post({url: `${entry}${this.model}/${itemID}`, data})
         this.setData(await this.getData(this.model))
         resolve()
+      },
+      editable(item){
+        return item.owner === this.userEmail || this.userRole === 2
       },
     },
     computed: {

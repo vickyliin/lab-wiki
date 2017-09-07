@@ -93,43 +93,43 @@
           id: d.id,
         }))
       },
-      uploadFile(file){
-        const boundary = '-------henry_is_god__henrygod_is_god';
-        const delimiter = `\r\n--${boundary}\r\n`;
-        const closeDelim = `\r\n--${boundary}--`;
+      async uploadFile(file){
+        const boundary = '-------vicky_is_god__vickygod_is_soooooo_god'
 
-        return new Promise(resolve => {
-          let reader = new FileReader()
+        let reader = new FileReader()
+        reader.readAsBinaryString(file)
+        await new Promise(resolve => reader.onload = resolve)
+        let metadata = {
+          name: file.name,
+          parents: gDriveSlidesFolderID, // Upload to 'slides'
+          mimeType: file.type+'\n'
+        }
+        let fileContent = btoa(reader.result) //base64 encoding
+        // BJ4
 
-          reader.readAsBinaryString(file)
-          reader.onload = () => {
-            let metadata = {
-              name: file.name,
-              parents: gDriveSlidesFolderID, // Upload to 'slides'
-              mimeType: file.type+'\r\n'
-            }
-            let fileContent = btoa(reader.result) //base64 encoding
-            // BJ4
-            let multipartRequestBody = delimiter +
-              'Content-Type: application/json\r\n\r\n' +
-              JSON.stringify(metadata) + delimiter +
-              'Content-Type: ' + `${file.type}\r\n` +
-              'Content-Transfer-Encoding: base64\r\n\r\n' +
-              fileContent + closeDelim
+        let multipartRequestBody = `
+--${boundary}
+Content-Type: application/json
 
-            gapi.client.request({
-                'path': '/upload/drive/v3/files',
-                'method': 'POST',
-                'params': {
-                    'uploadType': 'multipart'
-                },
-                'headers': {
-                    'Content-Type': `multipart/related; boundary="${boundary}"`,
-                    'Content-Length': multipartRequestBody.length
-                },
-                'body': multipartRequestBody
-            }).then(response => resolve(response))
-          }
+${JSON.stringify(metadata)}
+--${boundary}
+Content-Type: ${file.type}
+Content-Transfer-Encoding: base64
+
+${fileContent}
+--${boundary}--`
+
+        return await gapi.client.request({
+          path: '/upload/drive/v3/files',
+          method: 'POST',
+          params: {
+            uploadType: 'multipart'
+          },
+          headers: {
+            'Content-Type': `multipart/related; boundary="${boundary}"`,
+            'Content-Length': multipartRequestBody.length
+          },
+          body: multipartRequestBody
         })
       },
       beforeCreateData(){

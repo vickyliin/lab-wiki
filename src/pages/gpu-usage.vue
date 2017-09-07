@@ -40,7 +40,7 @@
     components: {datatable, chart},
     data(){return {
       table: {
-        headers: 'server gpu fan memory temp'.split(' '), 
+        headers: 'server gpu fan memory temp'.split(' '),
         items: [],
         initPagination: {
           sortBy: 'memory',
@@ -54,9 +54,9 @@
         data: {
           labels: null,
           datasets: [
-            {label: 'Free Memory', data: null, yAxisID: 'MB', 
+            {label: 'Free Memory', data: null, yAxisID: 'MB',
                 backgroundColor: "rgba(55, 160, 225, 0.5)",},
-            {label: 'Used Memory', data: null, yAxisID: 'MB', 
+            {label: 'Used Memory', data: null, yAxisID: 'MB',
                 backgroundColor: "rgba(225, 80, 75, 0.5)"},
             {label: 'Temperature', data: null, yAxisID: '°C', type: 'line',
                 borderColor: "rgba(255,255,255,0.5)",

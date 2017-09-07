@@ -84,7 +84,7 @@ src\
 ### Google Authentication
 
 - Sign In :heavy_check_mark:
-- Check Role
+- Check Role :heavy_check_mark:
 
 ### Contact List
 
@@ -126,9 +126,9 @@ src\
 
 ### Take out garbage
 
-- Table
-- Auto Schedule
-- Auto email
+- Table :heavy_check_mark:
+- Auto Schedule :heavy_check_mark:
+- Auto email :heavy_check_mark:
 
 ### Call for Papers
 

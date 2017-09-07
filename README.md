@@ -19,7 +19,7 @@ This is a [Vue.js](https://vuejs.org/) webapp, developing with module bundler [W
   ```
   npm run dev
   ```
-  
+
 - Download [Vue.js Devtool chrome extension](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
 
 - Visit your `localhost:12345`
@@ -37,7 +37,7 @@ npm run dev
   ```javascript
   entry: ['babel-polyfill', './src/main.js']
   ```
-  
+
 
 - In `main.js`, a Vue instance is created, rendering the root component defined in `/src/App.vue`.
   ```javascript
@@ -56,8 +56,8 @@ npm run dev
   import navigator from 'components/navigator.vue'
   import toolbar from 'components/toolbar.vue'
   ```
-  
-  
+
+
 ## Application Structure
 
 ```
@@ -92,7 +92,7 @@ src\
 - Search/Highlight :heavy_check_mark:
 - Add/Update/Remove
 
-### GPU Usage :heavy_check_mark:
+### GPU Usage
 
 - Table :heavy_check_mark:
 - Chart :heavy_check_mark:
@@ -122,16 +122,12 @@ src\
 - Highlight Changed Rows
 - Postpone, advance, exchange dates
 - Google Drive Upload :heavy_check_mark:
-- Auto email
 
 ### Take out garbage
 
 - Table :heavy_check_mark:
-- Auto Schedule :heavy_check_mark:
-- Auto email :heavy_check_mark:
 
 ### Call for Papers
 
-- Table 
-- Add: Search from [WikiCFP](http://www.wikicfp.com/cfp/) and select
-- Auto complete when, where, deadline, link
+- Table :heavy_check_mark:
+- Add: Search from [WikiCFP](http://www.wikicfp.com/cfp/) and select :zap:

@@ -6,7 +6,8 @@
     :pagination.sync="pagination"
     :customSort="customSort"
     :search="search"
-    :filter="filter">
+    :filter="filter"
+    :loading="loading">
     <template slot="headers" scope="props">
       <tr>
         <th v-for="(header,i) in props.headers" :key="header.text"
@@ -27,7 +28,9 @@
         <td class="text-xs"
             :class="header.value"
             v-for="(header,i) in vheaders"
-            :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
+            v-if="props.item[header.value]"
+            :align="props.item[header.value].align"
+            :colspan="props.item[header.value].colspan || (i === vheaders.length-1 && !hasIcon(props.item)? 2:1)">
           <template v-if="props.item[header.value] === undefined"></template>
           <span v-else-if="search"
                 v-html="highlight(props.item[header.value], header.display)"></span>
@@ -60,7 +63,15 @@
 <script>
   import _ from 'lodash'
   export default{
-    props: ['headers', 'items', 'initPagination', 'search', 'actions', 'actionIcons'],
+    props: [
+      'headers',
+      'items',
+      'initPagination',
+      'search',
+      'actions',
+      'actionIcons',
+      'loading'
+    ],
     data(){
       let vheaders = this.headers.map(header => {
         if(header.constructor === String)

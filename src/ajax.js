@@ -20,7 +20,7 @@ export default {
     let parameters
     if(data !== undefined){
       parameters = Object.entries(data)
-          .map(pair => `${encodeURI(pair[0])}=${encodeURI(pair[1])}`)
+          .map(([key,val]) => `${escape(key)}=${escape(val)}`)
           .join('&')
     }
     else{

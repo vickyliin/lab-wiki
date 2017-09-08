@@ -14,7 +14,7 @@
   >
     <template slot="headers" scope="props">
       <tr>
-        <th v-if="value">
+        <th v-if="enableSelect">
           <v-checkbox
               primary
               hide-details
@@ -38,7 +38,7 @@
     </template>
     <template slot="items" scope="props">
       <tr :active="props.selected" @click="props.selected = !props.selected">
-        <td v-if="value">
+        <td v-if="enableSelect">
           <v-checkbox primary
                       hide-details
                       :input-value="props.selected"
@@ -82,7 +82,7 @@
   export default{
     props: `
       headers items initPagination search value
-      actions actionIcons selectAll selectedKey
+      actions actionIcons selectAll selectedKey enableSelect
     `.split(/\s/),
     data(){
       let vheaders = this.headers.map(header => {

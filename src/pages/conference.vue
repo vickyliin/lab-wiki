@@ -1,51 +1,63 @@
 <template>
   <v-container>
+    <v-layout mb-3 v-if="userRole === 'admin'">
+      <v-spacer></v-spacer>
+      <v-text-field
+          append-icon="search"
+          label="Search, eg. NLP"
+          single-line
+          hide-details
+          v-model="search"
+      ></v-text-field>
+    </v-layout>
     <v-layout column>
       <datatable v-bind="table">
       </datatable>
     </v-layout>
-    <post-dialog v-bind="dialog"
-                 v-model="dialog.value">
-    </post-dialog>
   </v-container>
 </template>
 
 <script>
 import { entry } from 'config'
-import $ from 'ajax'
+import _ from 'lodash'
 import datatable from 'components/datatable.vue'
-import postDialog from 'components/post-dialog.vue'
 
 export default {
-  components: { datatable, postDialog },
+  components: { datatable },
   data() {
     return {
+      search: '',
       table: {
         headers: [
-          { value: 'name' },
+          {
+            value: 'name',
+            display: (item, text) =>
+                `<a href="${item.url}" target="_blank">${text}</a>`
+          },
           { value: 'when' },
           { value: 'where' },
           { value: 'deadline' },
         ],
         items: [],
         initPagination: {
-          sortBy: 'name',
+          sortBy: 'deadline',
           rowsPerPage: 10,
           descending: false
         },
-      },
-      dialog: {
-        title: 'Search for Conference',
-        fields: [
+        loading: true,
+        actions: true,
+        actionIcons: [
           {
-            name: 'q',
-            label: 'Conference name',
-            icon: 'mdi-timetable',
-            required: true,
-            component: 'conference-selector',
+            icon: 'add',
+            color: 'primary',
+            show: item => item.unsaved,
+            action: item => console.log(item),
           }
         ],
-        width: '25rem',
+      },
+      items: {
+        saved: [],
+        unsaved: []
       },
     }
   },
@@ -54,8 +66,11 @@ export default {
   },
   methods: {
     async setData(data) {
-      this.table.items = data.map(d => ({
-        name: d.name,
+      this.table.items = this.items.saved = data.map(d => ({
+        name: {
+          text: d.name,
+          url: d.url
+        },
         when: {
           start: new Date(d.start),
           sort: new Date(d.start).valueOf(),
@@ -68,6 +83,36 @@ export default {
           display: d.deadlineDisplay
         },
       }))
+    },
+    async searchConference(q){
+      if(!q){
+        this.items.unsaved = []
+        return
+      }
+      this.pulling = true
+      let data = await this.getData('/cfpSearch', {q})
+      if(!data) return
+      this.items.unsaved = data.map(d => ({
+        name: {
+          display: d.name,
+          sort: 0,
+          colspan: 4,
+        },
+        unsaved: 1
+      }))
+      this.pulling = false
+    },
+  },
+  watch: {
+    search: _.debounce(function(newVal){
+      this.searchConference(newVal)
+    }, 500),
+    'items.unsaved': function(unsaved){
+      let {saved} = this.items
+      this.table.items = saved.concat(unsaved)
+    },
+    pulling(newVal){
+      this.table.loading = newVal
     },
   },
 }

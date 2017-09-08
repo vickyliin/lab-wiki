@@ -101,7 +101,7 @@ export default {
         },
         unsaved: 1,
         cfpUrl: d.cfpUrl,
-      }))
+      })).filter(item => !this.savedNames.includes(item.name.display))
       this.pulling = false
     },
     async createData(item){
@@ -111,6 +111,11 @@ export default {
       }
       await $.post({url: `${entry}${this.model}`, data})
     },
+  },
+  computed: {
+    savedNames(){
+      return this.items.saved.map(item => item.name.text)
+    }
   },
   watch: {
     search: _.debounce(function(newVal){

@@ -87,9 +87,10 @@ let authentications = {
 
 export default {
   ...authentications,
-  async getData({ commit }, model) {
+  async getData({ commit }, {model, data}) {
     let { response, status } = await $.get({
       url: entry + model,
+      data
     })
     commit('status', status)
     if (status !== 200) return null

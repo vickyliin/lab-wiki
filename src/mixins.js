@@ -1,21 +1,25 @@
 import Vue from 'vue'
-import {mapActions, mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 Vue.mixin({
-  data(){return{
-    pulling: false
-  }},
+  data() {
+    return {
+      pulling: false
+    }
+  },
   methods: {
-    ...mapActions(['getData']),
-    async pullData(){
+    async getData(model, data) {
+      return await this.$store.dispatch('getData', {model, data})
+    },
+    async pullData() {
       this.pulling = true
       let data = await this.getData(this.model)
       this.pulling = false
-      if(data) this.setData(data)
+      if (data) this.setData(data)
     },
   },
   computed: {
-    model(){
+    model() {
       return this.$route.fullPath
     },
     ...mapState(['userRole'])

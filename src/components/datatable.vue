@@ -6,16 +6,30 @@
     :pagination.sync="pagination"
     :customSort="customSort"
     :search="search"
-    :filter="filter">
+    :filter="filter"
+    :select-all="selectAll"
+    :selected-key="selectedKey"
+    :value="value"
+    @input="e => $emit('input', e)"
+  >
     <template slot="headers" scope="props">
       <tr>
+        <th v-if="value">
+          <v-checkbox
+              primary
+              hide-details
+              @click.native="toggleAll"
+              :input-value="props.all"
+              :indeterminate="props.indeterminate"
+          ></v-checkbox>
+        </th>
         <th v-for="(header,i) in props.headers" :key="header.text"
             :colspan="i === props.headers.length-1? 2:1"
             :class="['column',
-            header.disableSort? '':'sortable',
-            pagination.descending? 'desc':'asc',
-            header.value === pagination.sortBy ? 'active' : '',
-            header.text]"
+              header.disableSort? '':'sortable',
+              pagination.descending? 'desc':'asc',
+              header.value === pagination.sortBy ? 'active' : '',
+              header.text]"
             @click="changeSort(header.value)">
           {{ header.text }}
           <v-icon v-if="!header.disableSort">arrow_upward</v-icon>
@@ -23,7 +37,13 @@
       </tr>
     </template>
     <template slot="items" scope="props">
-      <tr>
+      <tr :active="props.selected" @click="props.selected = !props.selected">
+        <td v-if="value">
+          <v-checkbox primary
+                      hide-details
+                      :input-value="props.selected"
+          ></v-checkbox>
+        </td>
         <td class="text-xs"
             :class="header.value"
             v-for="(header,i) in vheaders"
@@ -60,7 +80,10 @@
 <script>
   import _ from 'lodash'
   export default{
-    props: ['headers', 'items', 'initPagination', 'search', 'actions', 'actionIcons'],
+    props: `
+      headers items initPagination search value
+      actions actionIcons selectAll selectedKey
+    `.split(/\s/),
     data(){
       let vheaders = this.headers.map(header => {
         if(header.constructor === String)
@@ -73,6 +96,7 @@
       return {
         pagination: this.initPagination,
         vheaders,
+        selected: [],
       }
     },
     methods: {
@@ -113,6 +137,10 @@
           this.pagination.sortBy = column
           this.pagination.descending = false
         }
+      },
+      toggleAll () {
+        if (this.value.length) this.$emit('input', [])
+        else this.$emit('input', this.items.slice())
       },
       filter(value){
         if(value !== undefined

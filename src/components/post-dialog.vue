@@ -1,12 +1,19 @@
 <template>
   <v-dialog :width="width" :value="display" @input="e => $emit('update:display', e)">
-    <v-btn fab small fixed primary bottom right ripple
-           slot="activator"
-           @click="$emit('activate')"
-           v-if="userRole === 'admin'"
-    >
-      <v-icon>add</v-icon>
-    </v-btn>
+    <div class="activator" slot="activator">
+      <v-btn fab small ripple secondary
+            @click="$emit('activate')"
+            v-if="userRole === 'admin'"
+      >
+        <v-icon>delete</v-icon>
+      </v-btn>
+      <v-btn fab small ripple primary
+            @click="$emit('activate')"
+            v-if="userRole === 'admin'"
+      >
+        <v-icon>add</v-icon>
+      </v-btn>
+    </div>
     <v-card>
       <v-card-title>
         <v-container class="headline" fluid>
@@ -77,3 +84,10 @@
     }
   }
 </script>
+
+<style lang="stylus">
+.activator
+  position: fixed
+  right: 1rem
+  bottom: 1rem
+</style>

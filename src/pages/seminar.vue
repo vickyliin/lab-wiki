@@ -10,7 +10,8 @@
           v-model="search"
       ></v-text-field>
     </v-layout>
-    <datatable v-bind="table">
+    <datatable v-bind="table"
+               v-model="table.value">
     </datatable>
     <post-dialog :title="dialog.title"
                  :fields="dialog.fields"
@@ -58,7 +59,10 @@
               show: item => this.editable(item),
               action: item => this.beforeUpdateData(item),
             },
-          ]
+          ],
+          selectAll: true,
+          enableSelect: false,
+          value: [],
         },
         search: '',
         dialog: {
@@ -78,6 +82,9 @@
     },
     created(){
       this.pullData()
+    },
+    mounted(){
+      this.table.enableSelect = this.userRole === 'admin'
     },
     methods: {
       setData(data){
@@ -191,6 +198,9 @@ ${fileContent}
       search: _.debounce(function(){
         this.table.search = this.search
       }, 500),
+      userRole(newVal){
+        this.table.enableSelect = newVal === 'admin'
+      },
     }
   }
 </script>

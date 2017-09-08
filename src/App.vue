@@ -12,11 +12,13 @@
   import toolbar from 'components/toolbar.vue'
 
   export default {
-    components: {navigator, toolbar, page},
-    data(){return {
-      drawer: true,
-    }},
-    created(){
+    components: { navigator, toolbar, page },
+    data() {
+      return {
+        drawer: true,
+      }
+    },
+    created() {
       this.$store.dispatch('gAuthInit')
     },
   }
@@ -64,6 +66,4 @@
       padding-left: .3em
   .mem_usage:after
       content: "MB /"
-
-
 </style>

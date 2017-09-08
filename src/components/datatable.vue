@@ -41,7 +41,7 @@
           <span v-else :class="header.value"
                 v-html="$options.filters.localeString(props.item[header.value])"></span>
         </td>
-        <td style="padding-right: 1.2rem" align=right v-if="hasIcon(props.item)">
+        <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(props.item)">
           <v-btn icon small
                  :href="actionIcon.href? actionIcon.href(props.item): ''"
                  @click.stop="actionIcon.action(props.item)"

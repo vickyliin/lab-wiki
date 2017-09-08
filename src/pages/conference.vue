@@ -20,6 +20,7 @@
 <script>
 import { entry } from 'config'
 import _ from 'lodash'
+import $ from 'ajax'
 import datatable from 'components/datatable.vue'
 
 export default {
@@ -51,7 +52,7 @@ export default {
             icon: 'add',
             color: 'primary',
             show: item => item.unsaved,
-            action: item => console.log(item),
+            action: item => this.createData(item),
           }
         ],
       },
@@ -84,7 +85,7 @@ export default {
         },
       }))
     },
-    async searchConference(q){
+    async searchData(q){
       if(!q){
         this.items.unsaved = []
         return
@@ -98,14 +99,22 @@ export default {
           sort: 0,
           colspan: 4,
         },
-        unsaved: 1
+        unsaved: 1,
+        cfpUrl: d.cfpUrl,
       }))
       this.pulling = false
+    },
+    async createData(item){
+      let data = {
+        name: item.name.display,
+        cfpUrl: item.cfpUrl
+      }
+      await $.post({url: `${entry}${this.model}`, data})
     },
   },
   watch: {
     search: _.debounce(function(newVal){
-      this.searchConference(newVal)
+      this.searchData(newVal)
     }, 500),
     'items.unsaved': function(unsaved){
       let {saved} = this.items

@@ -1,9 +1,12 @@
 <template>
   <v-container>
     <v-layout column>
-      <datatable v-bind="table" class="">
+      <datatable v-bind="table">
       </datatable>
     </v-layout>
+    <post-dialog v-bind="dialog"
+                 v-model="dialog.value">
+    </post-dialog>
   </v-container>
 </template>
 
@@ -11,9 +14,10 @@
 import { entry } from 'config'
 import $ from 'ajax'
 import datatable from 'components/datatable.vue'
+import postDialog from 'components/post-dialog.vue'
 
 export default {
-  components: { datatable },
+  components: { datatable, postDialog },
   data() {
     return {
       table: {
@@ -29,6 +33,19 @@ export default {
           rowsPerPage: 10,
           descending: false
         },
+      },
+      dialog: {
+        title: 'Search for Conference',
+        fields: [
+          {
+            name: 'q',
+            label: 'Conference name',
+            icon: 'mdi-timetable',
+            required: true,
+            component: 'conference-selector',
+          }
+        ],
+        width: '25rem',
       },
     }
   },

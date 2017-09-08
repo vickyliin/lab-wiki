@@ -1,16 +1,14 @@
 <template>
   <v-dialog :width="width" :value="display" @input="e => $emit('update:display', e)">
     <div class="activator" slot="activator">
-      <v-btn fab small ripple secondary
-            @click="$emit('activate')"
-            v-if="userRole === 'admin'"
-      >
+      <v-btn fab small ripple outline
+             @click="$emit('activate')"
+             v-if="userRole === 'admin'">
         <v-icon>delete</v-icon>
       </v-btn>
       <v-btn fab small ripple primary
-            @click="$emit('activate')"
-            v-if="userRole === 'admin'"
-      >
+             @click="$emit('activate')"
+             v-if="userRole === 'admin'">
         <v-icon>add</v-icon>
       </v-btn>
     </div>
@@ -32,8 +30,7 @@
                        :error="error[i]"
                        :value="value? value[field.name]: null"
                        :multi-line="field.multiLine"
-                       @input="data => onInput(field.name, data)"
-            >
+                       @input="data => onInput(field.name, data)">
             </component>
           </v-layout>
         </v-container>
@@ -50,21 +47,23 @@
 <script>
   import * as components from './*.vue'
 
-  export default{
+  export default {
     components,
     props: ['width', 'display', 'title', 'fields', 'value'],
-    data(){return{
-      loading: false,
-    }},
+    data() {
+      return {
+        loading: false,
+      }
+    },
     methods: {
-      onInput(name, data){
-        this.$emit('input', {...this.value, [name]: data})
+      onInput(name, data) {
+        this.$emit('input', { ...this.value, [name]: data })
       },
-      clear(){
+      clear() {
         this.$emit('input', null)
       },
-      async submit(){
-        if(!this.valid) return
+      async submit() {
+        if (!this.valid) return
         this.loading = true
         await new Promise(resolve => this.$emit('submit', resolve))
         this.$emit('update:display', false)
@@ -73,21 +72,21 @@
       },
     },
     computed: {
-      error(){
+      error() {
         return this.fields.map(
-            ({required, name}) => required &&
-                (!this.value || !this.value[name]))
+          ({ required, name }) => required &&
+            (!this.value || !this.value[name]))
       },
-      valid(){
-        return this.error.every(e=>!e)
+      valid() {
+        return this.error.every(e => !e)
       },
     }
   }
 </script>
 
 <style lang="stylus">
-.activator
-  position: fixed
-  right: 1rem
-  bottom: 1rem
+  .activator
+    position: fixed
+    right: 1rem
+    bottom: 1rem
 </style>

@@ -36,6 +36,7 @@
         {icon: 'perm_contact_calendar', path: 'contactList'},
         {icon: 'highlight', path: 'news'},
         {icon: 'delete', path: 'takeOutGarbage'},
+        {icon: 'email', path: 'emailSchedule'},
       ],
     }},
   }

@@ -5,7 +5,7 @@
         <v-flex v-for="(news,i) in newsData" :key="i">
           <v-container>
             <h6>{{news.title}}</h6>
-            <v-subheader>{{news.date | formatDate}}</v-subheader>
+            <v-subheader>{{news.date | localeString('Date')}}</v-subheader>
             <v-container>
               <vue-markdown>{{news.content}}</vue-markdown>
             </v-container>

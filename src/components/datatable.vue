@@ -36,34 +36,34 @@
         </th>
       </tr>
     </template>
-    <template slot="items" scope="{item, selected}">
-      <tr :active="selected" @click="selected = !selected">
+    <template slot="items" scope="props">
+      <tr :active="props.selected" @click="props.selected = !props.selected">
         <td v-if="enableSelect">
           <v-checkbox primary
                       hide-details
-                      :input-value="selected"
+                      :input-value="props.selected"
           ></v-checkbox>
         </td>
         <td class="text-xs"
             v-for="({value: header, display},i) in vheaders"
             :class="header"
-            :colspan="i === vheaders.length-1 && !hasIcon(item)? 2:1">
-          <template v-if="item[header] == null"></template>
+            :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
+          <template v-if="props.item[header] == null"></template>
           <span v-else-if="search"
-                v-html="highlight(item[header], display)"></span>
-          <span v-else-if="item[header].display !== undefined"
-                v-html="item[header].display"></span>
+                v-html="highlight(props.item[header], display)"></span>
+          <span v-else-if="props.item[header].display !== undefined"
+                v-html="props.item[header].display"></span>
           <span v-else-if="display"
-                v-html="display(item[header], item[header].text)"></span>
+                v-html="display(props.item[header], props.item[header].text)"></span>
           <span v-else :class="header"
-                v-html="$options.filters.localeString(item[header])"></span>
+                v-html="$options.filters.localeString(props.item[header])"></span>
         </td>
-        <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(item)">
+        <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(props.item)">
           <v-btn icon small
                  v-for="({show, href, action, color, icon},i) in actionIcons"
-                 v-if="show(item)"
-                 :href="href? href(item): ''"
-                 @click.stop="action(item)"
+                 v-if="show(props.item)"
+                 :href="href? href(props.item): ''"
+                 @click.stop="action(props.item)"
                  style="margin: 0" :key="i"
                  :class="color+'--text'">
             <v-icon>{{icon}}</v-icon>

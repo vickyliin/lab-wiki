@@ -13,14 +13,14 @@
     <datatable v-bind="table"
                v-model="table.value">
     </datatable>
-    <post-dialog :title="dialog.title"
+    <form-dialog :title="dialog.title"
                  :fields="dialog.fields"
                  :display.sync="dialog.display"
                  v-model="dialog.value"
                  @submit="dialog.onSubmit"
                  @activate="beforeCreateData"
                  width="35rem">
-    </post-dialog>
+    </form-dialog>
   </v-container>
 </template>
 
@@ -30,7 +30,7 @@
   import { mapGetters } from 'vuex'
   import { gDriveSlidesFolderID, gSuiteDomain } from 'config'
   import datatable from 'components/datatable.vue'
-  import postDialog from 'components/post-dialog.vue'
+  import formDialog from 'components/form-dialog.vue'
 
   const multipartRequestBody = ({boundary, metadata, fileType, fileContent}) =>
 `
@@ -46,7 +46,7 @@ ${fileContent}
 --${boundary}--`
 
   export default {
-    components: { datatable, postDialog },
+    components: { datatable, formDialog },
     data() {
       return {
         table: {

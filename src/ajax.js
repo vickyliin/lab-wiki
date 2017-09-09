@@ -40,4 +40,9 @@ export default {
     let xhr = new XhrWrapper(opt)
     return xhr.send(this.params(opt.data))
   },
+  delete(opt) {
+    opt.type = 'DELETE'
+    let xhr = new XhrWrapper(opt)
+    return xhr.send()
+  }
 }

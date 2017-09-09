@@ -91,6 +91,7 @@
       'selectAll',
       'selectedKey',
       'enableSelect',
+      'value'
     ],
     data() {
       let vheaders = this.headers.map(header => {

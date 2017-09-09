@@ -101,11 +101,12 @@ src\
 ### Workstations :heavy_check_mark:
 
 - Table :heavy_check_mark:
+- Static information :zap:
 
 ### CPU/MEM Usage
 
-- Table
-- Chart
+- Table :zap:
+- Chart :zap:
 
 ### News
 
@@ -117,8 +118,8 @@ src\
 
 - Table :heavy_check_mark:
 - Search, Highlight :heavy_check_mark:
-- Admin Add, Update, Remove :zap:
-- Owner Add, Update, Remove
+- Admin Add, Update, Remove :heavy_check_mark:
+- Owner Update :heavy_check_mark:
 - Highlight Changed Rows
 - Postpone, advance, exchange dates
 - Google Drive Upload :heavy_check_mark:
@@ -131,5 +132,5 @@ src\
 
 - Table :heavy_check_mark:
 - Add: search from [WikiCFP](http://www.wikicfp.com/cfp/) :heavy_check_mark:
-- Remove
+- Remove :heavy_check_mark:
 - Update: the same conference update to latest edition

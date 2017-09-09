@@ -93,7 +93,7 @@ export default {
       read: 'get',
       update: 'post',
       delete: 'delete',
-    }[type]
+    }[type] || type
 
     let { response, status } = await $[reqType]({
       url: entry + path + (id? `/${id}`:''),

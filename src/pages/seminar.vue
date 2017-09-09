@@ -10,7 +10,8 @@
           v-model="search"
       ></v-text-field>
     </v-layout>
-    <datatable v-bind="table">
+    <datatable v-bind="table"
+               v-model="table.value">
     </datatable>
     <post-dialog :title="dialog.title"
                  :fields="dialog.fields"
@@ -26,23 +27,25 @@
 <script>
 
   import _ from 'lodash'
-  import {mapGetters} from 'vuex'
-  import {entry, gDriveSlidesFolderID, gSuiteDomain} from 'config'
+  import { mapGetters } from 'vuex'
+  import { entry, gDriveSlidesFolderID, gSuiteDomain } from 'config'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
   import postDialog from 'components/post-dialog.vue'
 
   export default {
-    components: {datatable, postDialog},
-    data(){
+    components: { datatable, postDialog },
+    data() {
       return {
         table: {
           search: '',
           headers: [
-            {value: 'date'},
-            {value: 'presenter'},
-            {value: 'topic', display: (value, text) =>
-                text + (value.slides? ` <a href="${value.slides}" target="_blank">Slide</a>`: '')},
+            { value: 'date' },
+            { value: 'presenter' },
+            {
+              value: 'topic', display: (value, text) =>
+                text + (value.slides ? ` <a href="${value.slides}" target="_blank">Slide</a>` : '')
+            },
           ],
           items: [],
           initPagination: {
@@ -58,16 +61,19 @@
               show: item => this.editable(item),
               action: item => this.beforeUpdateData(item),
             },
-          ]
+          ],
+          selectAll: true,
+          enableSelect: false,
+          value: [],
         },
         search: '',
         dialog: {
           title: null,
           fields: [
-            {name: 'date', label: 'Date', required: true, component: 'date-picker'},
-            {name: 'presenter', label: 'Presenter', required: true, icon: 'account_circle', component: 'member-selector'},
-            {name: 'slide', label: 'Slide', icon: 'slideshow', component: 'file-picker'},
-            {name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field'}
+            { name: 'date', label: 'Date', required: true, component: 'date-picker' },
+            { name: 'presenter', label: 'Presenter', required: true, icon: 'account_circle', component: 'member-selector' },
+            { name: 'slide', label: 'Slide', icon: 'slideshow', component: 'file-picker' },
+            { name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field' }
           ],
           value: null,
           onSubmit: x => x,
@@ -76,11 +82,14 @@
         },
       }
     },
-    created(){
+    created() {
       this.pullData()
     },
+    mounted() {
+      this.table.enableSelect = this.userRole === 'admin'
+    },
     methods: {
-      setData(data){
+      setData(data) {
         this.table.items = data.map(d => ({
           date: new Date(d.date).toJSON().slice(0, 10),
           presenter: d.presenter,
@@ -93,7 +102,7 @@
           id: d.id,
         }))
       },
-      async uploadFile(file){
+      async uploadFile(file) {
         const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
 
         let reader = new FileReader()
@@ -102,7 +111,7 @@
         let metadata = {
           name: file.name,
           parents: gDriveSlidesFolderID, // Upload to 'slides'
-          mimeType: file.type+'\n'
+          mimeType: file.type + '\n'
         }
         let fileContent = btoa(reader.result) //base64 encoding
         // BJ4
@@ -132,7 +141,7 @@ ${fileContent}
           body: multipartRequestBody
         })
       },
-      beforeCreateData(){
+      beforeCreateData() {
         Object.assign(this.dialog, {
           title: 'Add Seminar',
           value: null,
@@ -140,7 +149,7 @@ ${fileContent}
           item: null
         })
       },
-      async beforeUpdateData(item){
+      async beforeUpdateData(item) {
         Object.assign(this.dialog, {
           title: 'Update Seminar',
           value: {
@@ -155,31 +164,31 @@ ${fileContent}
         await this.$nextTick()
         this.dialog.display = true
       },
-      async updateData(resolve){
+      async updateData(resolve) {
         let data = this.serverFormatData
-        let {slide} = this.dialog.value
-        if(slide){
-          let {result, status} = await this.uploadFile(slide)
-          if(status === 200){
+        let { slide } = this.dialog.value
+        if (slide) {
+          let { result, status } = await this.uploadFile(slide)
+          if (status === 200) {
             data.slides = `https://drive.google.com/open?id=${result.id}`
           }
         }
-        let itemID = this.dialog.item? this.dialog.item.id : ''
-        await $.post({url: `${entry}${this.model}/${itemID}`, data})
+        let itemID = this.dialog.item ? this.dialog.item.id : ''
+        await $.post({ url: `${entry}${this.model}/${itemID}`, data })
         this.setData(await this.getData(this.model))
         resolve()
       },
-      editable(item){
+      editable(item) {
         return item.owner === this.userEmail || this.userRole === 'admin'
       },
     },
     computed: {
-      serverFormatData(){
-        let {date, presenter, topic} = this.dialog.value
-        let {item} = this.dialog
+      serverFormatData() {
+        let { date, presenter, topic } = this.dialog.value
+        let { item } = this.dialog
         return {
           date,
-          slides: item? item.topic.slides : '',
+          slides: item ? item.topic.slides : '',
           topic: topic || '',
           presenter: presenter.name,
           owner: presenter.account + '@' + gSuiteDomain
@@ -188,9 +197,12 @@ ${fileContent}
       ...mapGetters(['userEmail']),
     },
     watch: {
-      search: _.debounce(function(){
+      search: _.debounce(function() {
         this.table.search = this.search
       }, 500),
+      userRole(newVal) {
+        this.table.enableSelect = newVal === 'admin'
+      },
     }
   }
 </script>

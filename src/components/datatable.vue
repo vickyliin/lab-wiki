@@ -7,24 +7,43 @@
     :customSort="customSort"
     :search="search"
     :filter="filter"
-    :loading="loading">
+    :loading="loading"
+    :select-all="selectAll"
+    :selected-key="selectedKey"
+    :value="value"
+    @input="e => $emit('input', e)">
     <template slot="headers" scope="props">
       <tr>
+        <th v-if="enableSelect">
+          <v-checkbox
+              primary
+              hide-details
+              @click.native="toggleAll"
+              :input-value="props.all"
+              :indeterminate="props.indeterminate"
+          ></v-checkbox>
+        </th>
         <th v-for="(header,i) in props.headers" :key="header.text"
             :colspan="i === props.headers.length-1? 2:1"
             :class="['column',
-            header.disableSort? '':'sortable',
-            pagination.descending? 'desc':'asc',
-            header.value === pagination.sortBy ? 'active' : '',
-            header.text]"
+              header.disableSort? '':'sortable',
+              pagination.descending? 'desc':'asc',
+              header.value === pagination.sortBy ? 'active' : '',
+              header.text]"
             @click="changeSort(header.value)">
           {{ header.text }}
           <v-icon v-if="!header.disableSort">arrow_upward</v-icon>
         </th>
       </tr>
     </template>
-    <template slot="items" scope="{item}">
-      <tr>
+    <template slot="items" scope="{item, selected}">
+      <tr :active="selected" @click="selected = !selected">
+        <td v-if="enableSelect">
+          <v-checkbox primary
+                      hide-details
+                      :input-value="selected"
+          ></v-checkbox>
+        </td>
         <td class="text-xs"
             v-for="({value: header, display},i) in vheaders"
             :class="header"
@@ -68,7 +87,10 @@
       'search',
       'actions',
       'actionIcons',
-      'loading'
+      'loading',
+      'selectAll',
+      'selectedKey',
+      'enableSelect',
     ],
     data() {
       let vheaders = this.headers.map(header => {
@@ -82,6 +104,7 @@
       return {
         pagination: this.initPagination,
         vheaders,
+        selected: [],
       }
     },
     methods: {
@@ -132,11 +155,13 @@
           this.pagination.descending = false
         }
       },
-      filter(value) {
-        if (value !== undefined
-          && value !== null
-          && value.constructor !== String) {
-          if (value.search !== undefined) {
+      toggleAll () {
+        if (this.value.length) this.$emit('input', [])
+        else this.$emit('input', this.items.slice())
+      },
+      filter(value){
+        if(value != null && typeof value !== 'string'){
+          if(value.search !== undefined){
             value = value.search
           }
           else if (value.text !== undefined) {

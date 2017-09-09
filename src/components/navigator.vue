@@ -37,6 +37,7 @@
         {icon: 'highlight', path: 'news'},
         {icon: 'delete', path: 'takeOutGarbage'},
         {icon: 'mdi-timetable', path: 'conference'},
+        {icon: 'email', path: 'emailSchedule'},
       ],
     }},
   }

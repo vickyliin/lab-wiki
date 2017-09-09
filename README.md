@@ -130,4 +130,6 @@ src\
 ### Call for Papers
 
 - Table :heavy_check_mark:
-- Add: Search from [WikiCFP](http://www.wikicfp.com/cfp/) and select :zap:
+- Add: search from [WikiCFP](http://www.wikicfp.com/cfp/) :heavy_check_mark:
+- Remove
+- Update: the same conference update to latest edition

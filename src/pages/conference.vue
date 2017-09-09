@@ -68,17 +68,17 @@
       this.pullData()
     },
     methods: {
-      async setData(data, target='saved') {
+      async setData(data, target = 'saved') {
         this.items[target] = {}
         let unsaved = target === 'unsaved'
-        for(let d of data){
+        for (let d of data) {
           this.$set(this.items[target], d.name, {
             id: d.id,
             cfpUrl: d.cfpUrl,
             name: {
               text: d.name,
               url: d.url,
-              display: unsaved? d.name : undefined,
+              display: unsaved ? d.name : undefined,
             },
             when: {
               display: d.when || null,
@@ -113,8 +113,8 @@
     },
     computed: {
       tableItems() {
-        let {saved, unsaved} = this.items
-        return Object.values({...unsaved, ...saved})
+        let { saved, unsaved } = this.items
+        return Object.values({ ...unsaved, ...saved })
       },
     },
     watch: {

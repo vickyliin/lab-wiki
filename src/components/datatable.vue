@@ -60,7 +60,7 @@
 
 <script>
   import _ from 'lodash'
-  export default{
+  export default {
     props: [
       'headers',
       'items',
@@ -70,12 +70,12 @@
       'actionIcons',
       'loading'
     ],
-    data(){
+    data() {
       let vheaders = this.headers.map(header => {
-        if(header.constructor === String)
-          return {text: header, value: header}
-        else if(header.text === undefined)
-          return Object.assign(header, {text: header.value})
+        if (header.constructor === String)
+          return { text: header, value: header }
+        else if (header.text === undefined)
+          return Object.assign(header, { text: header.value })
         else
           return header
       })
@@ -85,26 +85,26 @@
       }
     },
     methods: {
-      customSort(items, index, sortDesc){
-        if(index === null) return items
+      customSort(items, index, sortDesc) {
+        if (index === null) return items
         let sortedItems = items.sort((r, l) => {
-          let data = {r, l}
-          for(let pos in data){
+          let data = { r, l }
+          for (let pos in data) {
             let cellData = data[pos][index]
             let dataForSort
 
-            if(cellData == null) dataForSort = cellData
-            else if(cellData.sort !== undefined) dataForSort = cellData.sort
-            else if(cellData.text !== undefined) dataForSort = cellData.text
-            else if(cellData.display !== undefined) dataForSort = cellData.display
+            if (cellData == null) dataForSort = cellData
+            else if (cellData.sort !== undefined) dataForSort = cellData.sort
+            else if (cellData.text !== undefined) dataForSort = cellData.text
+            else if (cellData.display !== undefined) dataForSort = cellData.display
             else dataForSort = cellData
 
-            if(dataForSort == null) data[pos] = -Infinity
-            else if(!isNaN(parseFloat(dataForSort))) data[pos] = parseFloat(dataForSort)
-            else if(!isNaN(Date.parse(dataForSort))) data[pos] = Date.parse(dataForSort)
-            else if(typeof dataForSort === 'string') data[pos] = dataForSort.trim()
+            if (dataForSort == null) data[pos] = -Infinity
+            else if (!isNaN(parseFloat(dataForSort))) data[pos] = parseFloat(dataForSort)
+            else if (!isNaN(Date.parse(dataForSort))) data[pos] = Date.parse(dataForSort)
+            else if (typeof dataForSort === 'string') data[pos] = dataForSort.trim()
 
-            if(typeof data[pos] !== 'string' && isNaN(data[pos])){
+            if (typeof data[pos] !== 'string' && isNaN(data[pos])) {
               console.log('cellData', cellData)
               console.log('dataForSort', typeof dataForSort, dataForSort)
               console.log('data[pos]', data[pos])
@@ -114,60 +114,60 @@
             }
           }
           r = data.r; l = data.l
-          if(r == l) return 0
+          if (r == l) return 0
           let isDesc
-          if(r.constructor === l.constructor) isDesc = r < l
+          if (r.constructor === l.constructor) isDesc = r < l
           else isDesc = r.constructor === Number // strings > numbers
-          isDesc = isDesc? 1:-1
-          return sortDesc? isDesc:-isDesc
+          isDesc = isDesc ? 1 : -1
+          return sortDesc ? isDesc : -isDesc
         })
         this.$emit('sorted', sortedItems)
         return sortedItems
       },
-      changeSort(column){
-        if(this.pagination.sortBy === column)
+      changeSort(column) {
+        if (this.pagination.sortBy === column)
           this.pagination.descending = !this.pagination.descending
-        else{
+        else {
           this.pagination.sortBy = column
           this.pagination.descending = false
         }
       },
-      filter(value){
-        if(value !== undefined
-            && value !== null
-            && value.constructor !== String){
-          if(value.search !== undefined){
+      filter(value) {
+        if (value !== undefined
+          && value !== null
+          && value.constructor !== String) {
+          if (value.search !== undefined) {
             value = value.search
           }
-          else if(value.text !== undefined){
+          else if (value.text !== undefined) {
             value = value.text
           }
         }
         return this.searchRegex.test(value)
       },
-      highlight(value, display){
+      highlight(value, display) {
         let highlightText = text => text.replace(this.searchRegex, '<mark>$1</mark>')
-        if(display !== undefined){
+        if (display !== undefined) {
           let text = highlightText(value.text)
           return display(value, text)
         }
-        else{
+        else {
           return highlightText(value)
         }
       },
-      hasIcon(item){
+      hasIcon(item) {
         return this.actionIcons
-            && !this.actionIcons
-                    .map(icon => icon.show(item))
-                    .every(show => !show)
+          && !this.actionIcons
+            .map(icon => icon.show(item))
+            .every(show => !show)
       }
     },
     computed: {
-      searchRegex(){
-        try{
+      searchRegex() {
+        try {
           return new RegExp(`(${this.search})`, 'ig')
         }
-        catch(e){
+        catch (e) {
           return new RegExp(`(${_.escapeRegExp(this.search)})`, 'ig')
         }
       },

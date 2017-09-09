@@ -16,6 +16,7 @@
       <tr>
         <th v-if="enableSelect">
           <v-checkbox
+              v-if="selectAll"
               primary
               hide-details
               @click.native="toggleAll"

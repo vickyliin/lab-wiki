@@ -62,7 +62,7 @@
               action: item => this.beforeUpdateData(item),
             },
           ],
-          selectAll: true,
+          selectAll: false,
           enableSelect: false,
           value: [],
         },

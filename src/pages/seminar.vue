@@ -33,6 +33,19 @@
   import datatable from 'components/datatable.vue'
   import postDialog from 'components/post-dialog.vue'
 
+  const multipartRequestBody = ({boundary, metadata, fileType, fileContent}) =>
+`
+--${boundary}
+Content-Type: application/json
+
+${JSON.stringify(metadata)}
+--${boundary}
+Content-Type: ${fileType}
+Content-Transfer-Encoding: base64
+
+${fileContent}
+--${boundary}--`
+
   export default {
     components: { datatable, postDialog },
     data() {
@@ -76,7 +89,7 @@
             { name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field' }
           ],
           value: null,
-          onSubmit: x => x,
+          onSubmit: x => x, //initialize
           display: false,
           item: null,
         },
@@ -91,7 +104,7 @@
     methods: {
       setData(data) {
         this.table.items = data.map(d => ({
-          date: new Date(d.date).toJSON().slice(0, 10),
+          date: d.date,
           presenter: d.presenter,
           topic: {
             sort: d.topic,
@@ -111,22 +124,9 @@
         let metadata = {
           name: file.name,
           parents: gDriveSlidesFolderID, // Upload to 'slides'
-          mimeType: file.type + '\n'
+          mimeType: file.type
         }
         let fileContent = btoa(reader.result) //base64 encoding
-        // BJ4
-
-        let multipartRequestBody = `
---${boundary}
-Content-Type: application/json
-
-${JSON.stringify(metadata)}
---${boundary}
-Content-Type: ${file.type}
-Content-Transfer-Encoding: base64
-
-${fileContent}
---${boundary}--`
 
         return await gapi.client.request({
           path: '/upload/drive/v3/files',
@@ -136,9 +136,13 @@ ${fileContent}
           },
           headers: {
             'Content-Type': `multipart/related; boundary="${boundary}"`,
-            'Content-Length': multipartRequestBody.length
           },
-          body: multipartRequestBody
+          body: multipartRequestBody({
+            boundary,
+            fileType: file.type,
+            fileContent,
+            metadata
+          })
         })
       },
       beforeCreateData() {

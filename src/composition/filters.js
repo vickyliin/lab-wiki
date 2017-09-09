@@ -4,7 +4,7 @@ import { timeLocaleFormat } from 'config'
 let filters = {
   localeString(data, addon='') {
     if (data == null) return ''
-    if (Date.parse(data)) return new Date(data)[`toLocale${addon}String`](timeLocaleFormat)
+    if (typeof data !== 'number' && Date.parse(data)) return new Date(data)[`toLocale${addon}String`](timeLocaleFormat)
     if (data.toLocaleString) return data.toLocaleString()
     else return data
   },

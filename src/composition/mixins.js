@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import filters from 'filters'
+import filters from './filters'
 
 Vue.mixin({
   data() {

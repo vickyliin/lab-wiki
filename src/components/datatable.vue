@@ -27,13 +27,12 @@
       <tr>
         <td class="text-xs"
             v-for="({value: header, display},i) in vheaders"
-            v-if="item[header]"
             :class="header"
-            :colspan="item[header].colspan || (i === vheaders.length-1 && !hasIcon(item)? 2:1)">
-          <template v-if="item[header] === undefined"></template>
+            :colspan="i === vheaders.length-1 && !hasIcon(item)? 2:1">
+          <template v-if="item[header] == null"></template>
           <span v-else-if="search"
                 v-html="highlight(item[header], display)"></span>
-          <span v-else-if="item[header].display"
+          <span v-else-if="item[header].display !== undefined"
                 v-html="item[header].display"></span>
           <span v-else-if="display"
                 v-html="display(item[header], item[header].text)"></span>
@@ -42,13 +41,13 @@
         </td>
         <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(item)">
           <v-btn icon small
-                 :href="actionIcon.href? actionIcon.href(item): ''"
-                 @click.stop="actionIcon.action(item)"
+                 v-for="({show, href, action, color, icon},i) in actionIcons"
+                 v-if="show(item)"
+                 :href="href? href(item): ''"
+                 @click.stop="action(item)"
                  style="margin: 0" :key="i"
-                 :class="actionIcon.color+'--text'"
-                 v-for="(actionIcon,i) in actionIcons"
-                 v-if="actionIcon.show(item)">
-            <v-icon>{{actionIcon.icon}}</v-icon>
+                 :class="color+'--text'">
+            <v-icon>{{icon}}</v-icon>
           </v-btn>
         </td>
       </tr>
@@ -92,17 +91,26 @@
           let data = {r, l}
           for(let pos in data){
             let cellData = data[pos][index]
-            if(!cellData && cellData !== 0) data[pos] = -Infinity
-            else if(!isNaN(cellData)) data[pos] = parseFloat(cellData)
-            else if(cellData.constructor === String) data[pos] = cellData.replace(/^\s+|\s+$/g, '')
-            else if(cellData.sort !== undefined) data[pos] = cellData.sort
-            else if(cellData.text !== undefined) data[pos] = cellData.text
-            if(data[pos].constructor !== String && isNaN(data[pos])){
+            let dataForSort
+
+            if(cellData == null) dataForSort = cellData
+            else if(cellData.sort !== undefined) dataForSort = cellData.sort
+            else if(cellData.text !== undefined) dataForSort = cellData.text
+            else if(cellData.display !== undefined) dataForSort = cellData.display
+            else dataForSort = cellData
+
+            if(dataForSort == null) data[pos] = -Infinity
+            else if(!isNaN(parseFloat(dataForSort))) data[pos] = parseFloat(dataForSort)
+            else if(!isNaN(Date.parse(dataForSort))) data[pos] = Date.parse(dataForSort)
+            else if(typeof dataForSort === 'string') data[pos] = dataForSort.trim()
+
+            if(typeof data[pos] !== 'string' && isNaN(data[pos])){
               console.log('cellData', cellData)
+              console.log('dataForSort', typeof dataForSort, dataForSort)
               console.log('data[pos]', data[pos])
-              console.log('!isNaN(cellData)', !isNaN(cellData))
-              console.log('cellData.constructor === String', cellData.constructor === String)
-              throw new TypeError('The cell data of datatable should be strings/numbers, or a sort/text property should be provided.')
+              console.log('!isNaN(dataForSort)', !isNaN(dataForSort))
+              console.log('typeof cellData', typeof cellData)
+              throw new TypeError('The cell data of datatable should be strings/numbers/dates, or a sort/text/display property should be provided.')
             }
           }
           r = data.r; l = data.l

@@ -4,8 +4,8 @@
       <v-spacer></v-spacer>
       <v-text-field
           append-icon="search"
-          label="Search, eg. NLP"
-          single-line
+          label="Search and Add Conference to list"
+          placeholder="NLP"
           hide-details
           v-model="search"
       ></v-text-field>
@@ -22,6 +22,8 @@
   import _ from 'lodash'
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
+
+  const searchPath = '/cfpSearch'
 
   export default {
     components: { datatable },
@@ -53,12 +55,12 @@
               color: 'primary',
               show: item => item.unsaved,
               action: item => this.createData(item),
-            }
+            },
           ],
         },
         items: {
-          saved: [],
-          unsaved: []
+          saved: {},
+          unsaved: {}
         },
       }
     },
@@ -66,74 +68,61 @@
       this.pullData()
     },
     methods: {
-      async setData(data) {
-        this.table.items = this.items.saved = data.map(d => ({
-          name: {
-            text: d.name,
-            url: d.url
-          },
-          when: {
-            start: new Date(d.start),
-            sort: new Date(d.start).valueOf(),
-            end: new Date(d.end),
-            display: d.when
-          },
-          where: d.where,
-          deadline: {
-            sort: new Date(d.deadline).valueOf(),
-            display: d.deadlineDisplay
-          },
-        }))
+      async setData(data, target='saved') {
+        this.items[target] = {}
+        let unsaved = target === 'unsaved'
+        for(let d of data){
+          this.$set(this.items[target], d.name, {
+            id: d.id,
+            cfpUrl: d.cfpUrl,
+            name: {
+              text: d.name,
+              url: d.url,
+              display: unsaved? d.name : undefined,
+            },
+            when: {
+              display: d.when || null,
+              sort: d.start || '',
+            },
+            where: d.where,
+            deadline: d.deadlineDisplay,
+            unsaved,
+          })
+        }
       },
       async searchData(q) {
         if (!q) {
-          this.items.unsaved = []
+          this.items.unsaved = {}
           return
         }
         this.pulling = true
-        let data = await this.getData('/cfpSearch', { q })
-        if (!data) return
-        this.items.unsaved = data.map(d => ({
-          name: {
-            display: d.name,
-            sort: d.name,
-            colspan: 4,
-          },
-          unsaved: 1,
-          cfpUrl: d.cfpUrl,
-        })).filter(item => !this.savedNames.includes(item.name.display))
+        let data = await this.getData(searchPath, { q })
+        this.setData(data, 'unsaved')
         this.pulling = false
       },
-      async createData(item, i) {
+      async createData(item) {
+        let name = item.name.display
         let data = {
-          name: item.name.display,
+          name,
           cfpUrl: item.cfpUrl,
         }
         await $.post({ url: `${entry}${this.model}`, data })
-        this.items.saved.push({
-          name: {
-            display: item.name.display,
-            sort: item.name.sort,
-          },
-          when: '-',
-          where: '-',
-          deadline: '-',
-        })
-        this.items.unsaved = this.items.unsaved.filter(QAQ => item !== QAQ)
+        this.$delete(this.items.unsaved, name)
+        this.pullData()
       },
     },
     computed: {
-      savedNames() {
-        return this.items.saved.map(item => item.name.text)
+      tableItems() {
+        let {saved, unsaved} = this.items
+        return Object.values({...unsaved, ...saved})
       },
     },
     watch: {
       search: _.debounce(function(newVal) {
         this.searchData(newVal)
-      }, 500),
-      'items.unsaved': function(unsaved) {
-        let { saved } = this.items
-        this.table.items = saved.concat(unsaved)
+      }, 800),
+      tableItems(items) {
+        this.table.items = items
       },
       pulling(newVal) {
         this.table.loading = newVal

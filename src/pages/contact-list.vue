@@ -11,7 +11,9 @@
       ></v-text-field>
     </v-layout>
     <transition-group name="slide-y" tag="div" class="layout" id="contact-layout">
-      <v-card v-for="person in filteredData" :key="person.name" class="contact-card">
+      <v-card v-for="person in filteredData"
+              :key="person.id"
+              class="contact-card">
         <v-container>
           <h6>{{person.name}}</h6>
           <v-divider></v-divider>
@@ -51,14 +53,11 @@
       }
     },
     created(){
-      this.pullData()
+      this.crud()
     },
     methods: {
       async setData(data){
-        for(let d of data){
-          this.contactData.push(d)
-          await this.$nextTick()
-        }
+        this.contactData = data
       },
     },
     computed: {

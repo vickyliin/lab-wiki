@@ -28,8 +28,7 @@
 
   import _ from 'lodash'
   import { mapGetters } from 'vuex'
-  import { entry, gDriveSlidesFolderID, gSuiteDomain } from 'config'
-  import $ from 'ajax'
+  import { gDriveSlidesFolderID, gSuiteDomain } from 'config'
   import datatable from 'components/datatable.vue'
   import postDialog from 'components/post-dialog.vue'
 
@@ -96,7 +95,7 @@ ${fileContent}
       }
     },
     created() {
-      this.pullData()
+      this.crud()
     },
     mounted() {
       this.table.enableSelect = this.userRole === 'admin'

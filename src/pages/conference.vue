@@ -56,6 +56,12 @@
               show: item => item.unsaved,
               action: item => this.createData(item),
             },
+            {
+              icon: 'delete',
+              color: 'grey',
+              show: item => !item.unsaved,
+              action: item => this.deleteData(item),
+            },
           ],
         },
         items: {
@@ -65,7 +71,7 @@
       }
     },
     created() {
-      this.pullData()
+      this.crud()
     },
     methods: {
       async setData(data, target = 'saved') {
@@ -87,6 +93,7 @@
             where: d.where,
             deadline: d.deadlineDisplay,
             unsaved,
+            raw: d,
           })
         }
       },
@@ -95,20 +102,15 @@
           this.items.unsaved = {}
           return
         }
-        this.pulling = true
-        let data = await this.getData(searchPath, { q })
+        let data = await this.crud({path: searchPath, data: { q }})
         this.setData(data, 'unsaved')
-        this.pulling = false
       },
       async createData(item) {
-        let name = item.name.display
-        let data = {
-          name,
-          cfpUrl: item.cfpUrl,
-        }
-        await $.post({ url: `${entry}${this.model}`, data })
+        await this.crud({type: 'create', data: item.raw})
         this.$delete(this.items.unsaved, name)
-        this.pullData()
+      },
+      deleteData(item){
+        this.crud({type: 'delete', id: item.id})
       },
     },
     computed: {

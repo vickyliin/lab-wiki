@@ -2,7 +2,7 @@
   <v-container>
     <v-layout column>
       <transition-group name="slide-y" tag="div">
-        <v-flex v-for="(news,i) in newsData" :key="i">
+        <v-flex v-for="(news,i) in displayData" :key="i">
           <v-container>
             <h6>{{news.title}}</h6>
             <v-subheader>{{news.date | localeString('Date')}}</v-subheader>
@@ -18,7 +18,6 @@
 </template>
 
 <script>
-  import {entry} from 'config'
   import VueMarkdown from 'vue-markdown'
   import $ from 'ajax'
 
@@ -26,21 +25,21 @@
     components: {VueMarkdown},
     data(){
       return {
-        entry,
-        newsData: []
+        data: []
       }
     },
     created(){
-      this.pullData()
+      this.crud()
     },
     methods: {
       async setData(data){
-        for(let d of data.slice(0,10)){
-          d.date = new Date(d.date)
-          this.newsData.push(d)
-          await this.$nextTick()
-        }
+        this.data = data
       },
     },
+    computed: {
+      displayData(){
+        return this.data.slice(0, 10)
+      }
+    }
   }
 </script>

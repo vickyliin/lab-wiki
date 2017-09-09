@@ -85,7 +85,7 @@
       }
     },
     created() {
-      this.pullData()
+      this.crud()
     },
     mounted() {
       this.table.enableSelect = this.userRole === 'admin'

@@ -30,8 +30,7 @@
 </template>
 
 <script>
-  import $ from 'ajax'
-  import {wsDataEntry, queryInterval} from 'config'
+  import {queryInterval} from 'config'
 
   import datatable from 'components/datatable.vue'
   import chart from 'components/chart.vue'
@@ -103,8 +102,8 @@
       interval: null,
     }},
     created(){
-      this.pullData()
-      this.interval = setInterval(this.pullData, queryInterval)
+      this.crud()
+      this.interval = setInterval(this.crud, queryInterval)
     },
     methods: {
       setMemory(mem){
@@ -144,7 +143,7 @@
       },
       onClickRefresh(){
         if(this.pulling) return
-        this.pullData()
+        this.crud()
       },
     },
     watch: {

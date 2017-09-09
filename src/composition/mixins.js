@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import store from 'store'
 import filters from './filters'
+
+let { dispatch } = store
 
 Vue.mixin({
   data() {
@@ -9,23 +12,22 @@ Vue.mixin({
     }
   },
   methods: {
-    async getData(model, data) {
-      return await this.$store.dispatch('getData', {model, data})
-    },
-    async pullData() {
+    async crud({type = 'read', path = this.model, data, id} = {}) {
       this.pulling = true
-      let data = await this.getData(this.model)
+      let response = await dispatch('crud', { type, path, data, id })
       this.pulling = false
-      if (data) this.setData(data)
+      if (!response) return
+      if (path === this.model) this.setData(response)
+      return response
     },
-    log(){
+    log() {
       console.log.apply(null, arguments)
     },
     ...filters,
   },
   computed: {
     model() {
-      return this.$route.fullPath
+      return this.$route.path
     },
     ...mapState(['userRole'])
   }

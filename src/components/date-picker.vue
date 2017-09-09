@@ -5,7 +5,7 @@
     <v-text-field
         slot="activator"
         :label="label"
-        :value="value"
+        :value="value | localeString('Date')"
         :name="name"
         prepend-icon="event"
         readonly
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+
   export default {
     name: 'date-picker',
     props: ['value', 'label', 'required', 'name', 'error', 'rules'],

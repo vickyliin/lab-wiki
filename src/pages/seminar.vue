@@ -94,7 +94,7 @@
         }))
       },
       async uploadFile(file){
-        const boundary = '-------vicky_is_god__vickygod_is_soooooo_god'
+        const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
 
         let reader = new FileReader()
         reader.readAsBinaryString(file)

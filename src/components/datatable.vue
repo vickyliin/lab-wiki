@@ -57,7 +57,7 @@
           <span v-else-if="display"
                 v-html="display(props.item[header], props.item[header].text)"></span>
           <span v-else :class="header"
-                v-html="$options.filters.localeString(props.item[header])"></span>
+                v-html="localeString(props.item[header])"></span>
         </td>
         <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(props.item)">
           <v-btn icon small

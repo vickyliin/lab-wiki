@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import filters from 'filters'
 
 Vue.mixin({
   data() {
@@ -17,6 +18,10 @@ Vue.mixin({
       this.pulling = false
       if (data) this.setData(data)
     },
+    log(){
+      console.log.apply(null, arguments)
+    },
+    ...filters,
   },
   computed: {
     model() {

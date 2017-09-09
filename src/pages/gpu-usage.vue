@@ -107,9 +107,6 @@
       this.interval = setInterval(this.pullData, queryInterval)
     },
     methods: {
-      localeString(time){
-        return this.$options.filters.localeString(time)
-      },
       setMemory(mem){
         let free = mem.total - mem.usage
         return {

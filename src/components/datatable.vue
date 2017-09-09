@@ -162,15 +162,15 @@
         else this.$emit('input', this.items.slice())
       },
       filter(value){
-        if(value != null && typeof value !== 'string'){
-          if(value.search !== undefined){
+        if (value != null && typeof value !== 'string') {
+          if (value.search !== undefined) {
             value = value.search
           }
           else if (value.text !== undefined) {
             value = value.text
           }
         }
-        return this.searchRegex.test(value)
+        return this.searchRegex.test(this.localeString(value, 'Date'))
       },
       highlight(value, display) {
         let highlightText = text => text.replace(this.searchRegex, '<mark>$1</mark>')
@@ -179,7 +179,7 @@
           return display(value, text)
         }
         else {
-          return highlightText(value)
+          return highlightText(this.localeString(value, 'Date'))
         }
       },
       hasIcon(item) {

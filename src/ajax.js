@@ -18,7 +18,7 @@ export default {
     let parameters
     if (data !== undefined) {
       parameters = Object.entries(data)
-          .map(([key,val]) => `${escape(key)}=${escape(val)}`)
+          .map(pair => pair.map(encodeURIComponent).join('='))
           .join('&')
     }
     else{
@@ -39,5 +39,10 @@ export default {
     opt.type = 'POST'
     let xhr = new XhrWrapper(opt)
     return xhr.send(this.params(opt.data))
+  },
+  delete(opt) {
+    opt.type = 'DELETE'
+    let xhr = new XhrWrapper(opt)
+    return xhr.send()
   }
 }

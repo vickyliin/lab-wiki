@@ -4,9 +4,7 @@
   </v-container>
 </template>
 <script>
-  import $ from 'ajax'
   import datatable from 'components/datatable.vue'
-  import {wsDataEntry} from 'config'
 
   export default {
     components: {datatable},
@@ -24,7 +22,7 @@
       }
     },
     created(){
-      this.pullData()
+      this.crud()
     },
     methods: {
       setData(data){

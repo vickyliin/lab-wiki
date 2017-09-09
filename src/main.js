@@ -3,8 +3,7 @@ import Vuetify from 'vuetify'
 import App from 'App.vue'
 import router from 'router'
 import store from 'store'
-import 'filter'
-import 'mixins'
+import 'composition'
 
 Vue.use(Vuetify)
 

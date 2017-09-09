@@ -16,6 +16,7 @@
       <tr>
         <th v-if="enableSelect">
           <v-checkbox
+              v-if="selectAll"
               primary
               hide-details
               @click.native="toggleAll"
@@ -36,34 +37,34 @@
         </th>
       </tr>
     </template>
-    <template slot="items" scope="{item, selected}">
-      <tr :active="selected" @click="selected = !selected">
+    <template slot="items" scope="props">
+      <tr :active="props.selected" @click="props.selected = !props.selected">
         <td v-if="enableSelect">
           <v-checkbox primary
                       hide-details
-                      :input-value="selected"
+                      :input-value="props.selected"
           ></v-checkbox>
         </td>
         <td class="text-xs"
             v-for="({value: header, display},i) in vheaders"
             :class="header"
-            :colspan="i === vheaders.length-1 && !hasIcon(item)? 2:1">
-          <template v-if="item[header] == null"></template>
+            :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
+          <template v-if="props.item[header] == null"></template>
           <span v-else-if="search"
-                v-html="highlight(item[header], display)"></span>
-          <span v-else-if="item[header].display !== undefined"
-                v-html="item[header].display"></span>
+                v-html="highlight(props.item[header], display)"></span>
+          <span v-else-if="props.item[header].display !== undefined"
+                v-html="props.item[header].display"></span>
           <span v-else-if="display"
-                v-html="display(item[header], item[header].text)"></span>
+                v-html="display(props.item[header], props.item[header].text)"></span>
           <span v-else :class="header"
-                v-html="$options.filters.localeString(item[header])"></span>
+                v-html="localeString(props.item[header], 'Date')"></span>
         </td>
-        <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(item)">
+        <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(props.item)">
           <v-btn icon small
                  v-for="({show, href, action, color, icon},i) in actionIcons"
-                 v-if="show(item)"
-                 :href="href? href(item): ''"
-                 @click.stop="action(item)"
+                 v-if="show(props.item)"
+                 :href="href? href(props.item): ''"
+                 @click.stop="action(props.item)"
                  style="margin: 0" :key="i"
                  :class="color+'--text'">
             <v-icon>{{icon}}</v-icon>
@@ -161,15 +162,15 @@
         else this.$emit('input', this.items.slice())
       },
       filter(value){
-        if(value != null && typeof value !== 'string'){
-          if(value.search !== undefined){
+        if (value != null && typeof value !== 'string') {
+          if (value.search !== undefined) {
             value = value.search
           }
           else if (value.text !== undefined) {
             value = value.text
           }
         }
-        return this.searchRegex.test(value)
+        return this.searchRegex.test(this.localeString(value, 'Date'))
       },
       highlight(value, display) {
         let highlightText = text => text.replace(this.searchRegex, '<mark>$1</mark>')
@@ -178,7 +179,7 @@
           return display(value, text)
         }
         else {
-          return highlightText(value)
+          return highlightText(this.localeString(value, 'Date'))
         }
       },
       hasIcon(item) {

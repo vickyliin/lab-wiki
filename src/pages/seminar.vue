@@ -13,14 +13,16 @@
     <datatable v-bind="table"
                v-model="table.value">
     </datatable>
-    <post-dialog :title="dialog.title"
+    <form-dialog :title="dialog.title"
                  :fields="dialog.fields"
                  :display.sync="dialog.display"
                  v-model="dialog.value"
                  @submit="dialog.onSubmit"
-                 @activate="beforeCreateData"
                  width="35rem">
-    </post-dialog>
+    </form-dialog>
+    <managePanel :dialog="dialog" :dialogs="dialogs"
+                 :selected="table.value"
+                 :setData="setData"></managePanel>
   </v-container>
 </template>
 
@@ -28,13 +30,27 @@
 
   import _ from 'lodash'
   import { mapGetters } from 'vuex'
-  import { entry, gDriveSlidesFolderID, gSuiteDomain } from 'config'
-  import $ from 'ajax'
+  import { gDriveSlidesFolderID, gSuiteDomain } from 'config'
   import datatable from 'components/datatable.vue'
-  import postDialog from 'components/post-dialog.vue'
+  import formDialog from 'components/form-dialog.vue'
+  import managePanel from 'components/manage-panel.vue'
+
+  const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
+  const multipartRequestBody = ({boundary, metadata, fileType, fileContent}) =>
+`
+--${boundary}
+Content-Type: application/json
+
+${JSON.stringify(metadata)}
+--${boundary}
+Content-Type: ${fileType}
+Content-Transfer-Encoding: base64
+
+${fileContent}
+--${boundary}--`
 
   export default {
-    components: { datatable, postDialog },
+    components: { datatable, formDialog, managePanel },
     data() {
       return {
         table: {
@@ -59,10 +75,13 @@
               icon: 'mode_edit',
               color: 'teal',
               show: item => this.editable(item),
-              action: item => this.beforeUpdateData(item),
+              action: item => {
+                this.dialogs.item = item
+                Object.assign(this.dialog, this.dialogs.update)
+              },
             },
           ],
-          selectAll: true,
+          selectAll: false,
           enableSelect: false,
           value: [],
         },
@@ -76,14 +95,41 @@
             { name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field' }
           ],
           value: null,
-          onSubmit: x => x,
+          onSubmit: x => x, //initialize
           display: false,
           item: null,
+        },
+        dialogs: {
+          item: {topic: {}},
+          updateData: this.updateData,
+          localeString: this.localeString,
+          create: {
+            title: 'Add Seminar',
+            value: null,
+            item: null,
+            onSubmit: this.updateData,
+            display: true,
+          },
+          get update(){
+            let item = this.item
+            return {
+              title: 'Update Seminar',
+              value: {
+                date: item.date,
+                presenter: item.presenter,
+                slide: null,
+                topic: item.topic.text,
+              },
+              item,
+              onSubmit: this.updateData,
+              display: true,
+            }
+          },
         },
       }
     },
     created() {
-      this.pullData()
+      this.crud()
     },
     mounted() {
       this.table.enableSelect = this.userRole === 'admin'
@@ -91,7 +137,7 @@
     methods: {
       setData(data) {
         this.table.items = data.map(d => ({
-          date: new Date(d.date).toJSON().slice(0, 10),
+          date: d.date,
           presenter: d.presenter,
           topic: {
             sort: d.topic,
@@ -103,30 +149,15 @@
         }))
       },
       async uploadFile(file) {
-        const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
-
         let reader = new FileReader()
         reader.readAsBinaryString(file)
         await new Promise(resolve => reader.onload = resolve)
         let metadata = {
           name: file.name,
           parents: gDriveSlidesFolderID, // Upload to 'slides'
-          mimeType: file.type + '\n'
+          mimeType: file.type
         }
         let fileContent = btoa(reader.result) //base64 encoding
-        // BJ4
-
-        let multipartRequestBody = `
---${boundary}
-Content-Type: application/json
-
-${JSON.stringify(metadata)}
---${boundary}
-Content-Type: ${file.type}
-Content-Transfer-Encoding: base64
-
-${fileContent}
---${boundary}--`
 
         return await gapi.client.request({
           path: '/upload/drive/v3/files',
@@ -136,33 +167,14 @@ ${fileContent}
           },
           headers: {
             'Content-Type': `multipart/related; boundary="${boundary}"`,
-            'Content-Length': multipartRequestBody.length
           },
-          body: multipartRequestBody
+          body: multipartRequestBody({
+            boundary,
+            fileType: file.type,
+            fileContent,
+            metadata
+          })
         })
-      },
-      beforeCreateData() {
-        Object.assign(this.dialog, {
-          title: 'Add Seminar',
-          value: null,
-          onSubmit: this.updateData,
-          item: null
-        })
-      },
-      async beforeUpdateData(item) {
-        Object.assign(this.dialog, {
-          title: 'Update Seminar',
-          value: {
-            date: item.date,
-            presenter: item.presenter,
-            slide: null,
-            topic: item.topic.text
-          },
-          onSubmit: this.updateData,
-          item
-        })
-        await this.$nextTick()
-        this.dialog.display = true
       },
       async updateData(resolve) {
         let data = this.serverFormatData
@@ -173,9 +185,8 @@ ${fileContent}
             data.slides = `https://drive.google.com/open?id=${result.id}`
           }
         }
-        let itemID = this.dialog.item ? this.dialog.item.id : ''
-        await $.post({ url: `${entry}${this.model}/${itemID}`, data })
-        this.setData(await this.getData(this.model))
+        let id = this.dialog.item ? this.dialog.item.id : undefined
+        await this.crud({type: 'post', data, id})
         resolve()
       },
       editable(item) {

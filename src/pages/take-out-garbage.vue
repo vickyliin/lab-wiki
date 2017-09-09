@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import { entry } from 'config'
-import $ from 'ajax'
 import datatable from 'components/datatable.vue'
 
 export default {
@@ -47,18 +45,21 @@ export default {
     }
   },
   created() {
-    this.pullData()
+    this.crud()
   },
   methods: {
     setData(data) {
       this.table.items = data.map(d => ({
-        date: `${new Date(d.startDate).toJSON().slice(0, 10)} ~ ${new Date(d.endDate).toJSON().slice(0, 10)}`,
+        date: this.dateInterval([d.startDate, d.endDate]),
         startDate: new Date(d.startDate),
         endDate: new Date(d.endDate),
         contact: d.contact,
         name: d.contact.name,
       }))
     },
+    dateInterval(dates) {
+      return dates.map( date => this.localeString(date, 'Date') ).join(' ~ ')
+    }
   },
   computed: {
     duty(){

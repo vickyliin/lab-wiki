@@ -34,12 +34,10 @@
       }
     },
     created(){
-      this.pullData()
+      this.crud()
     },
     methods: {
-      async pullData(){
-        let data = await this.getData('/contactList')
-        if(!data) return
+      setData(data){
         this.people = data.map(d => ({
           name: d.name,
           account: d.account,
@@ -56,6 +54,9 @@
           this.$emit('input', this.people[ this.name2index[newVal] ])
         }
       }
-    }
+    },
+    computed: {
+      model: () => '/contactList',
+    },
   }
 </script>

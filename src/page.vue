@@ -27,12 +27,12 @@
 </template>
 <script>
 
-  import * as components from './pages/*.vue'
+  import * as Pages from './pages/*.vue'
   import Login from 'components/login.vue'
   import $ from 'ajax'
 
   export default{
-    components: {Login, ...components},
+    components: {Login, ...Pages},
     computed: {
       title(){
         return this.$route.fullPath.slice(1)
@@ -46,7 +46,7 @@
     },
     watch: {
       url(url){
-        document.title = this.$options.filters.spaceSeparated(this.title) + ' - Natural Language Processing Lab'
+        document.title = this.spaceSeparated(this.title) + ' - Natural Language Processing Lab'
         this.$store.commit('status', 200)
       },
     },

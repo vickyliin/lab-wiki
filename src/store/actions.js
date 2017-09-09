@@ -87,13 +87,22 @@ let authentications = {
 
 export default {
   ...authentications,
-  async getData({ commit }, {model, data}) {
-    let { response, status } = await $.get({
-      url: entry + model,
+  async crud({ commit, dispatch }, { type, path, data, id }) {
+    let reqType = {
+      create: 'post',
+      read: 'get',
+      update: 'post',
+      delete: 'delete',
+    }[type] || type
+
+    let { response, status } = await $[reqType]({
+      url: entry + path + (id? `/${id}`:''),
       data
     })
     commit('status', status)
+
     if (status !== 200) return null
+    if (type !== 'read') return await dispatch('crud',{ path, type: 'read' })
     return response
-  }
+  },
 }

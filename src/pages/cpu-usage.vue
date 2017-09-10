@@ -20,10 +20,10 @@
               display: d.cpuinfo.type
             },
             name: d.cpuinfo.type,
-            usage: d.cpu.cpu_usage/d.cpuinfo.threads,
+            usage: parseInt(d.cpu.cpu_usage/d.cpuinfo.threads),
             memory: this.setMemory({
-              usage: d.cpu.mem_usage,
-              total: d.cpu.mem_total,
+              usage: parseInt(d.cpu.mem_usage),
+              total: parseInt(d.cpu.mem_total),
             }),
             logtime: new Date(d.logtime),
           }

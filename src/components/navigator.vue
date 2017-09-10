@@ -8,8 +8,12 @@
       id="sidebar">
     <v-list dense>
       <template v-for="(item, i) in items">
-        <router-link :to="item.path">
-          <v-list-tile :key="i">
+        <v-divider v-if="item === 'divider'"></v-divider>
+        <v-subheader v-else-if="item.header">
+          {{item.header}}
+        </v-subheader>
+        <router-link :to="item.path" :key="i" v-else>
+          <v-list-tile>
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -30,13 +34,19 @@
     props: ['value'],
     data(){return {
       items: [
+        {header: 'Computers'},
         {icon: 'toys', path: 'gpuUsage'},
+        {icon: 'memory', path: 'cpuUsage'},
         {icon: 'kitchen', path: 'workstations'},
+        'divider',
+        {header: 'Meetings'},
         {icon: 'local_library', path: 'seminar'},
-        {icon: 'perm_contact_calendar', path: 'contactList'},
+        {icon: 'mdi-timetable', path: 'conference'},
+        'divider',
+        {header: 'Others'},
         {icon: 'highlight', path: 'news'},
         {icon: 'delete', path: 'takeOutGarbage'},
-        {icon: 'mdi-timetable', path: 'conference'},
+        {icon: 'perm_contact_calendar', path: 'contactList'},
         // {icon: 'email', path: 'emailSchedule'},
       ],
     }},

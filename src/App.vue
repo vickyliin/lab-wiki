@@ -31,7 +31,7 @@
     text-align: left
   .server, .memory, .gpu
     text-align: center
-  .cores, .mem, .fan, .temp
+  .cores, .mem, .fan, .usage, .temp
     td^[0]
       text-align: center
     &>span
@@ -56,7 +56,7 @@
     content: "GHz"
   td.mem:after
     content: "GB"
-  td.fan:after
+  td.fan:after, td.usage:after
     content: "%"
   td.temp:after
     content: "\B0 C"

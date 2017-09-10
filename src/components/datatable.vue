@@ -80,6 +80,13 @@
 
 <script>
   import _ from 'lodash'
+
+  const sortOrder = {
+    [Number]: 0,
+    [Date]: 1,
+    [String]: 2,
+  }
+
   export default {
     props: [
       'headers',
@@ -125,8 +132,8 @@
             else dataForSort = cellData
 
             if (dataForSort == null) data[pos] = -Infinity
-            else if (!isNaN(parseFloat(dataForSort))) data[pos] = parseFloat(dataForSort)
-            else if (!isNaN(Date.parse(dataForSort))) data[pos] = Date.parse(dataForSort)
+            else if (!isNaN(Number(dataForSort))) data[pos] = parseFloat(dataForSort)
+            else if (!isNaN(Date.parse(dataForSort))) data[pos] = new Date(dataForSort)
             else if (typeof dataForSort === 'string') data[pos] = dataForSort.trim()
 
             if (typeof data[pos] !== 'string' && isNaN(data[pos])) {
@@ -139,10 +146,12 @@
             }
           }
           r = data.r; l = data.l
-          if (r == l) return 0
+          if (r === l) return 0
           let isDesc
           if (r.constructor === l.constructor) isDesc = r < l
-          else isDesc = r.constructor === Number // strings > numbers
+          else {
+            isDesc = sortOrder[r.constructor] < sortOrder[l.constructor]
+          }
           isDesc = isDesc ? 1 : -1
           return sortDesc ? isDesc : -isDesc
         })

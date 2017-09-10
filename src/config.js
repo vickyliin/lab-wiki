@@ -3,7 +3,7 @@ module.exports = {
   entry: 'http://localhost:3000/api',
   routerMode: 'history',
   timeLocaleFormat: 'zh-tw',
-  queryInterval: 300000, //ms
+  queryInterval: 15000, //ms
   gAuthSettings: {
     client_id: '128291458390-1rjai5msiieuad8ofmeje5eonoplsmf5.apps.googleusercontent.com',
     cookiepolicy: 'single_host_origin',

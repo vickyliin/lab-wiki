@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { timeLocaleFormat } from 'config'
 
 let filters = {
@@ -17,8 +16,5 @@ let filters = {
     return dates.map( date => this.localeString(date, 'Date') ).join(' - ')
   }
 }
-
-Object.entries(filters)
-  .forEach(([name, filter]) => Vue.filter(name, filter))
 
 export { filters as default }

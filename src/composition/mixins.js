@@ -1,11 +1,10 @@
-import Vue from 'vue'
 import { mapState } from 'vuex'
 import store from 'store'
 import filters from './filters'
 
 let { dispatch } = store
 
-Vue.mixin({
+export default {
   data() {
     return {
       pulling: false
@@ -31,4 +30,4 @@ Vue.mixin({
     },
     ...mapState(['userRole'])
   }
-})
+}

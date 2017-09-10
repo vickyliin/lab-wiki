@@ -1,13 +1,14 @@
 <template>
-  <div class="manage-panel" v-if="userRole === 'admin'">
+  <transition-group name="fade-transition" class="manage-panel" v-if="userRole === 'admin'">
     <v-btn fab small ripple outline
            v-for="(btn, i) in buttons" :key="i"
+           v-if="show[btn.type]"
            :class="btn.color"
            :outline="btn.outline"
            @click.stop="btn.action">
       <v-icon>{{btn.icon}}</v-icon>
     </v-btn>
-  </div>
+  </transition-group>
 </template>
 
 <script>
@@ -21,7 +22,6 @@
             icon: 'delete',
             outline: true,
             action: () => {
-              if(!this.selected.length) return
               for(let {id} of this.selected)
                 this.crud({type: 'delete', id})
             },
@@ -38,6 +38,14 @@
         ],
       }
     },
+    computed: {
+      show(){
+        return {
+          delete: !!this.selected.length,
+          create: true
+        }
+      }
+    }
   }
 </script>
 

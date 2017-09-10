@@ -50,16 +50,16 @@ export default {
   methods: {
     setData(data) {
       this.table.items = data.map(d => ({
-        date: this.dateInterval([d.startDate, d.endDate]),
+        date: {
+          display: this.dateInterval([d.startDate, d.endDate]),
+          sort: d.startDate
+        },
         startDate: new Date(d.startDate),
         endDate: new Date(d.endDate),
         contact: d.contact,
         name: d.contact.name,
       }))
     },
-    dateInterval(dates) {
-      return dates.map( date => this.localeString(date, 'Date') ).join(' ~ ')
-    }
   },
   computed: {
     duty(){

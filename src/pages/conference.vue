@@ -87,8 +87,8 @@
               display: unsaved ? d.name : undefined,
             },
             when: {
-              display: d.when || null,
-              sort: d.start || '',
+              display: this.dateInterval([d.start, d.end]),
+              sort: d.start || d.end || '',
             },
             where: d.where,
             deadline: d.deadlineDisplay,

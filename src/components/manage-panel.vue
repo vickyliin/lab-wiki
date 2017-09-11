@@ -38,7 +38,7 @@
         type: Function,
         default(items){
           return items.map(
-            item => item[this.title]
+            item => this.localeString(item[this.title], 'Date')
           ).filter(x => x!=null).join('\n')
         }
       },

@@ -57,8 +57,8 @@ ${fileContent}
           search: '',
           loading: true,
           headers: [
-            { value: 'date' },
-            { value: 'presenter' },
+            'date',
+            'presenter',
             {
               value: 'topic', display: (value, text) =>
                 text + (value.slides ? ` <a href="${value.slides}" target="_blank">Slide</a>` : '')
@@ -96,7 +96,7 @@ ${fileContent}
             { name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field' }
           ],
           value: null,
-          onSubmit: x => x, //initialize
+          onSubmit: this.updateData,
           display: false,
           item: null,
         },
@@ -108,7 +108,6 @@ ${fileContent}
             title: 'Add Seminar',
             value: null,
             item: null,
-            onSubmit: this.updateData,
             display: true,
           },
           get update(){
@@ -122,7 +121,6 @@ ${fileContent}
                 topic: item.topic.text,
               },
               item,
-              onSubmit: this.updateData,
               display: true,
             }
           },

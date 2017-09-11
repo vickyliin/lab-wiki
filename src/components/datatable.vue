@@ -103,10 +103,10 @@
     ],
     data() {
       let vheaders = this.headers.map(header => {
-        if (header.constructor === String)
+        if (typeof header === 'string')
           return { text: header, value: header }
         else if (header.text === undefined)
-          return Object.assign(header, { text: header.value })
+          return { text: header.value, ...header }
         else
           return header
       })
@@ -131,17 +131,16 @@
             else if (cellData.display !== undefined) dataForSort = cellData.display
             else dataForSort = cellData
 
-            if (dataForSort == null) data[pos] = -Infinity
+            if (!dataForSort && dataForSort !== 0) data[pos] = -Infinity
             else if (!isNaN(Number(dataForSort))) data[pos] = parseFloat(dataForSort)
             else if (!isNaN(Date.parse(dataForSort))) data[pos] = new Date(dataForSort)
             else if (typeof dataForSort === 'string') data[pos] = dataForSort.trim()
 
             if (typeof data[pos] !== 'string' && isNaN(data[pos])) {
-              console.log('cellData', cellData)
+              console.log('cellData', typeof cellData, cellData)
               console.log('dataForSort', typeof dataForSort, dataForSort)
               console.log('data[pos]', data[pos])
-              console.log('!isNaN(dataForSort)', !isNaN(dataForSort))
-              console.log('typeof cellData', typeof cellData)
+              console.log('isNaN(data[pos])', isNaN(data[pos]))
               throw new TypeError('The cell data of datatable should be strings/numbers/dates, or a sort/text/display property should be provided.')
             }
           }

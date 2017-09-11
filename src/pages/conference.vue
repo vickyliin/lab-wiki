@@ -23,7 +23,7 @@
   import $ from 'ajax'
   import datatable from 'components/datatable.vue'
 
-  const searchPath = '/cfpSearch'
+  const searchPath = '/search'
 
   export default {
     components: { datatable },
@@ -102,7 +102,7 @@
           this.items.unsaved = {}
           return
         }
-        let data = await this.crud({path: searchPath, data: { q }})
+        let data = await this.crud({path: this.model + searchPath, data: { q }})
         this.setData(data, 'unsaved')
       },
       async createData(item) {

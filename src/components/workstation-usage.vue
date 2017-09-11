@@ -22,6 +22,7 @@
       <v-flex>
         <v-container fluid>
           <datatable v-bind="table"
+                     :pagination.sync="table.pagination"
                      @sorted="items => this.sortedItems = items"
                      @clickSort="sorting = true">
           </datatable>
@@ -63,7 +64,7 @@
         table: {
           headers: this.headers,
           items: [],
-          initPagination: {
+          pagination: {
             sortBy: 'memory',
             rowsPerPage: -1,
             descending: true

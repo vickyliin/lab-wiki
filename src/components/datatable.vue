@@ -3,7 +3,6 @@
     :hide-actions="!actions"
     :headers="vheaders"
     :items="items"
-    :pagination.sync="pagination"
     :customSort="customSort"
     :search="search"
     :filter="filter"
@@ -11,6 +10,8 @@
     :select-all="selectAll"
     :selected-key="selectedKey"
     :value="value"
+    :pagination="pagination"
+    @update:pagination="e => $emit('update:pagination', e)"
     @input="e => $emit('input', e)">
     <template slot="headers" scope="props">
       <tr>
@@ -91,7 +92,7 @@
     props: [
       'headers',
       'items',
-      'initPagination',
+      'pagination',
       'search',
       'actions',
       'actionIcons',
@@ -111,7 +112,6 @@
           return header
       })
       return {
-        pagination: this.initPagination,
         vheaders,
         selected: [],
       }
@@ -158,18 +158,20 @@
         return sortedItems
       },
       changeSort(column) {
-        if (this.pagination.sortBy === column)
-          this.pagination.descending = !this.pagination.descending
+        let { descending, sortBy } = this.pagination
+        if (sortBy === column)
+          descending = !descending
         else {
-          this.pagination.sortBy = column
-          this.pagination.descending = false
+          sortBy = column
+          descending = false
         }
+        this.$emit('update:pagination', { ...this.pagination, descending, sortBy })
       },
-      toggleAll () {
+      toggleAll() {
         if (this.value.length) this.$emit('input', [])
         else this.$emit('input', this.items.slice())
       },
-      filter(value){
+      filter(value) {
         if (value != null && typeof value !== 'string') {
           if (value.search !== undefined) {
             value = value.search

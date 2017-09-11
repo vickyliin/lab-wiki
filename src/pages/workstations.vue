@@ -1,6 +1,7 @@
 <template>
   <v-container class="workstation">
-    <datatable v-bind="table"></datatable>
+    <datatable v-bind="table"
+               :pagination.sync="table.pagination"></datatable>
   </v-container>
 </template>
 <script>
@@ -14,7 +15,7 @@
           headers: 'server os cpu cores clock mem gpu ssh'.split(' '),
           items: [],
           loading: true,
-          initPagination: {
+          pagination: {
             sortBy: 'server',
             rowsPerPage: -1,
             descending: false

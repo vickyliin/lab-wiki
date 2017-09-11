@@ -11,7 +11,8 @@
       ></v-text-field>
     </v-layout>
     <v-layout column>
-      <datatable v-bind="table">
+      <datatable v-bind="table"
+                 :pagination.sync="table.pagination">
       </datatable>
     </v-layout>
   </v-container>
@@ -42,7 +43,7 @@
             { value: 'deadline' },
           ],
           items: [],
-          initPagination: {
+          pagination: {
             sortBy: 'deadline',
             rowsPerPage: 10,
             descending: false

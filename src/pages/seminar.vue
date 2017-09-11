@@ -11,7 +11,8 @@
       ></v-text-field>
     </v-layout>
     <datatable v-bind="table"
-               v-model="table.value">
+               v-model="table.value"
+               :pagination.sync="table.pagination">
     </datatable>
     <form-dialog :title="dialog.title"
                  :fields="dialog.fields"
@@ -65,7 +66,7 @@ ${fileContent}
             },
           ],
           items: [],
-          initPagination: {
+          pagination: {
             sortBy: 'date',
             rowsPerPage: 10,
             descending: true

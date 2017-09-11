@@ -2,7 +2,9 @@
   <v-container>
     <h6>On duty this week: <b>{{ duty }}</b></h6>
     <v-layout column>
-      <datatable v-bind="table" class="garbage">
+      <datatable v-bind="table"
+                 :pagination.sync="table.pagination"
+                 class="garbage">
       </datatable>
     </v-layout>
   </v-container>
@@ -22,7 +24,7 @@ export default {
         ],
         loading: true,
         items: [],
-        initPagination: {
+        pagination: {
           sortBy: 'date',
           rowsPerPage: 10,
           descending: false

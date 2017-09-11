@@ -90,7 +90,7 @@ src\
 
 - Display :heavy_check_mark:
 - Search/Highlight :heavy_check_mark:
-- Add/Update/Remove
+- Add, Update, Remove
 
 ### GPU Usage
 
@@ -101,18 +101,17 @@ src\
 ### Workstations :heavy_check_mark:
 
 - Table :heavy_check_mark:
-- Static information :zap:
 
 ### CPU/MEM Usage
 
-- Table :zap:
-- Chart :zap:
+- Table :heavy_check_mark:
+- Chart :heavy_check_mark:
 
 ### News
 
 - Display :heavy_check_mark:
 - Pagination
-- Add/Update/Remove
+- Add, Update, Remove
 
 ### Seminar
 

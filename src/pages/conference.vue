@@ -12,9 +12,7 @@
 </template>
 
 <script>
-  import { entry } from 'config'
   import _ from 'lodash'
-  import $ from 'ajax'
   import datatable from 'components/datatable.vue'
 
   const searchPath = '/search'

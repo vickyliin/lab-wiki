@@ -186,7 +186,7 @@
           let text = highlightText(value.text)
           return display(value, text)
         }
-        else if (value.display){
+        else if (value.display) {
           return highlightText(value.display)
         }
         else {

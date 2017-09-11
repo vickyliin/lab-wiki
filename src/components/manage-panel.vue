@@ -14,7 +14,7 @@
 <script>
   export default {
     props: ['dialog', 'selected', 'dialogs', 'setData'],
-    data(){
+    data() {
       return {
         buttons: [
           {
@@ -22,8 +22,8 @@
             icon: 'delete',
             outline: true,
             action: () => {
-              for(let {id} of this.selected)
-                this.crud({type: 'delete', id})
+              for (let { id } of this.selected)
+                this.crud({ type: 'delete', id })
             },
           },
           {
@@ -39,7 +39,7 @@
       }
     },
     computed: {
-      show(){
+      show() {
         return {
           delete: !!(this.selected && this.selected.length),
           create: true

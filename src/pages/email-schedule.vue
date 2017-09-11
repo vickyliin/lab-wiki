@@ -41,11 +41,11 @@
         table: {
           search: '',
           headers: [
-            { value: 'time'},
+            { value: 'time' },
             { value: 'mailto' },
             { value: 'subject' },
             { value: 'body' },
-            { value: 'status'}
+            { value: 'status' }
           ],
           items: [],
           pagination: {
@@ -69,7 +69,8 @@
         dialog: {
           title: null,
           fields: [
-            { name: 'mailto', label: 'Mail to', required: true, icon: 'email', component: 'v-text-field', rules: [
+            {
+              name: 'mailto', label: 'Mail to', required: true, icon: 'email', component: 'v-text-field', rules: [
                 v => !!v || '',
                 v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
               ]
@@ -98,7 +99,7 @@
           mailto: d.mailto,
           subject: d.subject,
           body: d.body,
-          status: d.isSent ? 'Sent': 'Pending',
+          status: d.isSent ? 'Sent' : 'Pending',
           isSent: d.isSent,
           id: d.id,
         }))

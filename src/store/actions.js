@@ -17,27 +17,25 @@ let authentications = {
       gapi.load('client:auth2', resolve)
     )
   },
-  async gAuthInit({ commit, dispatch }) {
+  async gAuthInit({ commit, dispatch, state: {gAuth} }) {
+    if(gAuth) return
     await dispatch('gLoadAuth')
     await gapi.client.init(gClientSettings)
-    let gAuth = gapi.auth2.getAuthInstance()
-    commit('gAuth', gAuth)
+    gAuth = gapi.auth2.getAuthInstance()
     await gAuth.then()
-
-    let user = gAuth.currentUser.get()
-    if (user) {
-      commit('user', user)
-      commit('userRole', await getUserRole())
-    }
-
+    commit('gAuth', gAuth)
     return [gAuth]
   },
+  async authInit({commit, dispatch, state: {gAuth}}){
+    console.log('authInit')
+    if(!gAuth) [gAuth] = await dispatch('gAuthInit')
+    let user = gAuth.currentUser.get()
+    if (user) commit('user', user)
+    await dispatch('signIn', user)
+  },
   async gSignIn({ state: { gAuth }, commit, dispatch }) {
-    if (!gapi.auth2) {
-      gAuth = (await dispatch('gAuthInit'))[0]
-    }
-    else {
-      await gAuth.then()
+    if (!gAuth) {
+      [gAuth] = await dispatch('gAuthInit')
     }
     let user
     try {
@@ -51,13 +49,15 @@ let authentications = {
     commit('user', user)
     return user
   },
-  async signIn({ dispatch, commit }) {
-    let user
-    try {
-      user = await dispatch('gSignIn')
-    }
-    catch (e) {
-      return
+  async signIn({ dispatch, commit }, user) {
+    console.log('signIn', user)
+    if(!user){
+      try {
+        user = await dispatch('gSignIn')
+      }
+      catch (e) {
+        return
+      }
     }
     let { status } = await $.post({
       url: loginUrl,
@@ -68,7 +68,7 @@ let authentications = {
   },
   async gSignOut({ state: { gAuth }, commit, dispatch }) {
     if (gAuth === null) {
-      gAuth = (await dispatch('gAuthInit'))[0]
+      [gAuth] = await dispatch('gAuthInit')
     }
     try {
       await gAuth.signOut()

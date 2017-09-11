@@ -51,7 +51,7 @@
             :class="header"
             :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
           <template v-if="props.item[header] == null"></template>
-          <span v-else-if="search"
+          <span v-else-if="search || highlightText"
                 v-html="highlight(props.item[header], display)"></span>
           <span v-else-if="props.item[header].display !== undefined"
                 v-html="props.item[header].display"></span>
@@ -100,7 +100,8 @@
       'selectAll',
       'selectedKey',
       'enableSelect',
-      'value'
+      'value',
+      'highlightText'
     ],
     data() {
       let vheaders = this.headers.map(header => {
@@ -188,6 +189,9 @@
           let text = highlightText(value.text)
           return display(value, text)
         }
+        else if (value.display){
+          return highlightText(value.display)
+        }
         else {
           return highlightText(this.localeString(value, 'Date'))
         }
@@ -201,11 +205,12 @@
     },
     computed: {
       searchRegex() {
+        let text = this.highlightText || this.search
         try {
-          return new RegExp(`(${this.search})`, 'ig')
+          return new RegExp(`(${text})`, 'ig')
         }
         catch (e) {
-          return new RegExp(`(${_.escapeRegExp(this.search)})`, 'ig')
+          return new RegExp(`(${_.escapeRegExp(text)})`, 'ig')
         }
       },
     },

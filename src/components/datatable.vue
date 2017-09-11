@@ -61,15 +61,10 @@
                 v-html="localeString(props.item[header], 'Date')"></span>
         </td>
         <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(props.item)">
-          <v-btn icon small
-                 v-for="({show, href, action, color, icon},i) in actionIcons"
-                 v-if="show(props.item)"
-                 :href="href? href(props.item): ''"
-                 @click.stop="action(props.item)"
-                 style="margin: 0" :key="i"
-                 :class="color+'--text'">
-            <v-icon>{{icon}}</v-icon>
-          </v-btn>
+          <action-icon v-for="(ai, i) in actionIcons"
+                       v-bind="ai" :key="i"
+                       :item="props.item">
+          </action-icon>
         </td>
       </tr>
     </template>
@@ -81,6 +76,7 @@
 
 <script>
   import _ from 'lodash'
+  import actionIcon from 'components/action-icon.vue'
 
   const sortOrder = {
     [Number]: 0,
@@ -103,6 +99,7 @@
       'value',
       'highlightText'
     ],
+    components: { actionIcon },
     data() {
       let vheaders = this.headers.map(header => {
         if (typeof header === 'string')

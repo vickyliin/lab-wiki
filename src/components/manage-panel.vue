@@ -1,5 +1,5 @@
 <template>
-  <transition-group name="fade-transition" class="manage-panel" v-if="userRole === 'admin'">
+  <transition-group name="fade-transition" class="manage-panel" v-if="isAdmin">
     <v-btn fab small ripple outline
            v-for="(btn, i) in buttons" :key="i"
            v-if="show[btn.type]"
@@ -41,7 +41,7 @@
     computed: {
       show(){
         return {
-          delete: !!this.selected.length,
+          delete: !!(this.selected && this.selected.length),
           create: true
         }
       }

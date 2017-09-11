@@ -10,16 +10,12 @@
         <v-container fluid>
           <v-layout column>
             <component v-for="(field, i) in fields"
+                       v-bind="field"
                        :key="i"
                        :is="field.component"
-                       :label="field.label"
-                       :icon="field.icon"
                        :prepend-icon="field.icon"
-                       :required="field.required"
                        :error="error[i]"
                        :value="value? value[field.name]: null"
-                       :multi-line="field.multiLine"
-                       :rules="field.rules"
                        @input="data => onInput(field.name, data)">
             </component>
           </v-layout>

@@ -55,7 +55,7 @@
           actions: true,
           actionIcons: [
             {
-              icon: 'mode_edit',
+              icon: 'edit',
               color: 'teal',
               show: item => !item.isSent,
               action: item => this.beforeUpdateData(item),
@@ -89,7 +89,7 @@
       this.crud()
     },
     mounted() {
-      this.table.enableSelect = this.userRole === 'admin'
+      this.table.enableSelect = this.isAdmin
     },
     methods: {
       setData(data) {
@@ -147,7 +147,7 @@
         this.table.search = this.search
       }, 500),
       userRole(newVal) {
-        this.table.enableSelect = newVal === 'admin'
+        this.table.enableSelect = this.isAdmin
       },
     }
   }

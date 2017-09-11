@@ -74,12 +74,13 @@ ${fileContent}
           actions: true,
           actionIcons: [
             {
-              icon: 'mode_edit',
+              icon: 'edit',
               color: 'teal',
               show: item => this.editable(item),
               action: item => {
                 this.dialogs.item = item
                 Object.assign(this.dialog, this.dialogs.update)
+                this.dialog.display = true
               },
             },
           ],
@@ -109,7 +110,6 @@ ${fileContent}
             title: 'Add Seminar',
             value: null,
             item: null,
-            display: true,
           },
           get update() {
             let item = this.item
@@ -122,7 +122,6 @@ ${fileContent}
                 topic: item.topic.text,
               },
               item,
-              display: true,
             }
           },
         },
@@ -132,7 +131,7 @@ ${fileContent}
       this.crud()
     },
     mounted() {
-      this.table.enableSelect = this.userRole === 'admin'
+      this.table.enableSelect = this.isAdmin
     },
     methods: {
       setData(data) {
@@ -191,7 +190,7 @@ ${fileContent}
         resolve()
       },
       editable(item) {
-        return item.owner === this.userEmail || this.userRole === 'admin'
+        return item.owner === this.userEmail || this.isAdmin
       },
     },
     computed: {
@@ -213,7 +212,7 @@ ${fileContent}
         this.table.search = this.search
       }, 500),
       userRole(newVal) {
-        this.table.enableSelect = newVal === 'admin'
+        this.table.enableSelect = this.isAdmin
       },
     }
   }

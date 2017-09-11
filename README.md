@@ -90,7 +90,7 @@ src\
 
 - Display :heavy_check_mark:
 - Search/Highlight :heavy_check_mark:
-- Add, Update, Remove
+- Add, Update, Remove :heavy_check_mark:
 
 ### GPU Usage
 
@@ -111,7 +111,7 @@ src\
 
 - Display :heavy_check_mark:
 - Pagination
-- Add, Update, Remove
+- Add, Update, Remove :heavy_check_mark:
 
 ### Seminar
 

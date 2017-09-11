@@ -33,7 +33,7 @@
                  width="70%">
     </form-dialog>
     <manage-panel :dialog="dialog" :dialogs="dialogs"
-                  :setData="setData" title="title"
+                  :setData="setData" title="date"
                   :selected="selectedItems"></manage-panel>
   </v-container>
 </template>

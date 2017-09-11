@@ -28,6 +28,9 @@ export default {
     model() {
       return this.$route.path
     },
-    ...mapState(['userRole'])
+    ...mapState(['userRole']),
+    isAdmin() {
+      return this.userRole === 'admin'
+    }
   }
 }

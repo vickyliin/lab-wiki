@@ -102,15 +102,15 @@
           this.items.unsaved = {}
           return
         }
-        let data = await this.crud({path: this.model + searchPath, data: { q }})
+        let data = await this.crud({ path: this.model + searchPath, data: { q } })
         this.setData(data, 'unsaved')
       },
       async createData(item) {
-        await this.crud({type: 'create', data: item.raw})
+        await this.crud({ type: 'create', data: item.raw })
         this.$delete(this.items.unsaved, name)
       },
-      deleteData(item){
-        this.crud({type: 'delete', id: item.id})
+      deleteData(item) {
+        this.crud({ type: 'delete', id: item.id })
       },
     },
     computed: {

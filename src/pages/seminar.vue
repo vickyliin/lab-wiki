@@ -21,9 +21,9 @@
                  @submit="dialog.onSubmit"
                  width="35rem">
     </form-dialog>
-    <managePanel :dialog="dialog" :dialogs="dialogs"
-                 :selected="table.value"
-                 :setData="setData"></managePanel>
+    <manage-panel :dialog="dialog" :dialogs="dialogs"
+                  :selected="table.value"
+                  :setData="setData"></manage-panel>
   </v-container>
 </template>
 
@@ -37,8 +37,8 @@
   import managePanel from 'components/manage-panel.vue'
 
   const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
-  const multipartRequestBody = ({boundary, metadata, fileType, fileContent}) =>
-`
+  const multipartRequestBody = ({ boundary, metadata, fileType, fileContent }) =>
+    `
 --${boundary}
 Content-Type: application/json
 
@@ -102,7 +102,7 @@ ${fileContent}
           item: null,
         },
         dialogs: {
-          item: {topic: {}},
+          item: { topic: {} },
           updateData: this.updateData,
           localeString: this.localeString,
           create: {
@@ -111,7 +111,7 @@ ${fileContent}
             item: null,
             display: true,
           },
-          get update(){
+          get update() {
             let item = this.item
             return {
               title: 'Update Seminar',
@@ -187,7 +187,7 @@ ${fileContent}
           }
         }
         let id = this.dialog.item ? this.dialog.item.id : undefined
-        await this.crud({type: 'post', data, id})
+        await this.crud({ type: 'post', data, id })
         resolve()
       },
       editable(item) {

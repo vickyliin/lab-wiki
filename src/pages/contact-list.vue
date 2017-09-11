@@ -32,39 +32,40 @@
     </transition-group>
   </v-container>
 </template>
+
 <script>
-  import {mapActions} from 'vuex'
+  import { mapActions } from 'vuex'
   import $ from 'ajax'
   import _ from 'lodash'
-  import {entry} from 'config'
+  import { entry } from 'config'
 
-  export default{
-    data(){
+  export default {
+    data() {
       return {
         entry,
         contactData: [],
         fields: [
-          {name: 'account', icon: 'account_circle'},
-          {name: 'email', icon: 'email'},
-          {name: 'phone', icon: 'phone', href: phone => 'tel:'+phone}
+          { name: 'account', icon: 'account_circle' },
+          { name: 'email', icon: 'email' },
+          { name: 'phone', icon: 'phone', href: phone => 'tel:' + phone }
         ],
         search: '',
         debouncedSearch: '',
       }
     },
-    created(){
+    created() {
       this.crud()
     },
     methods: {
-      async setData(data){
+      async setData(data) {
         this.contactData = data
       },
     },
     computed: {
-      filteredData(){
+      filteredData() {
         return this.contactData.filter(person => {
-          for(let key in person){
-            if(person[key].toString().indexOf(this.debouncedSearch) !== -1)
+          for (let key in person) {
+            if (person[key].toString().indexOf(this.debouncedSearch) !== -1)
               return true
           }
           return false
@@ -72,7 +73,7 @@
       },
     },
     watch: {
-      search: _.debounce(function(){
+      search: _.debounce(function() {
         this.debouncedSearch = this.search
       }, 500)
     },

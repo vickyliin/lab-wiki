@@ -17,8 +17,8 @@ let authentications = {
       gapi.load('client:auth2', resolve)
     )
   },
-  async gAuthInit({ commit, dispatch, state: {gAuth} }) {
-    if(gAuth) return
+  async gAuthInit({ commit, dispatch, state: { gAuth } }) {
+    if (gAuth) return
     await dispatch('gLoadAuth')
     await gapi.client.init(gClientSettings)
     gAuth = gapi.auth2.getAuthInstance()
@@ -26,9 +26,10 @@ let authentications = {
     commit('gAuth', gAuth)
     return [gAuth]
   },
-  async authInit({commit, dispatch, state: {gAuth}}){
-    console.log('authInit')
-    if(!gAuth) [gAuth] = await dispatch('gAuthInit')
+  async authInit({ commit, dispatch, state: { gAuth } }) {
+    if (!gAuth) {
+      [gAuth] = await dispatch('gAuthInit')
+    }
     let user = gAuth.currentUser.get()
     if (user) commit('user', user)
     await dispatch('signIn', user)
@@ -50,8 +51,7 @@ let authentications = {
     return user
   },
   async signIn({ dispatch, commit }, user) {
-    console.log('signIn', user)
-    if(!user){
+    if (!user) {
       try {
         user = await dispatch('gSignIn')
       }
@@ -96,13 +96,13 @@ export default {
     }[type] || type
 
     let { response, status } = await $[reqType]({
-      url: entry + path + (id? `/${id}`:''),
+      url: entry + path + (id ? `/${id}` : ''),
       data
     })
     commit('status', status)
 
     if (status !== 200) return null
-    if (type !== 'read') return await dispatch('crud',{ path, type: 'read' })
+    if (type !== 'read') return await dispatch('crud', { path, type: 'read' })
     return response
   },
 }

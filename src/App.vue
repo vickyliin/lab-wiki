@@ -19,7 +19,7 @@
       }
     },
     created() {
-      this.$store.dispatch('gAuthInit')
+      this.$store.dispatch('authInit')
     },
   }
 </script>

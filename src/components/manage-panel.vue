@@ -1,6 +1,8 @@
 <template>
   <transition-group name="fade-transition" class="manage-panel" v-if="isAdmin">
-    <span v-if="selected && selected.length" :key="0">
+    <span v-if="selected && selected.length"
+          :key="0"
+          v-tooltip:top="{ html: tooltipValue, visible: !!tooltipValue }">
       {{selected.length | localeString}} selected
     </span>
     <v-btn fab small ripple outline
@@ -16,7 +18,34 @@
 
 <script>
   export default {
-    props: ['dialog', 'selected', 'dialogs', 'setData'],
+    props: {
+      dialog: {
+        type: Object,
+        required: true
+      },
+      dialogs: {
+        type: Object,
+        required: true
+      },
+      setData: {
+        type: Function,
+        required: true
+      },
+      selected: {
+        type: [Object, Array],
+      },
+      tooltip: {
+        type: Function,
+        default(items){
+          return items.map(
+            item => item[this.title]
+          ).filter(x => x!=null).join('\n')
+        }
+      },
+      title: {
+        type: String,
+      }
+    },
     data() {
       return {
         buttons: [
@@ -47,7 +76,10 @@
           delete: !!(this.selected && this.selected.length),
           create: true
         }
-      }
+      },
+      tooltipValue(){
+        return this.tooltip(this.selected)
+      },
     }
   }
 </script>

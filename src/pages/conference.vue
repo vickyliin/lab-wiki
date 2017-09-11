@@ -2,17 +2,10 @@
   <v-container>
     <v-layout mb-3 v-if="userRole === 'admin'">
       <v-spacer></v-spacer>
-      <v-text-field
-          append-icon="search"
-          label="Search and Add Conference to list"
-          placeholder="NLP"
-          hide-details
-          v-model="search"
-      ></v-text-field>
+      <v-text-field append-icon="search" label="Search and Add Conference to list" placeholder="NLP" hide-details v-model="search"></v-text-field>
     </v-layout>
     <v-layout column>
-      <datatable v-bind="table"
-                 :pagination.sync="table.pagination">
+      <datatable v-bind="table" :pagination.sync="table.pagination">
       </datatable>
     </v-layout>
   </v-container>
@@ -32,11 +25,12 @@
       return {
         search: '',
         table: {
+          highlightText: '',
           headers: [
             {
               value: 'name',
-              display: (item, text) =>
-                `<a href="${item.url}" target="_blank">${text}</a>`
+              display: ({ url }, text) => url ?
+                `<a href="${url}" target="_blank">${text}</a>` : text
             },
             { value: 'when' },
             { value: 'where' },
@@ -45,7 +39,7 @@
           items: [],
           pagination: {
             sortBy: 'deadline',
-            rowsPerPage: 10,
+            rowsPerPage: -1,
             descending: false
           },
           loading: true,
@@ -75,9 +69,9 @@
       this.crud()
     },
     methods: {
-      async setData(data, target = 'saved') {
+      setData(data, target = 'saved') {
         this.items[target] = {}
-        let unsaved = target === 'unsaved'
+        let unsaved = target === 'unsaved' ? 1 : 0
         for (let d of data) {
           this.$set(this.items[target], d.name, {
             id: d.id,
@@ -105,6 +99,10 @@
         }
         let data = await this.crud({ path: this.model + searchPath, data: { q } })
         this.setData(data, 'unsaved')
+        Object.assign(this.table.pagination, {
+          sortBy: 'unsaved',
+          descending: true,
+        })
       },
       async createData(item) {
         await this.crud({ type: 'create', data: item.raw })
@@ -121,8 +119,9 @@
       },
     },
     watch: {
-      search: _.debounce(function(newVal) {
-        this.searchData(newVal)
+      search: _.debounce(async function(newVal) {
+        await this.searchData(newVal)
+        this.table.highlightText = newVal
       }, 800),
       tableItems(items) {
         this.table.items = items

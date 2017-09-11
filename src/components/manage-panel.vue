@@ -1,7 +1,10 @@
 <template>
   <transition-group name="fade-transition" class="manage-panel" v-if="isAdmin">
+    <span v-if="selected && selected.length" :key="0">
+      {{selected.length | localeString}} selected
+    </span>
     <v-btn fab small ripple outline
-           v-for="(btn, i) in buttons" :key="i"
+           v-for="(btn, i) in buttons" :key="i+1"
            v-if="show[btn.type]"
            :class="btn.color"
            :outline="btn.outline"

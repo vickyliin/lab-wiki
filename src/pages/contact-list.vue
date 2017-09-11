@@ -21,9 +21,10 @@
             <v-checkbox primary
                         hide-details
                         v-if="isAdmin"
+                        :label="person.name"
                         :input-value="person.selected"
                         style="padding: 0"></v-checkbox>
-            <span class="title">
+            <span class="title" v-else>
               {{person.name}}
             </span>
             <v-spacer></v-spacer>
@@ -54,7 +55,7 @@
                  width="35rem">
     </form-dialog>
     <manage-panel :dialog="dialog" :dialogs="dialogs"
-                  :setData="setData"
+                  :setData="setData" title="name"
                   :selected="selectedItems"></manage-panel>
   </v-container>
 </template>

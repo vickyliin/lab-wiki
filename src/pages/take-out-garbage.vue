@@ -17,9 +17,10 @@ export default {
     return {
       table: {
         headers: [
-          { value: 'date' },
+          'date',
           { value: 'name', text: 'contact' },
         ],
+        loading: true,
         items: [],
         initPagination: {
           sortBy: 'date',
@@ -59,6 +60,7 @@ export default {
         contact: d.contact,
         name: d.contact.name,
       }))
+      this.table.loading = false
     },
   },
   computed: {

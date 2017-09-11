@@ -13,6 +13,7 @@
         table: {
           headers: 'server os cpu cores clock mem gpu ssh'.split(' '),
           items: [],
+          loading: true,
           initPagination: {
             sortBy: 'server',
             rowsPerPage: -1,
@@ -38,6 +39,7 @@
           },
           ssh: d.ssh
         }))
+        this.table.loading = false
       },
     },
   }

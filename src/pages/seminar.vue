@@ -55,6 +55,7 @@ ${fileContent}
       return {
         table: {
           search: '',
+          loading: true,
           headers: [
             { value: 'date' },
             { value: 'presenter' },
@@ -147,6 +148,7 @@ ${fileContent}
           owner: d.owner,
           id: d.id,
         }))
+        this.table.loading = false
       },
       async uploadFile(file) {
         let reader = new FileReader()

@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/vickyliin/lab-wiki.svg?token=7G7pw3SHSvLTKesRL9zu&branch=master)](https://travis-ci.com/vickyliin/lab-wiki)
 # Lab WIKI
 
 This is a [Vue.js](https://vuejs.org/) webapp, developing with module bundler [Webpack](https://webpack.js.org/).

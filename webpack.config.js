@@ -8,11 +8,6 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'build.js'
   },
-  resolve: {
-    alias: {
-      'public': path.resolve(__dirname, './public')
-    }
-  },
   module: {
     rules: [
       {
@@ -38,34 +33,35 @@ module.exports = {
       },
       {
         test: /\.csv$/,
-        loader: 'raw-loader',
+        loader: 'raw-loader'
       },
       {
         test: /\.styl$/,
         use: [
           {
-            loader: 'style-loader',
+            loader: 'style-loader'
           },
           {
-            loader: 'css-loader',
+            loader: 'css-loader'
           },
           {
-            loader: 'stylus-loader',
-          },
-        ],
+            loader: 'stylus-loader'
+          }
+        ]
       }
     ]
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'public': path.resolve(__dirname, './public')
     },
-    modules: ['src', 'node_modules'],
+    modules: ['src', 'node_modules']
   },
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    port: 12345,
+    port: 12345
   },
   performance: {
     hints: false

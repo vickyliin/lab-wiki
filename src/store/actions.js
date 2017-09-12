@@ -1,5 +1,5 @@
 import 'assets/js/platform'
-import { gAuthSettings, gClientSettings, entry } from 'config'
+import { gClientSettings, entry } from 'config'
 import $ from 'ajax'
 
 const loginUrl = entry + '/login'
@@ -12,12 +12,12 @@ const getUserRole = async () => {
 }
 
 let authentications = {
-  gLoadAuth() {
+  gLoadAuth () {
     return new Promise(resolve =>
       gapi.load('client:auth2', resolve)
     )
   },
-  async gAuthInit({ commit, dispatch, state: { gAuth } }) {
+  async gAuthInit ({ commit, dispatch, state: { gAuth } }) {
     if (gAuth) return
     await dispatch('gLoadAuth')
     await gapi.client.init(gClientSettings)
@@ -26,7 +26,7 @@ let authentications = {
     commit('gAuth', gAuth)
     return [gAuth]
   },
-  async authInit({ commit, dispatch, state: { gAuth } }) {
+  async authInit ({ commit, dispatch, state: { gAuth } }) {
     if (!gAuth) {
       [gAuth] = await dispatch('gAuthInit')
     }
@@ -34,7 +34,7 @@ let authentications = {
     if (user) commit('user', user)
     await dispatch('signIn', user)
   },
-  async gSignIn({ state: { gAuth }, commit, dispatch }) {
+  async gSignIn ({ state: { gAuth }, commit, dispatch }) {
     if (!gAuth) {
       [gAuth] = await dispatch('gAuthInit')
     }
@@ -43,19 +43,17 @@ let authentications = {
       user = await gAuth.signIn({
         prompt: 'select_account'
       })
-    }
-    catch ({ error }) {
+    } catch ({ error }) {
       throw Error(`gAuth.signIn Error: ${error}`)
     }
     commit('user', user)
     return user
   },
-  async signIn({ dispatch, commit }, user) {
+  async signIn ({ dispatch, commit }, user) {
     if (!user) {
       try {
         user = await dispatch('gSignIn')
-      }
-      catch (e) {
+      } catch (e) {
         return
       }
     }
@@ -66,19 +64,18 @@ let authentications = {
     commit('userRole', await getUserRole())
     commit('status', status)
   },
-  async gSignOut({ state: { gAuth }, commit, dispatch }) {
+  async gSignOut ({ state: { gAuth }, commit, dispatch }) {
     if (gAuth === null) {
       [gAuth] = await dispatch('gAuthInit')
     }
     try {
       await gAuth.signOut()
-    }
-    catch ({ error }) {
+    } catch ({ error }) {
       throw Error(`gAuth.signOut Error: ${error}`)
     }
     commit('user', null)
   },
-  async signOut({ dispatch, commit }) {
+  async signOut ({ dispatch, commit }) {
     await dispatch('gSignOut')
     await $.post({ url: logoutUrl })
     commit('status', 401)
@@ -87,12 +84,12 @@ let authentications = {
 
 export default {
   ...authentications,
-  async crud({ commit, dispatch }, { type, path, data, id }) {
+  async crud ({ commit, dispatch }, { type, path, data, id }) {
     let reqType = {
       create: 'post',
       read: 'get',
       update: 'post',
-      delete: 'delete',
+      delete: 'delete'
     }[type] || type
 
     let { response, status } = await $[reqType]({
@@ -102,7 +99,7 @@ export default {
     commit('status', status)
 
     if (status !== 200) return null
-    if (type !== 'read') return await dispatch('crud', { path, type: 'read' })
+    if (type !== 'read') return dispatch('crud', { path, type: 'read' })
     return response
-  },
+  }
 }

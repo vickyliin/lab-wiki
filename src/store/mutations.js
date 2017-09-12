@@ -1,6 +1,6 @@
-function setStateMutation(states){
+function setStateMutation (states) {
   let mutations = {}
-  for(let state of states){
+  for (let state of states) {
     mutations[state] = (stateContext, value) => {
       stateContext[state] = value
     }
@@ -9,10 +9,10 @@ function setStateMutation(states){
 }
 
 export default{
-  user(state, user){
+  user (state, user) {
     state.user = user
-    if(user) state.userProfile = user.getBasicProfile()
+    if (user) state.userProfile = user.getBasicProfile()
     else state.userProfile = null
   },
-  ...setStateMutation ('status gAuth userRole'.split(' '))
+  ...setStateMutation('status gAuth userRole'.split(' '))
 }

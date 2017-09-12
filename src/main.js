@@ -7,7 +7,7 @@ import 'composition'
 
 Vue.use(Vuetify)
 
-new Vue({
+new Vue({ // eslint-disable-line
   el: '#app',
   render: h => h(App),
   router,

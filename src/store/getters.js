@@ -1,8 +1,8 @@
-function profileGetters(mapper){
+function profileGetters (mapper) {
   let getters = {}
-  for(let [name, getter] of Object.entries(mapper)){
+  for (let [name, getter] of Object.entries(mapper)) {
     getters[name] = state => {
-      if(!state.userProfile) return
+      if (!state.userProfile) return
       return state.userProfile[getter]()
     }
   }
@@ -10,13 +10,13 @@ function profileGetters(mapper){
 }
 
 export default{
-  userDomain(state){
-    if(!state.user) return
+  userDomain (state) {
+    if (!state.user) return
     return state.user.getHostedDomain()
   },
   ...profileGetters({
     userImg: 'getImageUrl',
     userName: 'getName',
     userEmail: 'getEmail'
-  }),
+  })
 }

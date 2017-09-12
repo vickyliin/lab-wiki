@@ -5,13 +5,13 @@ import filters from './filters'
 let { dispatch } = store
 
 export default {
-  data() {
+  data () {
     return {
       pulling: false
     }
   },
   methods: {
-    async crud({type = 'read', path = this.model, data, id} = {}) {
+    async crud ({type = 'read', path = this.model, data, id} = {}) {
       this.pulling = true
       let response = await dispatch('crud', { type, path, data, id })
       this.pulling = false
@@ -19,17 +19,17 @@ export default {
       if (path === this.model) this.setData(response)
       return response
     },
-    log() {
+    log () {
       console.log.apply(null, arguments)
     },
-    ...filters,
+    ...filters
   },
   computed: {
-    model() {
+    model () {
       return this.$route.path
     },
     ...mapState(['userRole']),
-    isAdmin() {
+    isAdmin () {
       return this.userRole === 'admin'
     }
   }

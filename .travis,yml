@@ -1,0 +1,24 @@
+language: node_js
+
+# test on two node.js versions: 0.8
+node_js:
+  - v6.11.2
+
+before_install: if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
+
+install:
+  - npm install
+
+script:
+  - standard
+  - npm test
+
+# configure notifications (email, IRC, campfire etc)
+# please update this section to your needs!
+notifications:
+  email:
+    recipients:
+      - labwiki@nlg.csie.ntu.edu.tw
+      - vickyliinn@gmail.com
+    on_success: never # default: change
+    on_failure: always # default: always

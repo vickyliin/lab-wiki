@@ -7,21 +7,21 @@
 </template>
 
 <script>
-  import page from 'page.vue'
-  import navigator from 'components/navigator.vue'
-  import toolbar from 'components/toolbar.vue'
+import page from 'page.vue'
+import navigator from 'components/navigator.vue'
+import toolbar from 'components/toolbar.vue'
 
-  export default {
-    components: { navigator, toolbar, page },
-    data() {
-      return {
-        drawer: true,
-      }
-    },
-    created() {
-      this.$store.dispatch('authInit')
-    },
+export default {
+  components: { navigator, toolbar, page },
+  data () {
+    return {
+      drawer: true
+    }
+  },
+  created () {
+    this.$store.dispatch('authInit')
   }
+}
 </script>
 
 <style src="mdi/css/materialdesignicons.min.css"></style>

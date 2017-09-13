@@ -15,12 +15,12 @@ import datatable from 'components/datatable.vue'
 
 export default {
   components: { datatable },
-  data() {
+  data () {
     return {
       table: {
         headers: [
           'date',
-          { value: 'name', text: 'contact' },
+          { value: 'name', text: 'contact' }
         ],
         loading: true,
         items: [],
@@ -42,16 +42,16 @@ export default {
             color: 'grey',
             show: item => true,
             href: item => 'mailto:' + item.contact.email
-          },
-        ],
-      },
+          }
+        ]
+      }
     }
   },
-  created() {
+  created () {
     this.crud()
   },
   methods: {
-    setData(data) {
+    setData (data) {
       this.table.items = data.map(d => ({
         date: {
           display: this.dateInterval([d.startDate, d.endDate]),
@@ -60,21 +60,21 @@ export default {
         startDate: new Date(d.startDate),
         endDate: new Date(d.endDate),
         contact: d.contact,
-        name: d.contact.name,
+        name: d.contact.name
       }))
       this.table.loading = false
-    },
+    }
   },
   computed: {
-    duty(){
+    duty () {
       let now = new Date()
       for (let item of this.table.items) {
         if (item.startDate <= now && now <= item.endDate) {
           return `${item.contact.name} (${item.date.display})`
         }
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

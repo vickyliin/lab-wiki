@@ -27,30 +27,29 @@
 </template>
 <script>
 
-  import * as Pages from './pages/*.vue'
-  import Login from 'components/login.vue'
-  import $ from 'ajax'
+import * as Pages from './pages/*.vue'
+import Login from 'components/login.vue'
 
-  export default{
-    components: {Login, ...Pages},
-    computed: {
-      title(){
-        return this.$route.fullPath.slice(1)
-      },
-      status(){
-        return this.$store.state.status
-      },
-      url(){
-        return this.$route.fullPath
-      },
+export default{
+  components: {Login, ...Pages},
+  computed: {
+    title () {
+      return this.$route.fullPath.slice(1)
     },
-    watch: {
-      url(url){
-        document.title = this.spaceSeparated(this.title) + ' - Natural Language Processing Lab'
-        this.$store.commit('status', 200)
-      },
+    status () {
+      return this.$store.state.status
     },
+    url () {
+      return this.$route.fullPath
+    }
+  },
+  watch: {
+    url (url) {
+      document.title = this.spaceSeparated(this.title) + ' - Natural Language Processing Lab'
+      this.$store.commit('status', 200)
+    }
   }
+}
 
 </script>
 

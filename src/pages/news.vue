@@ -39,90 +39,90 @@
 </template>
 
 <script>
-  import VueMarkdown from 'vue-markdown'
-  import formDialog from 'components/form-dialog.vue'
-  import managePanel from 'components/manage-panel.vue'
-  import actionIcon from 'components/action-icon.vue'
+import VueMarkdown from 'vue-markdown'
+import formDialog from 'components/form-dialog.vue'
+import managePanel from 'components/manage-panel.vue'
+import actionIcon from 'components/action-icon.vue'
 
+const autoText = 'Congratulations to'
 
-  const autoText = 'Congratulations to'
-
-  export default{
-    components: { VueMarkdown, managePanel, formDialog, actionIcon },
-    data(){
-      return {
-        data: [],
-        dialog: {
-          title: null,
-          fields: [
-            { name: 'title', label: 'Title', icon: 'title', required: true, component: 'v-text-field' },
-            { name: 'date', label: 'Date', component: 'date-picker' },
-            { name: 'content', label: 'News Content', multiLine: true, component: 'v-text-field' },
-          ],
-          value: null,
-          onSubmit: this.updateData,
-          display: false,
-          item: null,
+export default{
+  components: { VueMarkdown, managePanel, formDialog, actionIcon },
+  data () {
+    return {
+      data: [],
+      dialog: {
+        title: null,
+        fields: [
+          { name: 'title', label: 'Title', icon: 'title', required: true, component: 'v-text-field' },
+          { name: 'date', label: 'Date', component: 'date-picker' },
+          { name: 'content', label: 'News Content', multiLine: true, component: 'v-text-field' }
+        ],
+        value: null,
+        onSubmit: this.updateData,
+        display: false,
+        item: null
+      },
+      editIcon: {
+        icon: 'edit',
+        color: 'teal',
+        action: item => {
+          this.dialogs.item = item
+          Object.assign(this.dialog, this.dialogs.update)
+          this.dialog.display = true
+        }
+      },
+      dialogs: {
+        item: { },
+        updateData: this.updateData,
+        localeString: this.localeString,
+        create: {
+          title: 'Add News',
+          value: {
+            title: autoText,
+            date: this.localeString(new Date(), 'Date'),
+            content: autoText
+          },
+          item: null
         },
-        editIcon: {
-          icon: 'edit',
-          color: 'teal',
-          action: item => {
-            this.dialogs.item = item
-            Object.assign(this.dialog, this.dialogs.update)
-            this.dialog.display = true
+        get update () {
+          let item = this.item
+          return {
+            title: 'Update News',
+            item,
+            value: item
           }
-        },
-        dialogs: {
-          item: { },
-          updateData: this.updateData,
-          localeString: this.localeString,
-          create: {
-            title: 'Add News',
-            value: {
-              title: autoText,
-              date: this.localeString(new Date(), 'Date'),
-              content: autoText,
-            },
-            item: null,
-          },
-          get update() {
-            let item = this.item
-            return {
-              title: 'Update News',
-              item, value: item,
-            }
-          },
-        },
+        }
       }
+    }
+  },
+  created () {
+    this.crud()
+  },
+  methods: {
+    async setData (data) {
+      this.data = data.sort((r, l) => {
+        r = Date.parse(r.date)
+        l = Date.parse(l.date)
+        if (r === l) return 0
+        if (r < l) return 1
+        return -1
+      }).map(d => ({...d, selected: false}))
     },
-    created(){
-      this.crud()
+    async updateData (resolve) {
+      let data = this.dialog.value
+      let id = this.dialog.item ? this.dialog.item.id : undefined
+      await this.crud({ type: 'post', data, id })
+      resolve()
+    }
+  },
+  computed: {
+    displayData () {
+      return this.data.slice(0, 10)
     },
-    methods: {
-      async setData(data){
-        this.data = data.sort((r,l) => {
-          r = Date.parse(r.date)
-          l = Date.parse(l.date)
-          if(r === l) return 0
-          if(r < l) return 1
-          return -1
-        }).map(d => ({...d, selected: false}))
-      },
-      async updateData(resolve) {
-        let data = this.dialog.value
-        let id = this.dialog.item ? this.dialog.item.id : undefined
-        await this.crud({ type: 'post', data, id })
-        resolve()
-      },
-    },
-    computed: {
-      displayData(){
-        return this.data.slice(0, 10)
-      },
-      selectedItems() {
-        return this.data.filter(d => d.selected)
-      },
+    selectedItems () {
+      return this.data.filter(d => d.selected)
     }
   }
+}
 </script>

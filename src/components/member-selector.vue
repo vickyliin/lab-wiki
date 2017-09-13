@@ -24,39 +24,39 @@
   </v-select>
 </template>
 <script>
-  export default {
-    name: 'member-selector',
-    props: ['icon', 'label', 'value', 'required', 'error', 'rules'],
-    data(){
-      return {
-        people: [],
-        name2index: {}
+export default {
+  name: 'member-selector',
+  props: ['icon', 'label', 'value', 'required', 'error', 'rules'],
+  data () {
+    return {
+      people: [],
+      name2index: {}
+    }
+  },
+  created () {
+    this.crud()
+  },
+  methods: {
+    setData (data) {
+      this.people = data.map(d => ({
+        name: d.name,
+        account: d.account,
+        text: `${d.name} /${d.account}`
+      }))
+      data.forEach((d, i) => {
+        this.$set(this.name2index, d.name, i)
+      })
+    }
+  },
+  watch: {
+    value (newVal) {
+      if (newVal && newVal.constructor === String) {
+        this.$emit('input', this.people[ this.name2index[newVal] ])
       }
-    },
-    created(){
-      this.crud()
-    },
-    methods: {
-      setData(data){
-        this.people = data.map(d => ({
-          name: d.name,
-          account: d.account,
-          text: `${d.name} /${d.account}`
-        }))
-        data.forEach((d, i) => {
-          this.$set(this.name2index, d.name, i)
-        })
-      },
-    },
-    watch: {
-      value(newVal){
-        if(newVal && newVal.constructor === String){
-          this.$emit('input', this.people[ this.name2index[newVal] ])
-        }
-      }
-    },
-    computed: {
-      model: () => '/contactList',
-    },
+    }
+  },
+  computed: {
+    model: () => '/contactList'
   }
+}
 </script>

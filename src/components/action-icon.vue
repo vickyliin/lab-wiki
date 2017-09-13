@@ -10,29 +10,29 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      item: {
-        type: Object,
-        required: true,
-      },
-      icon: {
-        type: String,
-        required: true,
-      },
-      color: {
-        type: String
-      },
-      show: {
-        type: Function,
-        default: () => true
-      },
-      href: {
-        type: Function,
-      },
-      action: {
-        type: Function,
-      },
+export default {
+  props: {
+    item: {
+      type: Object,
+      required: true
     },
+    icon: {
+      type: String,
+      required: true
+    },
+    color: {
+      type: String
+    },
+    show: {
+      type: Function,
+      default: () => true
+    },
+    href: {
+      type: Function
+    },
+    action: {
+      type: Function
+    }
   }
+}
 </script>

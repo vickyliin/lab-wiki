@@ -48,7 +48,7 @@
         </td>
         <td class="text-xs"
             v-for="({value: header, display},i) in vheaders"
-            :class="header"
+            :class="header" :key="i"
             :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
           <template v-if="props.item[header] == null"></template>
           <span v-else-if="search || highlightText"
@@ -75,141 +75,130 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import actionIcon from 'components/action-icon.vue'
+import _ from 'lodash'
+import actionIcon from 'components/action-icon.vue'
 
-  const sortOrder = {
-    [Number]: 0,
-    [Date]: 1,
-    [String]: 2,
-  }
+const sortOrder = {
+  [Number]: 0,
+  [Date]: 1,
+  [String]: 2
+}
 
-  export default {
-    props: [
-      'headers',
-      'items',
-      'pagination',
-      'search',
-      'actions',
-      'actionIcons',
-      'loading',
-      'selectAll',
-      'selectedKey',
-      'enableSelect',
-      'value',
-      'highlightText'
-    ],
-    components: { actionIcon },
-    data() {
-      let vheaders = this.headers.map(header => {
-        if (typeof header === 'string')
-          return { text: header, value: header }
-        else if (header.text === undefined)
-          return { text: header.value, ...header }
-        else
-          return header
+export default {
+  props: [
+    'headers',
+    'items',
+    'pagination',
+    'search',
+    'actions',
+    'actionIcons',
+    'loading',
+    'selectAll',
+    'selectedKey',
+    'enableSelect',
+    'value',
+    'highlightText'
+  ],
+  components: { actionIcon },
+  data () {
+    let vheaders = this.headers.map(header => {
+      if (typeof header === 'string') { return { text: header, value: header } } else if (header.text === undefined) { return { text: header.value, ...header } } else { return header }
+    })
+    return {
+      vheaders,
+      selected: []
+    }
+  },
+  methods: {
+    customSort (items, index, sortDesc) {
+      if (index === null) return items
+      let sortedItems = items.sort((r, l) => {
+        let data = { r, l }
+        for (let pos in data) {
+          let cellData = data[pos][index]
+          let dataForSort
+
+          if (cellData == null) dataForSort = cellData
+          else if (cellData.sort !== undefined) dataForSort = cellData.sort
+          else if (cellData.text !== undefined) dataForSort = cellData.text
+          else if (cellData.display !== undefined) dataForSort = cellData.display
+          else dataForSort = cellData
+
+          if (!dataForSort && dataForSort !== 0) data[pos] = -Infinity
+          else if (!isNaN(Number(dataForSort))) data[pos] = parseFloat(dataForSort)
+          else if (!isNaN(Date.parse(dataForSort))) data[pos] = new Date(dataForSort)
+          else if (typeof dataForSort === 'string') data[pos] = dataForSort.trim()
+
+          if (typeof data[pos] !== 'string' && isNaN(data[pos])) {
+            console.log('cellData', typeof cellData, cellData)
+            console.log('dataForSort', typeof dataForSort, dataForSort)
+            console.log('data[pos]', data[pos])
+            console.log('isNaN(data[pos])', isNaN(data[pos]))
+            throw new TypeError('The cell data of datatable should be strings/numbers/dates, or a sort/text/display property should be provided.')
+          }
+        }
+        r = data.r; l = data.l
+        if (r === l) return 0
+        let isDesc
+        if (r.constructor === l.constructor) isDesc = r < l
+        else {
+          isDesc = sortOrder[r.constructor] < sortOrder[l.constructor]
+        }
+        isDesc = isDesc ? 1 : -1
+        return sortDesc ? isDesc : -isDesc
       })
-      return {
-        vheaders,
-        selected: [],
+      this.$emit('sorted', sortedItems)
+      return sortedItems
+    },
+    changeSort (column) {
+      let { descending, sortBy } = this.pagination
+      if (sortBy === column) { descending = !descending } else {
+        sortBy = column
+        descending = false
+      }
+      this.$emit('update:pagination', { ...this.pagination, descending, sortBy })
+    },
+    toggleAll () {
+      if (this.value.length) this.$emit('input', [])
+      else this.$emit('input', this.items.slice())
+    },
+    filter (value) {
+      if (value != null && typeof value !== 'string') {
+        if (value.search !== undefined) {
+          value = value.search
+        } else if (value.text !== undefined) {
+          value = value.text
+        }
+      }
+      return this.searchRegex.test(this.localeString(value, 'Date'))
+    },
+    highlight (value, display) {
+      let highlightText = text => text.replace(this.searchRegex, '<mark>$1</mark>')
+      if (display !== undefined) {
+        let text = highlightText(value.text)
+        return display(value, text)
+      } else if (value.display) {
+        return highlightText(value.display)
+      } else {
+        return highlightText(this.localeString(value, 'Date'))
       }
     },
-    methods: {
-      customSort(items, index, sortDesc) {
-        if (index === null) return items
-        let sortedItems = items.sort((r, l) => {
-          let data = { r, l }
-          for (let pos in data) {
-            let cellData = data[pos][index]
-            let dataForSort
-
-            if (cellData == null) dataForSort = cellData
-            else if (cellData.sort !== undefined) dataForSort = cellData.sort
-            else if (cellData.text !== undefined) dataForSort = cellData.text
-            else if (cellData.display !== undefined) dataForSort = cellData.display
-            else dataForSort = cellData
-
-            if (!dataForSort && dataForSort !== 0) data[pos] = -Infinity
-            else if (!isNaN(Number(dataForSort))) data[pos] = parseFloat(dataForSort)
-            else if (!isNaN(Date.parse(dataForSort))) data[pos] = new Date(dataForSort)
-            else if (typeof dataForSort === 'string') data[pos] = dataForSort.trim()
-
-            if (typeof data[pos] !== 'string' && isNaN(data[pos])) {
-              console.log('cellData', typeof cellData, cellData)
-              console.log('dataForSort', typeof dataForSort, dataForSort)
-              console.log('data[pos]', data[pos])
-              console.log('isNaN(data[pos])', isNaN(data[pos]))
-              throw new TypeError('The cell data of datatable should be strings/numbers/dates, or a sort/text/display property should be provided.')
-            }
-          }
-          r = data.r; l = data.l
-          if (r === l) return 0
-          let isDesc
-          if (r.constructor === l.constructor) isDesc = r < l
-          else {
-            isDesc = sortOrder[r.constructor] < sortOrder[l.constructor]
-          }
-          isDesc = isDesc ? 1 : -1
-          return sortDesc ? isDesc : -isDesc
-        })
-        this.$emit('sorted', sortedItems)
-        return sortedItems
-      },
-      changeSort(column) {
-        let { descending, sortBy } = this.pagination
-        if (sortBy === column)
-          descending = !descending
-        else {
-          sortBy = column
-          descending = false
-        }
-        this.$emit('update:pagination', { ...this.pagination, descending, sortBy })
-      },
-      toggleAll() {
-        if (this.value.length) this.$emit('input', [])
-        else this.$emit('input', this.items.slice())
-      },
-      filter(value) {
-        if (value != null && typeof value !== 'string') {
-          if (value.search !== undefined) {
-            value = value.search
-          }
-          else if (value.text !== undefined) {
-            value = value.text
-          }
-        }
-        return this.searchRegex.test(this.localeString(value, 'Date'))
-      },
-      highlight(value, display) {
-        let highlightText = text => text.replace(this.searchRegex, '<mark>$1</mark>')
-        if (display !== undefined) {
-          let text = highlightText(value.text)
-          return display(value, text)
-        }
-        else if (value.display) {
-          return highlightText(value.display)
-        }
-        else {
-          return highlightText(this.localeString(value, 'Date'))
-        }
-      },
-      hasIcon(item) {
-        return this.actionIcons
-          && !this.actionIcons
+    hasIcon (item) {
+      return this.actionIcons &&
+          !this.actionIcons
             .map(icon => icon.show(item))
             .every(show => !show)
+    }
+  },
+  computed: {
+    searchRegex () {
+      let text = this.highlightText || this.search
+      try {
+        return new RegExp(`(${text})`, 'ig')
+      } catch (e) {
+        return new RegExp(`(${_.escapeRegExp(text)})`, 'ig')
       }
-    },
-    computed: {
-      searchRegex() {
-        let text = this.highlightText || this.search
-        try {
-          return new RegExp(`(${text})`, 'ig')
-        }
-        catch (e) {
-          return new RegExp(`(${_.escapeRegExp(text)})`, 'ig')
-        }
-      },
-    },
+    }
   }
+}
 </script>

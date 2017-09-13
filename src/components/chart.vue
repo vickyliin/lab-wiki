@@ -5,51 +5,51 @@
 </template>
 
 <script>
-  import Chart from 'chart.js'
-  let glob = Chart.defaults.global
-  glob.defaultFontColor = 'rgba(255,255,255,.8)'
-  glob.defaultFontSize = 14
-  glob.defaultFontFamily = 'Roboto'
-  glob.tooltips.callbacks.label = (
-    {
-      datasetIndex: i,
-      yLabel,
-    },
-    {
-      datasets
-    }
-  ) => `${datasets[i].label}: ${yLabel.toLocaleString()} ${datasets[i].yAxisID}`
+import Chart from 'chart.js'
+let glob = Chart.defaults.global
+glob.defaultFontColor = 'rgba(255,255,255,.8)'
+glob.defaultFontSize = 14
+glob.defaultFontFamily = 'Roboto'
+glob.tooltips.callbacks.label = (
+  {
+    datasetIndex: i,
+    yLabel
+  },
+  {
+    datasets
+  }
+) => `${datasets[i].label}: ${yLabel.toLocaleString()} ${datasets[i].yAxisID}`
 
-  export default {
-    props: ['type', 'data', 'options'],
-    data() {
+export default {
+  props: ['type', 'data', 'options'],
+  data () {
+    return {
+      chart: null,
+      initialize: {
+        type: this.type,
+        data: this.data,
+        options: this.options
+      }
+    }
+  },
+  mounted () {
+    this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
+    this.$emit('init', this.chart)
+  },
+  computed: {
+    dataWatched () {
       return {
-        chart: null,
-        initialize: {
-          type: this.type,
-          data: this.data,
-          options: this.options,
-        },
+        datasets: this.data.datasets,
+        label: this.data.labels
       }
-    },
-    mounted() {
-      this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
-      this.$emit('init', this.chart)
-    },
-    computed: {
-      dataWatched() {
-        return {
-          datasets: this.data.datasets,
-          label: this.data.labels,
-        }
-      }
-    },
-    watch: {
-      dataWatched() {
-        this.chart.update()
-      }
+    }
+  },
+  watch: {
+    dataWatched () {
+      this.chart.update()
     }
   }
+}
 </script>
 
 <style scoped>

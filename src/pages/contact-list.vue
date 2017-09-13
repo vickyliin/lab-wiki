@@ -61,102 +61,102 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import formDialog from 'components/form-dialog.vue'
-  import managePanel from 'components/manage-panel.vue'
-  import actionIcon from 'components/action-icon.vue'
+import _ from 'lodash'
+import formDialog from 'components/form-dialog.vue'
+import managePanel from 'components/manage-panel.vue'
+import actionIcon from 'components/action-icon.vue'
 
-  export default {
-    components: { formDialog, managePanel, actionIcon },
-    data() {
-      return {
-        contactData: [],
+export default {
+  components: { formDialog, managePanel, actionIcon },
+  data () {
+    return {
+      contactData: [],
+      fields: [
+        { name: 'account', icon: 'account_circle' },
+        { name: 'email', icon: 'email' },
+        { name: 'phone', icon: 'phone', href: phone => 'tel:' + phone }
+      ],
+      editIcon: {
+        icon: 'edit',
+        color: 'teal',
+        action: item => {
+          this.dialogs.item = item
+          Object.assign(this.dialog, this.dialogs.update)
+          this.dialog.display = true
+        }
+      },
+      dialog: {
+        title: null,
         fields: [
-          { name: 'account', icon: 'account_circle' },
-          { name: 'email', icon: 'email' },
-          { name: 'phone', icon: 'phone', href: phone => 'tel:' + phone }
+          { name: 'name', label: 'Name', icon: 'email', required: true, component: 'v-text-field' },
+          { name: 'account', label: 'Account', icon: 'account_circle', component: 'v-text-field' },
+          { name: 'email', label: 'Email', icon: 'email', type: 'emial', component: 'v-text-field' },
+          { name: 'phone', label: 'Phone', icon: 'phone', type: 'phone', component: 'v-text-field' }
         ],
-        editIcon: {
-          icon: 'edit',
-          color: 'teal',
-          action: item => {
-            this.dialogs.item = item
-            Object.assign(this.dialog, this.dialogs.update)
-            this.dialog.display = true
-          }
-        },
-        dialog: {
-          title: null,
-          fields: [
-            { name: 'name', label: 'Name', icon: 'email', required: true, component: 'v-text-field' },
-            { name: 'account', label: 'Account', icon: 'account_circle', component: 'v-text-field' },
-            { name: 'email', label: 'Email', icon: 'email', type: 'emial', component: 'v-text-field' },
-            { name: 'phone', label: 'Phone', icon: 'phone', type: 'phone', component: 'v-text-field' }
-          ],
+        value: null,
+        onSubmit: this.updateData,
+        display: false,
+        item: null
+      },
+      dialogs: {
+        item: { topic: {} },
+        updateData: this.updateData,
+        localeString: this.localeString,
+        create: {
+          title: 'Add Contact',
           value: null,
-          onSubmit: this.updateData,
-          display: false,
-          item: null,
+          item: null
         },
-        dialogs: {
-          item: { topic: {} },
-          updateData: this.updateData,
-          localeString: this.localeString,
-          create: {
-            title: 'Add Contact',
-            value: null,
-            item: null,
-          },
-          get update() {
-            let item = this.item
-            return {
-              title: 'Update Contact',
-              item, value: item,
-            }
-          },
-        },
-        search: '',
-        debouncedSearch: '',
-      }
-    },
-    created() {
-      this.crud()
-    },
-    methods: {
-      async setData(data) {
-        this.contactData = data.map(d => ({
-          ...d,
-          selected: false,
-        }))
-      },
-      async updateData(resolve) {
-        let data = this.dialog.value
-        let id = this.dialog.item ? this.dialog.item.id : undefined
-        await this.crud({ type: 'post', data, id })
-        resolve()
-      },
-    },
-    computed: {
-      filteredData() {
-        return this.contactData.filter(person => {
-          for (let key in person) {
-            if (!person[key]) continue
-            if (person[key].toString().indexOf(this.debouncedSearch) !== -1)
-              return true
+        get update () {
+          let item = this.item
+          return {
+            title: 'Update Contact',
+            item,
+            value: item
           }
-          return false
-        })
+        }
       },
-      selectedItems() {
-        return this.contactData.filter(d => d.selected)
-      },
+      search: '',
+      debouncedSearch: ''
+    }
+  },
+  created () {
+    this.crud()
+  },
+  methods: {
+    async setData (data) {
+      this.contactData = data.map(d => ({
+        ...d,
+        selected: false
+      }))
     },
-    watch: {
-      search: _.debounce(function() {
-        this.debouncedSearch = this.search
-      }, 500)
+    async updateData (resolve) {
+      let data = this.dialog.value
+      let id = this.dialog.item ? this.dialog.item.id : undefined
+      await this.crud({ type: 'post', data, id })
+      resolve()
+    }
+  },
+  computed: {
+    filteredData () {
+      return this.contactData.filter(person => {
+        for (let key in person) {
+          if (!person[key]) continue
+          if (person[key].toString().indexOf(this.debouncedSearch) !== -1) { return true }
+        }
+        return false
+      })
     },
+    selectedItems () {
+      return this.contactData.filter(d => d.selected)
+    }
+  },
+  watch: {
+    search: _.debounce(function () {
+      this.debouncedSearch = this.search
+    }, 500)
   }
+}
 </script>
 
 <style lang="stylus">

@@ -8,8 +8,8 @@
       id="sidebar">
     <v-list dense>
       <template v-for="(item, i) in items">
-        <v-divider v-if="item === 'divider'"></v-divider>
-        <v-subheader v-else-if="item.header">
+        <v-divider v-if="item === 'divider'" :key="i"></v-divider>
+        <v-subheader v-else-if="item.header" :key="i">
           {{item.header}}
         </v-subheader>
         <router-link :to="item.path" :key="i" v-else>
@@ -30,9 +30,10 @@
 </template>
 
 <script>
-  export default{
-    props: ['value'],
-    data(){return {
+export default{
+  props: ['value'],
+  data () {
+    return {
       items: [
         {header: 'Computers'},
         {icon: 'toys', path: 'gpuUsage'},
@@ -46,11 +47,12 @@
         {header: 'Others'},
         {icon: 'highlight', path: 'news'},
         {icon: 'delete', path: 'takeOutGarbage'},
-        {icon: 'perm_contact_calendar', path: 'contactList'},
-        // {icon: 'email', path: 'emailSchedule'},
-      ],
-    }},
+        {icon: 'perm_contact_calendar', path: 'contactList'}
+      // {icon: 'email', path: 'emailSchedule'},
+      ]
+    }
   }
+}
 </script>
 
 <style lang="stylus">

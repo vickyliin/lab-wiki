@@ -31,42 +31,41 @@
 </template>
 
 <script>
-  import * as components from './*.vue'
+import * as components from './*.vue'
 
-  export default {
-    components,
-    props: ['width', 'display', 'title', 'fields', 'value'],
-    data() {
-      return {
-        loading: false,
-      }
+export default {
+  components,
+  props: ['width', 'display', 'title', 'fields', 'value'],
+  data () {
+    return {
+      loading: false
+    }
+  },
+  methods: {
+    onInput (name, data) {
+      this.$emit('input', { ...this.value, [name]: data })
     },
-    methods: {
-      onInput(name, data) {
-        this.$emit('input', { ...this.value, [name]: data })
-      },
-      clear() {
-        this.$emit('input', null)
-      },
-      async submit() {
-        if (!this.valid) return
-        this.loading = true
-        await new Promise(resolve => this.$emit('submit', resolve))
-        this.$emit('update:display', false)
-        this.clear()
-        this.loading = false
-      },
+    clear () {
+      this.$emit('input', null)
     },
-    computed: {
-      error() {
-        return this.fields.map(
-          ({ required, name }) => required &&
+    async submit () {
+      if (!this.valid) return
+      this.loading = true
+      await new Promise(resolve => this.$emit('submit', resolve))
+      this.$emit('update:display', false)
+      this.clear()
+      this.loading = false
+    }
+  },
+  computed: {
+    error () {
+      return this.fields.map(
+        ({ required, name }) => required &&
             (!this.value || !this.value[name]))
-      },
-      valid() {
-        return this.error.every(e => !e)
-      },
+    },
+    valid () {
+      return this.error.every(e => !e)
     }
   }
+}
 </script>
-

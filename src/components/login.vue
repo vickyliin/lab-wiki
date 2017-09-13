@@ -20,29 +20,30 @@
 </template>
 
 <script>
-  import $ from 'ajax'
-  import {mapGetters} from 'vuex'
-  import {gSuiteDomain} from 'config'
+import {mapGetters} from 'vuex'
+import {gSuiteDomain} from 'config'
 
-  export default{
-    data(){return{
-      auth2: null,
-    }},
-    methods: {
-      signIn(){
-        this.$store.dispatch('signIn')
-      },
-      signOut(){
-        this.$store.dispatch('signOut')
-      }
-    },
-    computed: {
-      available(){
-        return this.userDomain === gSuiteDomain
-      },
-      ...mapGetters(['userName', 'userDomain', 'userEmail'])
+export default{
+  data () {
+    return {
+      auth2: null
     }
+  },
+  methods: {
+    signIn () {
+      this.$store.dispatch('signIn')
+    },
+    signOut () {
+      this.$store.dispatch('signOut')
+    }
+  },
+  computed: {
+    available () {
+      return this.userDomain === gSuiteDomain
+    },
+    ...mapGetters(['userName', 'userDomain', 'userEmail'])
   }
+}
 </script>
 
 <style lang="stylus">

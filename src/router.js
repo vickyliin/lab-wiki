@@ -6,11 +6,11 @@ import * as components from './pages/*.vue'
 Vue.use(VueRouter)
 
 const pages = Object.entries(components).map(
-    ([name, component]) => ({
-      path: '/' + name,
-      component,
-      name
-    })
+  ([name, component]) => ({
+    path: '/' + name,
+    component,
+    name
+  })
 )
 
 export default new VueRouter({

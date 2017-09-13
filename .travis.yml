@@ -10,7 +10,7 @@ install:
   - npm install
 
 script:
-  - standard
+  - npm run lint
   - npm test
 
 # configure notifications (email, IRC, campfire etc)

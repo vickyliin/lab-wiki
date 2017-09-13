@@ -19,16 +19,16 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  export default{
-    props: ['value'],
-    methods: {
-      toLogin(){
-        this.$store.commit('status', 401)
-      }
-    },
-    computed: mapGetters([
-      'userImg'
-    ]),
-  }
+import {mapGetters} from 'vuex'
+export default{
+  props: ['value'],
+  methods: {
+    toLogin () {
+      this.$store.commit('status', 401)
+    }
+  },
+  computed: mapGetters([
+    'userImg'
+  ])
+}
 </script>

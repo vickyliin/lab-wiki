@@ -12,121 +12,121 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import datatable from 'components/datatable.vue'
+import _ from 'lodash'
+import datatable from 'components/datatable.vue'
 
-  const searchPath = '/search'
+const searchPath = '/search'
 
-  export default {
-    components: { datatable },
-    data() {
-      return {
-        search: '',
-        table: {
-          highlightText: '',
-          headers: [
-            {
-              value: 'name',
-              display: ({ url }, text) => url ?
-                `<a href="${url}" target="_blank">${text}</a>` : text
-            },
-            { value: 'when' },
-            { value: 'where' },
-            { value: 'deadline' },
-          ],
-          items: [],
-          pagination: {
-            sortBy: 'deadline',
-            rowsPerPage: -1,
-            descending: false
+export default {
+  components: { datatable },
+  data () {
+    return {
+      search: '',
+      table: {
+        highlightText: '',
+        headers: [
+          {
+            value: 'name',
+            display: ({ url }, text) => url
+              ? `<a href="${url}" target="_blank">${text}</a>` : text
           },
-          loading: true,
-          actions: true,
-          actionIcons: [
-            {
-              icon: 'add',
-              color: 'primary',
-              show: item => item.unsaved,
-              action: item => this.createData(item),
-            },
-            {
-              icon: 'delete',
-              color: 'grey',
-              show: item => !item.unsaved,
-              action: item => this.deleteData(item),
-            },
-          ],
+          { value: 'when' },
+          { value: 'where' },
+          { value: 'deadline' }
+        ],
+        items: [],
+        pagination: {
+          sortBy: 'deadline',
+          rowsPerPage: -1,
+          descending: false
         },
-        items: {
-          saved: {},
-          unsaved: {}
-        },
+        loading: true,
+        actions: true,
+        actionIcons: [
+          {
+            icon: 'add',
+            color: 'primary',
+            show: item => item.unsaved,
+            action: item => this.createData(item)
+          },
+          {
+            icon: 'delete',
+            color: 'grey',
+            show: item => !item.unsaved,
+            action: item => this.deleteData(item)
+          }
+        ]
+      },
+      items: {
+        saved: {},
+        unsaved: {}
+      }
+    }
+  },
+  created () {
+    this.crud()
+  },
+  methods: {
+    setData (data, target = 'saved') {
+      this.items[target] = {}
+      let unsaved = target === 'unsaved' ? 1 : 0
+      for (let d of data) {
+        this.$set(this.items[target], d.name, {
+          id: d.id,
+          cfpUrl: d.cfpUrl,
+          name: {
+            text: d.name,
+            url: d.url,
+            display: unsaved ? d.name : undefined
+          },
+          when: {
+            display: this.dateInterval([d.start, d.end]),
+            sort: d.start || d.end || ''
+          },
+          where: d.where,
+          deadline: d.deadlineDisplay,
+          unsaved,
+          raw: d
+        })
       }
     },
-    created() {
-      this.crud()
+    async searchData (q) {
+      if (!q) {
+        this.items.unsaved = {}
+        return
+      }
+      let data = await this.crud({ path: this.model + searchPath, data: { q } })
+      this.setData(data, 'unsaved')
+      Object.assign(this.table.pagination, {
+        sortBy: 'unsaved',
+        descending: true
+      })
     },
-    methods: {
-      setData(data, target = 'saved') {
-        this.items[target] = {}
-        let unsaved = target === 'unsaved' ? 1 : 0
-        for (let d of data) {
-          this.$set(this.items[target], d.name, {
-            id: d.id,
-            cfpUrl: d.cfpUrl,
-            name: {
-              text: d.name,
-              url: d.url,
-              display: unsaved ? d.name : undefined,
-            },
-            when: {
-              display: this.dateInterval([d.start, d.end]),
-              sort: d.start || d.end || '',
-            },
-            where: d.where,
-            deadline: d.deadlineDisplay,
-            unsaved,
-            raw: d,
-          })
-        }
-      },
-      async searchData(q) {
-        if (!q) {
-          this.items.unsaved = {}
-          return
-        }
-        let data = await this.crud({ path: this.model + searchPath, data: { q } })
-        this.setData(data, 'unsaved')
-        Object.assign(this.table.pagination, {
-          sortBy: 'unsaved',
-          descending: true,
-        })
-      },
-      async createData(item) {
-        await this.crud({ type: 'create', data: item.raw })
-        this.$delete(this.items.unsaved, name)
-      },
-      deleteData(item) {
-        this.crud({ type: 'delete', id: item.id })
-      },
+    async createData (item) {
+      await this.crud({ type: 'create', data: item.raw })
+      this.$delete(this.items.unsaved, name)
     },
-    computed: {
-      tableItems() {
-        let { saved, unsaved } = this.items
-        return Object.values({ ...unsaved, ...saved })
-      },
+    deleteData (item) {
+      this.crud({ type: 'delete', id: item.id })
+    }
+  },
+  computed: {
+    tableItems () {
+      let { saved, unsaved } = this.items
+      return Object.values({ ...unsaved, ...saved })
+    }
+  },
+  watch: {
+    search: _.debounce(async function (newVal) {
+      await this.searchData(newVal)
+      this.table.highlightText = newVal
+    }, 800),
+    tableItems (items) {
+      this.table.items = items
     },
-    watch: {
-      search: _.debounce(async function(newVal) {
-        await this.searchData(newVal)
-        this.table.highlightText = newVal
-      }, 800),
-      tableItems(items) {
-        this.table.items = items
-      },
-      pulling(newVal) {
-        this.table.loading = newVal
-      },
-    },
+    pulling (newVal) {
+      this.table.loading = newVal
+    }
   }
+}
 </script>

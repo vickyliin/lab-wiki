@@ -25,8 +25,8 @@
 
 <script>
 
-  export default {
-    name: 'date-picker',
-    props: ['value', 'label', 'required', 'name', 'error', 'rules'],
-  }
+export default {
+  name: 'date-picker',
+  props: ['value', 'label', 'required', 'name', 'error', 'rules']
+}
 </script>

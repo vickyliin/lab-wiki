@@ -2,15 +2,17 @@
   <v-container>
     <v-layout column>
       <v-container fluid>
-        <v-layout row justify-center class="text-xs">
+        <v-layout row
+                  justify-center
+                  class="text-xs">
           <v-flex>
-            Last Update: {{lastUpdate | localeString}}
+            Last Update: {{ lastUpdate | localeString }}
             <v-icon class="ml-1 link"
                     :class="{ rotate: pulling }"
                     @click="refresh()">refresh</v-icon>
           </v-flex>
           <v-flex class="text-xs-right">
-            Latest Logtime: {{latestLogtime | localeString}}
+            Latest Logtime: {{ latestLogtime | localeString }}
           </v-flex>
         </v-layout>
       </v-container>

@@ -1,18 +1,24 @@
 <template>
   <v-container fluid>
     <p v-if="userName">
-      Hi, <em>{{userName}}</em>! <br>
-      You have signed in to <em>{{userEmail}}</em>.
+      Hi,
+      <em>{{ userName }}</em>! <br> You have signed in to
+      <em>{{ userEmail }}</em>.
     </p>
-    <p  v-if="!available">
-      Please sign in to your <em>NLG account</em> to view this page.
+    <p v-if="!available">
+      Please sign in to your
+      <em>NLG account</em> to view this page.
     </p>
     <v-layout justify-end>
-      <v-btn @click="signIn" primary round>
+      <v-btn @click="signIn"
+             primary
+             round>
         <v-icon left>mdi-google</v-icon>
         Sign In
       </v-btn>
-      <v-btn @click="signOut" outline round>
+      <v-btn @click="signOut"
+             outline
+             round>
         Sign Out
       </v-btn>
     </v-layout>
@@ -20,10 +26,10 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import {gSuiteDomain} from 'config'
+import { mapGetters } from 'vuex'
+import { gSuiteDomain } from 'config'
 
-export default{
+export default {
   data () {
     return {
       auth2: null

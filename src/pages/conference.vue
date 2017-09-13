@@ -1,11 +1,17 @@
 <template>
   <v-container>
-    <v-layout mb-3 v-if="isAdmin">
+    <v-layout mb-3
+              v-if="isAdmin">
       <v-spacer></v-spacer>
-      <v-text-field append-icon="search" label="Search and Add Conference to list" placeholder="NLP" hide-details v-model="search"></v-text-field>
+      <v-text-field append-icon="search"
+                    label="Search and Add Conference to list"
+                    placeholder="NLP"
+                    hide-details
+                    v-model="search"></v-text-field>
     </v-layout>
     <v-layout column>
-      <datatable v-bind="table" :pagination.sync="table.pagination">
+      <datatable v-bind="table"
+                 :pagination.sync="table.pagination">
       </datatable>
     </v-layout>
   </v-container>

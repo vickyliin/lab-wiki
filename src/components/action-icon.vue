@@ -1,11 +1,12 @@
 <template>
-  <v-btn icon small
-          v-if="show(item)"
-          :href="href? href(item): ''"
-          @click.stop="action(item)"
-          style="margin: 0"
-          :class="color? color+'--text': ''">
-    <v-icon>{{icon}}</v-icon>
+  <v-btn icon
+         small
+         v-if="show(item)"
+         :href="href? href(item): ''"
+         @click.stop="action(item)"
+         style="margin: 0"
+         :class="color? color+'--text': ''">
+    <v-icon>{{ icon }}</v-icon>
   </v-btn>
 </template>
 

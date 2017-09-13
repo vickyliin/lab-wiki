@@ -1,8 +1,10 @@
 <template>
   <v-container>
     <v-layout column>
-      <transition-group name="slide-y" tag="div">
-        <v-flex v-for="(news,i) in displayData" :key="i">
+      <transition-group name="slide-y"
+                        tag="div">
+        <v-flex v-for="(news,i) in displayData"
+                :key="i">
           <v-container @click="news.selected = !news.selected">
             <v-layout mb-2>
               <v-checkbox primary
@@ -11,12 +13,13 @@
                           :input-value="news.selected"
                           :label="news.title"
                           style="padding: 0"></v-checkbox>
-              <span class="title" v-else>{{news.title}}</span>
+              <span class="title"
+                    v-else>{{ news.title }}</span>
               <action-icon v-bind="editIcon"
-                          v-if="isAdmin"
-                          :item="news"> </action-icon>
+                           v-if="isAdmin"
+                           :item="news"> </action-icon>
             </v-layout>
-              <v-subheader>{{news.date | localeString('Date')}}</v-subheader>
+            <v-subheader>{{ news.date | localeString('Date') }}</v-subheader>
             <v-container>
               <vue-markdown :source="news.content"></vue-markdown>
             </v-container>
@@ -32,8 +35,10 @@
                  @submit="dialog.onSubmit"
                  width="70%">
     </form-dialog>
-    <manage-panel :dialog="dialog" :dialogs="dialogs"
-                  :setData="setData" title="date"
+    <manage-panel :dialog="dialog"
+                  :dialogs="dialogs"
+                  :set-data="setData"
+                  title="date"
                   :selected="selectedItems"></manage-panel>
   </v-container>
 </template>
@@ -46,7 +51,7 @@ import actionIcon from 'components/action-icon.vue'
 
 const autoText = 'Congratulations to'
 
-export default{
+export default {
   components: { VueMarkdown, managePanel, formDialog, actionIcon },
   data () {
     return {
@@ -73,7 +78,7 @@ export default{
         }
       },
       dialogs: {
-        item: { },
+        item: {},
         updateData: this.updateData,
         localeString: this.localeString,
         create: {
@@ -107,7 +112,7 @@ export default{
         if (r === l) return 0
         if (r < l) return 1
         return -1
-      }).map(d => ({...d, selected: false}))
+      }).map(d => ({ ...d, selected: false }))
     },
     async updateData (resolve) {
       let data = this.dialog.value

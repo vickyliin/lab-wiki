@@ -2,13 +2,11 @@
   <v-container>
     <v-layout mb-3>
       <v-spacer></v-spacer>
-      <v-text-field
-          append-icon="search"
-          label="Search (support regex)"
-          single-line
-          hide-details
-          v-model="search"
-      ></v-text-field>
+      <v-text-field append-icon="search"
+                    label="Search (support regex)"
+                    single-line
+                    hide-details
+                    v-model="search"></v-text-field>
     </v-layout>
     <datatable v-bind="table"
                v-model="table.value"
@@ -21,9 +19,10 @@
                  @submit="dialog.onSubmit"
                  width="35rem">
     </form-dialog>
-    <manage-panel :dialog="dialog" :dialogs="dialogs"
+    <manage-panel :dialog="dialog"
+                  :dialogs="dialogs"
                   :selected="table.value"
-                  :setData="setData"></manage-panel>
+                  :set-data="setData"></manage-panel>
   </v-container>
 </template>
 

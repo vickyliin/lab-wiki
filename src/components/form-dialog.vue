@@ -1,9 +1,12 @@
 <template>
-  <v-dialog :width="width" :value="display" @input="e => $emit('update:display', e)">
+  <v-dialog :width="width"
+            :value="display"
+            @input="e => $emit('update:display', e)">
     <v-card>
       <v-card-title>
-        <v-container class="headline" fluid>
-          {{title}}
+        <v-container class="headline"
+                     fluid>
+          {{ title }}
         </v-container>
       </v-card-title>
       <v-card-text>
@@ -23,8 +26,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn flat @click="clear">Clear</v-btn>
-        <v-btn flat primary @click="submit" :loading="loading">Submit</v-btn>
+        <v-btn flat
+               @click="clear">Clear</v-btn>
+        <v-btn flat
+               primary
+               @click="submit"
+               :loading="loading">Submit</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -61,7 +68,7 @@ export default {
     error () {
       return this.fields.map(
         ({ required, name }) => required &&
-            (!this.value || !this.value[name]))
+          (!this.value || !this.value[name]))
     },
     valid () {
       return this.error.every(e => !e)

@@ -1,25 +1,30 @@
 <template>
-  <v-navigation-drawer
-      class="pb-0 pt-1"
-      floating persistent enable-resize-watcher
-      :value="value"
-      @input="e => $emit('input', e)"
-      height="100%"
-      id="sidebar">
+  <v-navigation-drawer class="pb-0 pt-1"
+                       floating
+                       persistent
+                       enable-resize-watcher
+                       :value="value"
+                       @input="e => $emit('input', e)"
+                       height="100%"
+                       id="sidebar">
     <v-list dense>
       <template v-for="(item, i) in items">
-        <v-divider v-if="item === 'divider'" :key="i"></v-divider>
-        <v-subheader v-else-if="item.header" :key="i">
-          {{item.header}}
+        <v-divider v-if="item === 'divider'"
+                   :key="i"></v-divider>
+        <v-subheader v-else-if="item.header"
+                     :key="i">
+          {{ item.header }}
         </v-subheader>
-        <router-link :to="item.path" :key="i" v-else>
+        <router-link :to="item.path"
+                     :key="i"
+                     v-else>
           <v-list-tile>
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                {{ item.path | spaceSeparated}}
+                {{ item.path | spaceSeparated }}
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -30,25 +35,25 @@
 </template>
 
 <script>
-export default{
+export default {
   props: ['value'],
   data () {
     return {
       items: [
-        {header: 'Computers'},
-        {icon: 'toys', path: 'gpuUsage'},
-        {icon: 'memory', path: 'cpuUsage'},
-        {icon: 'kitchen', path: 'workstations'},
+        { header: 'Computers' },
+        { icon: 'toys', path: 'gpuUsage' },
+        { icon: 'memory', path: 'cpuUsage' },
+        { icon: 'kitchen', path: 'workstations' },
         'divider',
-        {header: 'Meetings'},
-        {icon: 'local_library', path: 'seminar'},
-        {icon: 'mdi-timetable', path: 'conference'},
+        { header: 'Meetings' },
+        { icon: 'local_library', path: 'seminar' },
+        { icon: 'mdi-timetable', path: 'conference' },
         'divider',
-        {header: 'Others'},
-        {icon: 'highlight', path: 'news'},
-        {icon: 'delete', path: 'takeOutGarbage'},
-        {icon: 'perm_contact_calendar', path: 'contactList'}
-      // {icon: 'email', path: 'emailSchedule'},
+        { header: 'Others' },
+        { icon: 'highlight', path: 'news' },
+        { icon: 'delete', path: 'takeOutGarbage' },
+        { icon: 'perm_contact_calendar', path: 'contactList' }
+        // {icon: 'email', path: 'emailSchedule'},
       ]
     }
   }

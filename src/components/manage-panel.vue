@@ -1,17 +1,23 @@
 <template>
-  <transition-group name="fade-transition" class="manage-panel" v-if="isAdmin">
+  <transition-group name="fade-transition"
+                    class="manage-panel"
+                    v-if="isAdmin">
     <span v-if="selected && selected.length"
           :key="0"
           v-tooltip:top="{ html: tooltipValue, visible: !!tooltipValue }">
-      {{selected.length | localeString}} selected
+      {{ selected.length | localeString }} selected
     </span>
-    <v-btn fab small ripple outline
-           v-for="(btn, i) in buttons" :key="i+1"
+    <v-btn fab
+           small
+           ripple
+           outline
+           v-for="(btn, i) in buttons"
+           :key="i+1"
            v-if="show[btn.type]"
            :class="btn.color"
            :outline="btn.outline"
            @click.stop="btn.action">
-      <v-icon>{{btn.icon}}</v-icon>
+      <v-icon>{{ btn.icon }}</v-icon>
     </v-btn>
   </transition-group>
 </template>

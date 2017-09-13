@@ -2,15 +2,16 @@
   <v-container>
     <v-layout>
       <v-spacer></v-spacer>
-      <v-text-field
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-          v-model="search"
-      ></v-text-field>
+      <v-text-field append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                    v-model="search"></v-text-field>
     </v-layout>
-    <transition-group name="slide-y" tag="div" class="layout" id="contact-layout">
+    <transition-group name="slide-y"
+                      tag="div"
+                      class="layout"
+                      id="contact-layout">
       <v-card v-for="person in filteredData"
               :key="person.id"
               class="contact-card"
@@ -24,8 +25,9 @@
                         :label="person.name"
                         :input-value="person.selected"
                         style="padding: 0"></v-checkbox>
-            <span class="title" v-else>
-              {{person.name}}
+            <span class="title"
+                  v-else>
+              {{ person.name }}
             </span>
             <v-spacer></v-spacer>
             <action-icon v-bind="editIcon"
@@ -34,13 +36,14 @@
           </v-layout>
           <v-divider></v-divider>
           <v-list>
-            <v-list-tile v-for="field in fields" :key="field.name"
+            <v-list-tile v-for="field in fields"
+                         :key="field.name"
                          :href="field.href? field.href(person[field.name]): undefined">
               <v-list-tile-action>
-                <v-icon>{{field.icon}}</v-icon>
+                <v-icon>{{ field.icon }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                {{person[field.name]}}
+                {{ person[field.name] }}
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -54,8 +57,10 @@
                  @submit="dialog.onSubmit"
                  width="35rem">
     </form-dialog>
-    <manage-panel :dialog="dialog" :dialogs="dialogs"
-                  :setData="setData" title="name"
+    <manage-panel :dialog="dialog"
+                  :dialogs="dialogs"
+                  :set-data="setData"
+                  title="name"
                   :selected="selectedItems"></manage-panel>
   </v-container>
 </template>

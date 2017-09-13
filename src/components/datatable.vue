@@ -1,54 +1,55 @@
 <template>
-  <v-data-table
-    :hide-actions="!actions"
-    :headers="vheaders"
-    :items="items"
-    :customSort="customSort"
-    :search="search"
-    :filter="filter"
-    :loading="loading"
-    :select-all="selectAll"
-    :selected-key="selectedKey"
-    :value="value"
-    :pagination="pagination"
-    @update:pagination="e => $emit('update:pagination', e)"
-    @input="e => $emit('input', e)">
-    <template slot="headers" scope="props">
+  <v-data-table :hide-actions="!actions"
+                :headers="vheaders"
+                :items="items"
+                :custom-sort="customSort"
+                :search="search"
+                :filter="filter"
+                :loading="loading"
+                :select-all="selectAll"
+                :selected-key="selectedKey"
+                :value="value"
+                :pagination="pagination"
+                @update:pagination="e => $emit('update:pagination', e)"
+                @input="e => $emit('input', e)">
+    <template slot="headers"
+              scope="props">
       <tr>
         <th v-if="enableSelect">
-          <v-checkbox
-              v-if="selectAll"
-              primary
-              hide-details
-              @click.native="toggleAll"
-              :input-value="props.all"
-              :indeterminate="props.indeterminate"
-          ></v-checkbox>
+          <v-checkbox v-if="selectAll"
+                      primary
+                      hide-details
+                      @click.native="toggleAll"
+                      :input-value="props.all"
+                      :indeterminate="props.indeterminate"></v-checkbox>
         </th>
-        <th v-for="(header,i) in props.headers" :key="header.text"
+        <th v-for="(header,i) in props.headers"
+            :key="header.text"
             :colspan="i === props.headers.length-1? 2:1"
             :class="['column',
-              header.disableSort? '':'sortable',
-              pagination.descending? 'desc':'asc',
-              header.value === pagination.sortBy ? 'active' : '',
-              header.text]"
+                header.disableSort? '':'sortable',
+                pagination.descending? 'desc':'asc',
+                header.value === pagination.sortBy ? 'active' : '',
+                header.text]"
             @click="changeSort(header.value)">
           {{ header.text }}
           <v-icon v-if="!header.disableSort">arrow_upward</v-icon>
         </th>
       </tr>
     </template>
-    <template slot="items" scope="props">
-      <tr :active="props.selected" @click="props.selected = !props.selected">
+    <template slot="items"
+              scope="props">
+      <tr :active="props.selected"
+          @click="props.selected = !props.selected">
         <td v-if="enableSelect">
           <v-checkbox primary
                       hide-details
-                      :input-value="props.selected"
-          ></v-checkbox>
+                      :input-value="props.selected"></v-checkbox>
         </td>
         <td class="text-xs"
             v-for="({value: header, display},i) in vheaders"
-            :class="header" :key="i"
+            :class="header"
+            :key="i"
             :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
           <template v-if="props.item[header] == null"></template>
           <span v-else-if="search || highlightText"
@@ -57,12 +58,16 @@
                 v-html="props.item[header].display"></span>
           <span v-else-if="display"
                 v-html="display(props.item[header], props.item[header].text)"></span>
-          <span v-else :class="header"
+          <span v-else
+                :class="header"
                 v-html="localeString(props.item[header], 'Date')"></span>
         </td>
-        <td style="padding-right: 1.2rem" align="right" v-if="hasIcon(props.item)">
+        <td style="padding-right: 1.2rem"
+            align="right"
+            v-if="hasIcon(props.item)">
           <action-icon v-for="(ai, i) in actionIcons"
-                       v-bind="ai" :key="i"
+                       v-bind="ai"
+                       :key="i"
                        :item="props.item">
           </action-icon>
         </td>
@@ -185,9 +190,9 @@ export default {
     },
     hasIcon (item) {
       return this.actionIcons &&
-          !this.actionIcons
-            .map(icon => icon.show(item))
-            .every(show => !show)
+        !this.actionIcons
+          .map(icon => icon.show(item))
+          .every(show => !show)
     }
   },
   computed: {

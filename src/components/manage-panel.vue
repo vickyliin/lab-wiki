@@ -10,7 +10,6 @@
     <v-btn fab
            small
            ripple
-           outline
            v-for="(btn, i) in buttons"
            :key="i+1"
            v-if="show[btn.type]"

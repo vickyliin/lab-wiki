@@ -22,6 +22,7 @@
     <manage-panel :dialog="dialog"
                   :dialogs="dialogs"
                   :selected="table.value"
+                  :tooltip="tooltip"
                   :set-data="setData"></manage-panel>
   </v-container>
 </template>
@@ -191,6 +192,11 @@ export default {
     },
     editable (item) {
       return item.owner === this.userEmail || this.isAdmin
+    },
+    tooltip (selectedItem) {
+      return selectedItem.map(item =>
+        `${this.localeString(item.date, 'Date')} ${item.presenter}`
+      ).join('\n')
     }
   },
   computed: {

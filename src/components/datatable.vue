@@ -107,7 +107,13 @@ export default {
   components: { actionIcon },
   data () {
     let vheaders = this.headers.map(header => {
-      if (typeof header === 'string') { return { text: header, value: header } } else if (header.text === undefined) { return { text: header.value, ...header } } else { return header }
+      if (typeof header === 'string') {
+        return { text: header, value: header }
+      } else if (header.text === undefined) {
+        return { text: header.value, ...header }
+      } else {
+        return header
+      }
     })
     return {
       vheaders,
@@ -193,6 +199,11 @@ export default {
         !this.actionIcons
           .map(icon => icon.show(item))
           .every(show => !show)
+    }
+  },
+  watch: {
+    items () {
+      this.$emit('input', [])
     }
   },
   computed: {

@@ -172,7 +172,7 @@ export default {
         .filter(this.itemsFilter.bind(this))
         .map(this.itemsMapper.bind(this))
         .reduce(this.itemsReducer.bind(this), [])
-      console.log(this.table.items)
+      this.log(this.table.items)
     },
     setData (data) {
       if (!data) return

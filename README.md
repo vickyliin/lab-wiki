@@ -27,6 +27,25 @@ This is a [Vue.js](https://vuejs.org/) webapp, developing with module bundler [W
 
 - Visit your `localhost:12345`
 
+## Deploy
+
+- Clone this repository and [duckingod/lab-wiki-backend](https://github.com/duckingod/lab-wiki-backend)
+
+- In the directory, run
+  ```
+  npm install
+  ```
+  to install dependencies.
+
+- Set environment variable WIKI_HOME
+  ```
+  export WIKI_HOME=wiki
+  ```
+
+- Build
+  ```
+  npm run build
+  ```
 
 ## Application Starting Flow
 

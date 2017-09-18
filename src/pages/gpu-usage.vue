@@ -2,7 +2,8 @@
   <workstation-usage
     :headers="headers"
     :items-mapper="itemsMapper"
-    :items-filter="itemsFilter">
+    :items-filter="itemsFilter"
+    :items-reducer="itemsReducer">
   </workstation-usage>
 </template>
 
@@ -14,24 +15,25 @@ export default {
   data () {
     return {
       headers: 'server gpu usage fan memory temp'.split(' '),
+      itemsFilter: d => Object.keys(d.gpu).length !== 0,
       itemsMapper (d) {
-        return {
+        return d.gpu.map(gpu => ({
           server: d.hostname.replace('nlg-wks-', ''),
           gpu: {
-            display: d.gpu.type
+            display: gpu.type
           },
-          name: d.gpu.type,
-          usage: d.gpu.gpu_usage,
-          fan: parseInt(d.gpu.fan),
+          name: gpu.type,
+          usage: gpu.gpu_usage,
+          fan: parseInt(gpu.fan),
           memory: this.setMemory({
-            usage: d.gpu.mem_usage,
-            total: d.gpu.mem_total
+            usage: gpu.mem_usage,
+            total: gpu.mem_total
           }),
-          temp: parseInt(d.gpu.temp),
+          temp: parseInt(gpu.temp),
           logtime: new Date(d.logtime)
-        }
+        }))
       },
-      itemsFilter: d => Object.keys(d.gpu).length !== 0
+      itemsReducer: (arr, item) => [...arr, ...item]
     }
   }
 }

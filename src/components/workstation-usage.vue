@@ -51,9 +51,11 @@ export default {
     },
     itemsFilter: {
       type: Function,
-      default () {
-        return () => true
-      }
+      default: () => true
+    },
+    itemsReducer: {
+      type: Function,
+      default: (arr, item) => [...arr, item]
     }
   },
   components: { datatable, chart },
@@ -169,6 +171,8 @@ export default {
       this.table.items = data
         .filter(this.itemsFilter.bind(this))
         .map(this.itemsMapper.bind(this))
+        .reduce(this.itemsReducer.bind(this), [])
+      console.log(this.table.items)
     },
     setData (data) {
       if (!data) return

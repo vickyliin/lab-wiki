@@ -20,7 +20,9 @@ export default {
       return response
     },
     log () {
-      console.log.apply(null, arguments)
+      if (process.env.NODE_ENV === 'development') {
+        console.log.apply(null, arguments)
+      }
     },
     ...filters
   },

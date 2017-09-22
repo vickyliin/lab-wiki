@@ -1,11 +1,12 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: ['babel-polyfill', './src/main.js'],
   output: {
-    path: path.resolve(__dirname, '../lab-wiki-backend/static/dist'),
-    publicPath: '/dist/',
+    path: path.resolve(__dirname, '../lab-wiki-backend/static'),
+    publicPath: '',
     filename: 'build.js'
   },
   module: {
@@ -72,6 +73,11 @@ module.exports = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         WIKI_HOME: JSON.stringify(process.env.WIKI_HOME)
       }
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src/index.ejs'),
+      inject: false,
+      base: process.env.WIKI_HOME
     })
   ],
   devtool: '#eval-source-map'

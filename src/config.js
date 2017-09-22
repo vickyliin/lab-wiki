@@ -4,7 +4,7 @@ const config = {
     entry: 'http://localhost:3000/api'
   },
   production: {
-    routerBase: `/${process.env.WIKI_HOME}/`,
+    routerBase: process.env.WIKI_HOME ? `/${process.env.WIKI_HOME}/` : '/',
     entry: 'api'
   },
   common: {

@@ -34,7 +34,9 @@ export default {
         clock: d.cpuinfo.clock,
         cores: d.cpuinfo.threads,
         mem: parseInt(d.cpu.mem_total / 1000),
-        gpu: d.gpu.type,
+        gpu: {
+          display: d.gpu.map(gpu => gpu.type).join(', ')
+        },
         os: {
           display: d.os // prevent from parsed to date
         },

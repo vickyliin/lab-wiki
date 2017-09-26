@@ -136,7 +136,7 @@ export default {
           tooltips: {
             mode: 'index',
             callbacks: {
-              afterTitle: ([{ index: i }]) => this.sortedItems[i].name.display,
+              afterTitle: ([{ index: i }]) => this.sortedItems[i].name,
               afterBody: ([{ index: i }]) => `Total Memory: ${this.localeString(this.sortedItems[i].memory.total)} MB`,
               afterFooter: ([{ index: i }]) => this.localeString(this.sortedItems[i].logtime)
             },

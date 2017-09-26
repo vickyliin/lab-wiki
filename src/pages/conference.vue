@@ -58,7 +58,7 @@ export default {
           {
             icon: 'delete',
             color: 'grey',
-            show: item => !item.unsaved,
+            show: item => !item.unsaved && this.isAdmin,
             action: item => this.deleteData(item)
           }
         ]

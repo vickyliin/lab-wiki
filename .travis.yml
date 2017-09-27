@@ -15,7 +15,11 @@ script:
 
 after_success:
   - npm run build
-  - yes yes | scp -r static $DEPLOY_HOST:$DEPLOY_PATH
+  - scp -r static $DEPLOY_HOST:$DEPLOY_PATH
+
+addons:
+  ssh_known_hosts:
+    - $DEPLOY_HOST
 
 # configure notifications (email, IRC, campfire etc)
 # please update this section to your needs!

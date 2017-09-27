@@ -4,15 +4,15 @@ node_js:
   - v6.11.2
 
 before_install:
-  # - if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
+  - if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
 
 install:
-  # - npm install
+  - npm install
 
 script:
-  # - npm run lint
-  # - npm test
-  # - npm run build
+  - npm run lint
+  - npm test
+  - npm run build
 
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_e4f2476c205d_key -iv $encrypted_e4f2476c205d_iv

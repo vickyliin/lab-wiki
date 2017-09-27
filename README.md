@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/vickyliin/lab-wiki.svg?token=7G7pw3SHSvLTKesRL9zu&branch=master)](https://travis-ci.com/vickyliin/lab-wiki)
+[![Build Status](https://travis-ci.org/vickyliin/lab-wiki.svg?branch=master)](https://travis-ci.com/vickyliin/lab-wiki)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 # Lab WIKI

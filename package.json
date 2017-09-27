@@ -1,7 +1,7 @@
 {
   "name": "lab-wiki",
   "description": "Lab WIKI",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "vickyliin <r05922128@ntu.edu.tw>",
   "private": true,
   "scripts": {
@@ -30,7 +30,6 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-latest": "^6.0.0",
     "cross-env": "^3.0.0",
     "css-loader": "^0.25.0",
     "eslint": "^4.6.1",

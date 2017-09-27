@@ -1,33 +1,35 @@
 language: node_js
 
 node_js:
-- v6.11.2
+  - v6.11.2
 
 before_install:
-- if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
+  - if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
 
 install:
-- npm install
+  - npm install
 
 script:
-- npm run lint
-- npm test
-- npm run build
+  - npm run lint
+  - npm test
+  - npm run build
 
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_e4f2476c205d_key -iv $encrypted_e4f2476c205d_iv
-  -in deploy_rsa.enc -out deploy_rsa -d
-- ssh-keyscan -t rsa -H -p $DEPLOY_PORT $DEPLOY_HOST >> $HOME/.ssh/known_hosts
-- eval "$(ssh-agent -s)"
-- chmod 600 deploy_rsa
-- ssh-add deploy_rsa
+  - openssl aes-256-cbc -K $encrypted_e4f2476c205d_key -iv $encrypted_e4f2476c205d_iv
+    -in deploy_rsa.enc -out deploy_rsa -d
+  - ssh-keyscan -t rsa,ecdsa-sha2-nistp256 -p $DEPLOY_PORT $DEPLOY_HOST >> $HOME/.ssh/known_hosts
+  - eval "$(ssh-agent -s)"
+  - chmod 600 deploy_rsa
+  - ssh-add deploy_rsa
 
 deploy:
   - provider: script
     skip_cleanup: true
     script: rsync -rzv -e 'ssh -p $DEPLOY_PORT' static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     on:
-      branch: master
+      branch:
+        - master
+        - hotfix/1.0.9
         
 notifications:
   email:

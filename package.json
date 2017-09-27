@@ -1,7 +1,7 @@
 {
   "name": "lab-wiki",
   "description": "Lab WIKI",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "vickyliin <r05922128@ntu.edu.tw>",
   "private": true,
   "scripts": {

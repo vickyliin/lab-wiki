@@ -1,33 +1,25 @@
 language: node_js
-
-# test on two node.js versions: 0.8
 node_js:
-  - v6.11.2
-
-before_install: if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
-
+- v6.11.2
+before_install:
+- openssl aes-256-cbc -K $encrypted_e4f2476c205d_key -iv $encrypted_e4f2476c205d_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
+- if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
 install:
-  - npm install
-
+- npm install
 script:
-  - npm run lint
-  - npm test
-  - npm run build
-
+- npm run lint
+- npm test
+- npm run build
 after_success:
-  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
-  - scp -r static $DEPLOY_HOST:$DEPLOY_PATH
-
-addons:
-  ssh_known_hosts:
-    - $DEPLOY_HOST
-
-# configure notifications (email, IRC, campfire etc)
-# please update this section to your needs!
+- ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
+- eval "$(ssh-agent -s)"
+- ssh-add deploy_rsa
+- scp -r static $DEPLOY_HOST:$DEPLOY_PATH
 notifications:
   email:
     recipients:
-      - labwiki@nlg.csie.ntu.edu.tw
-      - vickyliinn@gmail.com
-    on_success: never # default: change
-    on_failure: always # default: always
+    - labwiki@nlg.csie.ntu.edu.tw
+    - vickyliinn@gmail.com
+    on_success: never
+    on_failure: always

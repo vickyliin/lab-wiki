@@ -1,24 +1,38 @@
 language: node_js
 
-# test on two node.js versions: 0.8
 node_js:
-  - v6.11.2
+- v6.11.2
 
-before_install: if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
+before_install:
+- if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
 
 install:
-  - npm install
+- npm install
 
 script:
-  - npm run lint
-  - npm test
+- npm run lint
+- npm test
+- npm run build
 
-# configure notifications (email, IRC, campfire etc)
-# please update this section to your needs!
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_e4f2476c205d_key -iv $encrypted_e4f2476c205d_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
+- ssh-keyscan -t rsa -H $DEPLOY_HOST >> $HOME/.ssh/known_hosts
+- eval "$(ssh-agent -s)"
+- chmod 600 deploy_rsa
+- ssh-add deploy_rsa
+
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: rsync -r static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    on:
+      branch: master
+        
 notifications:
   email:
     recipients:
-      - labwiki@nlg.csie.ntu.edu.tw
-      - vickyliinn@gmail.com
-    on_success: never # default: change
-    on_failure: always # default: always
+    - labwiki@nlg.csie.ntu.edu.tw
+    - vickyliinn@gmail.com
+    on_success: never
+    on_failure: always

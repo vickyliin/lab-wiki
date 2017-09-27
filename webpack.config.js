@@ -8,7 +8,7 @@ module.exports = {
   output: {
     path: path.resolve(
       __dirname,
-      isProd ? '': '../lab-wiki-backend',
+      isProd ? '' : '../lab-wiki-backend',
       'static'
     ),
     publicPath: '',

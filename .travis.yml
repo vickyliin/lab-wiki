@@ -12,9 +12,9 @@ install:
 script:
   - npm run lint
   - npm test
-  - npm run build
 
 after_success:
+  - npm run build
   - scp -r static $DEPLOY_HOST:$DEPLOY_PATH
 
 # configure notifications (email, IRC, campfire etc)

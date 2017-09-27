@@ -1,7 +1,7 @@
 {
   "name": "lab-wiki",
   "description": "Lab WIKI",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "vickyliin <r05922128@ntu.edu.tw>",
   "private": true,
   "scripts": {
@@ -51,6 +51,7 @@
     "webpack-dev-server": "^2.2.0"
   },
   "eslintIgnore": [
-    "src/assets"
+    "src/assets",
+    "static"
   ]
 }

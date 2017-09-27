@@ -12,9 +12,10 @@ install:
 script:
   - npm run lint
   - npm test
+  - npm run build
 
 after_success:
-  - npm run build
+  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
   - scp -r static $DEPLOY_HOST:$DEPLOY_PATH
 
 addons:

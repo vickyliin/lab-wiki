@@ -25,7 +25,7 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: rsync -r static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    script: rsync -rzv static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     on:
       branch: master
         

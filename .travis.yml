@@ -27,7 +27,7 @@ deploy:
     skip_cleanup: true
     script: rsync -r static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     on:
-      branch: hotfix/1.0.5
+      branch: master
         
 notifications:
   email:

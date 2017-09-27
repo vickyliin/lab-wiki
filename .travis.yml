@@ -21,7 +21,7 @@ deploy:
     skip_cleanup: true
     script: scp -r static $DEPLOY_HOST:$DEPLOY_PATH
     on:
-      branch: hotfix/v1.0.5
+      branch: hotfix/1.0.5
         
 notifications:
   email:

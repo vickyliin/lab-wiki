@@ -18,7 +18,6 @@ before_deploy:
 - openssl aes-256-cbc -K $encrypted_e4f2476c205d_key -iv $encrypted_e4f2476c205d_iv
   -in deploy_rsa.enc -out deploy_rsa -d
 - ssh-keyscan -t rsa -H $DEPLOY_HOST >> $HOME/.ssh/known_hosts
-- cat $HOME/.ssh/known_hosts
 - eval "$(ssh-agent -s)"
 - chmod 600 deploy_rsa
 - ssh-add deploy_rsa
@@ -26,7 +25,7 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: scp -r static $DEPLOY_HOST:$DEPLOY_PATH
+    script: rsync -r static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     on:
       branch: hotfix/1.0.5
         

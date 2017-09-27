@@ -1,5 +1,6 @@
 *.iml
 .idea/
+*.sw?
 .DS_Store
 node_modules/
 dist/

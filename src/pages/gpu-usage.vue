@@ -20,7 +20,7 @@ export default {
         return d.gpu.map(gpu => ({
           server: d.hostname.replace('nlg-wks-', ''),
           gpu: {
-            display: gpu.type
+            display: `${gpu.type} (${gpu.gid})`
           },
           name: gpu.type,
           usage: gpu.gpu_usage,

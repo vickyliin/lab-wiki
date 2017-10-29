@@ -20,8 +20,9 @@ export default {
         return d.gpu.map(gpu => ({
           server: d.hostname.replace('nlg-wks-', ''),
           gpu: {
-            display: d.gpu.length > 1 ? `[${gpu.gid}] ${gpu.type}` : gpu.type
+            display: d.gpu.length > 1 ? `${gpu.type} [${gpu.gid}]` : gpu.type
           },
+          get label () { return `wks-${this.server}${d.gpu.length > 1 ? ' [' + gpu.gid + ']' : ''}` },
           get name () { return this.gpu.display },
           usage: gpu.gpu_usage,
           fan: parseInt(gpu.fan),

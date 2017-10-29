@@ -196,7 +196,7 @@ export default {
       chartData.labels = []
       for (let dataset of chartData.datasets) { dataset.data = [] }
       for (let item of items) {
-        chartData.labels.push('wks-' + item.server)
+        chartData.labels.push(item.label || 'wks-' + item.server)
         chartData.datasets[0].data.push(item.memory.free)
         chartData.datasets[1].data.push(item.memory.usage)
         chartData.datasets[2].data.push(item.usage)

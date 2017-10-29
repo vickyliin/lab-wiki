@@ -89,7 +89,13 @@ export default {
               label: 'Used Memory',
               data: null,
               yAxisID: 'MB',
-              backgroundColor: 'rgba(225, 80, 75, 0.5)'
+              backgroundColor: 'rgba(225, 80, 75, 0.5)',
+              datalabels: {
+                display: ({ dataIndex: i }) => this.sortedItems[i].blame != null,
+                formatter: (val, { dataIndex: i }) => this.sortedItems[i].blame,
+                anchor: 'end',
+                rotation: -10
+              }
             },
             {
               label: 'Usage',
@@ -196,7 +202,7 @@ export default {
       chartData.labels = []
       for (let dataset of chartData.datasets) { dataset.data = [] }
       for (let item of items) {
-        chartData.labels.push('wks-' + item.server)
+        chartData.labels.push(item.label || 'wks-' + item.server)
         chartData.datasets[0].data.push(item.memory.free)
         chartData.datasets[1].data.push(item.memory.usage)
         chartData.datasets[2].data.push(item.usage)

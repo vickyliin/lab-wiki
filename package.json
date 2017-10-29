@@ -14,6 +14,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "chart.js": "^2.6.0",
+    "chartjs-plugin-datalabels": "^0.1.0",
     "lodash": "^4.17.4",
     "mdi": "^2.0.46",
     "vue": "^2.4.2",

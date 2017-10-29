@@ -20,9 +20,9 @@ export default {
         return d.gpu.map(gpu => ({
           server: d.hostname.replace('nlg-wks-', ''),
           gpu: {
-            display: `${gpu.type} (${gpu.gid})`
+            display: d.gpu.length > 1 ? `[${gpu.gid}] ${gpu.type}` : gpu.type
           },
-          name: gpu.type,
+          get name () { return this.gpu.display },
           usage: gpu.gpu_usage,
           fan: parseInt(gpu.fan),
           memory: this.setMemory({

@@ -89,7 +89,13 @@ export default {
               label: 'Used Memory',
               data: null,
               yAxisID: 'MB',
-              backgroundColor: 'rgba(225, 80, 75, 0.5)'
+              backgroundColor: 'rgba(225, 80, 75, 0.5)',
+              datalabels: {
+                display: ({ dataIndex: i }) => this.sortedItems[i].blame != null,
+                formatter: (val, { dataIndex: i }) => this.sortedItems[i].blame,
+                anchor: 'end',
+                rotation: -10
+              }
             },
             {
               label: 'Usage',

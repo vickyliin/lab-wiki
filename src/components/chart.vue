@@ -6,10 +6,14 @@
 
 <script>
 import Chart from 'chart.js'
+import 'chartjs-plugin-datalabels'
 let glob = Chart.defaults.global
-glob.defaultFontColor = 'rgba(255,255,255,.8)'
-glob.defaultFontSize = 14
-glob.defaultFontFamily = 'Roboto'
+Chart.defaults.global = {
+  ...glob,
+  defaultFontColor: 'rgba(255,255,255,.8)',
+  defaultFontSize: 14,
+  defaultFontFamily: 'Roboto, Sans-serif'
+}
 glob.tooltips.callbacks.label = (
   {
     datasetIndex: i,
@@ -19,6 +23,13 @@ glob.tooltips.callbacks.label = (
     datasets
   }
 ) => `${datasets[i].label}: ${yLabel.toLocaleString()} ${datasets[i].yAxisID}`
+glob.plugins.datalabels = {
+  display: false,
+  font: {
+    size: 9,
+    family: 'Verdana, Sans-serif'
+  }
+}
 
 export default {
   props: ['type', 'data', 'options'],

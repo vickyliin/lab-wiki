@@ -70,7 +70,8 @@ export default {
         pagination: {
           sortBy: 'date',
           rowsPerPage: 10,
-          descending: true
+          descending: true,
+          page: 1
         },
         actions: true,
         actionIcons: [
@@ -147,6 +148,7 @@ export default {
         owner: d.owner,
         id: d.id
       }))
+      this.toPageOfNow()
       this.table.loading = false
     },
     async uploadFile (file) {
@@ -197,6 +199,17 @@ export default {
       return selectedItem.map(item =>
         `${this.localeString(item.date, 'Date')} ${item.presenter}`
       ).join('\n')
+    },
+    toPageOfNow () {
+      let { pagination, items } = this.table
+      let { rowsPerPage, sortBy, descending } = pagination
+      if (sortBy !== 'date') {
+        throw Error('should sort by date to call toPageOfNow()')
+      }
+      let nRowsBefore = items.reduce((pre, cur) => pre + (Date.parse(cur.date) > Date.now()), 0)
+      if (!descending) nRowsBefore = items.length - nRowsBefore
+      pagination.page = Math.ceil(nRowsBefore / rowsPerPage)
+      return nRowsBefore
     }
   },
   computed: {

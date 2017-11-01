@@ -18,7 +18,7 @@
            ripple
            v-for="(btn, i) in buttons"
            :key="i+1"
-           v-if="show_[btn.name]"
+           v-if="show(btn.name)"
            :class="btn.color"
            :outline="btn.outline"
            @click.stop="btn.action">
@@ -58,11 +58,11 @@ export default {
     },
     show: {
       type: Function,
-      default () {
+      default (name) {
         return {
           delete: !!(this.selected && this.selected.length),
           create: true
-        }
+        }[name]
       }
     },
     buttons: {
@@ -93,9 +93,6 @@ export default {
     }
   },
   computed: {
-    show_ () {
-      return this.show()
-    },
     tooltipValue () {
       return this.tooltip(this.selected)
     }

@@ -219,7 +219,7 @@ export default {
       pagination.sortBy = 'date'
       let nRowsBefore = items.reduce((pre, cur) => pre + (Date.parse(cur.date) > Date.now()), 0)
       if (!descending) nRowsBefore = items.length - nRowsBefore
-      pagination.page = Math.ceil(nRowsBefore / rowsPerPage)
+      pagination.page = Math.ceil(nRowsBefore / rowsPerPage) || 1
       return nRowsBefore
     }
   },

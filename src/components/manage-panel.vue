@@ -18,7 +18,7 @@
            ripple
            v-for="(btn, i) in buttons"
            :key="i+1"
-           v-if="show[btn.type]"
+           v-if="show_[btn.type]"
            :class="btn.color"
            :outline="btn.outline"
            @click.stop="btn.action">
@@ -55,39 +55,46 @@ export default {
     },
     title: {
       type: String
-    }
-  },
-  data () {
-    return {
-      buttons: [
-        {
-          type: 'delete',
-          icon: 'delete',
-          outline: true,
-          action: () => {
-            for (let { id } of this.selected) {
-              this.crud({ type: 'delete', id })
+    },
+    show: {
+      type: Function,
+      default () {
+        return {
+          delete: !!(this.selected && this.selected.length),
+          create: true
+        }
+      }
+    },
+    buttons: {
+      type: Array,
+      default () {
+        return [
+          {
+            type: 'delete',
+            icon: 'delete',
+            outline: true,
+            action: () => {
+              for (let { id } of this.selected) {
+                this.crud({ type: 'delete', id })
+              }
+            }
+          },
+          {
+            type: 'create',
+            icon: 'add',
+            color: 'primary',
+            action: () => {
+              Object.assign(this.dialog, this.dialogs.create)
+              this.dialog.display = true
             }
           }
-        },
-        {
-          type: 'create',
-          icon: 'add',
-          color: 'primary',
-          action: () => {
-            Object.assign(this.dialog, this.dialogs.create)
-            this.dialog.display = true
-          }
-        }
-      ]
+        ]
+      }
     }
   },
   computed: {
-    show () {
-      return {
-        delete: !!(this.selected && this.selected.length),
-        create: true
-      }
+    show_ () {
+      return this.show()
     },
     tooltipValue () {
       return this.tooltip(this.selected)

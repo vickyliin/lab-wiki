@@ -18,7 +18,7 @@
            ripple
            v-for="(btn, i) in buttons"
            :key="i+1"
-           v-if="show_[btn.type]"
+           v-if="show_[btn.name]"
            :class="btn.color"
            :outline="btn.outline"
            @click.stop="btn.action">
@@ -70,7 +70,7 @@ export default {
       default () {
         return [
           {
-            type: 'delete',
+            name: 'delete',
             icon: 'delete',
             outline: true,
             action: () => {
@@ -80,7 +80,7 @@ export default {
             }
           },
           {
-            type: 'create',
+            name: 'create',
             icon: 'add',
             color: 'primary',
             action: () => {

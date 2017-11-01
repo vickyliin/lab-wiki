@@ -4,7 +4,7 @@
             @input="e => $emit('update:display', e)">
     <v-card>
       <v-card-title>
-        <v-container class="headline"
+        <v-container class="headline pb-0"
                      fluid>
           {{ title }}
         </v-container>
@@ -21,11 +21,19 @@
                 <v-list-tile-action>
                   {{ item.seminarId || '' }}
                 </v-list-tile-action>
-                <v-list-tile-content :class="{ 'grey--text': !item.seminarId }">{{ item.name }}</v-list-tile-content>
+                <v-list-tile-content>{{ item.name }}</v-list-tile-content>
                 <v-list-tile-action>
                   <action-icon v-if="item.seminarId"
-                               icon="clear"
-                               color="error" />
+                               icon="delete"
+                               color="grey"
+                               :item="item"
+                               :action="changeItem({ item, newId: 0 })" />
+
+                  <action-icon v-else
+                               icon="add"
+                               color="primary"
+                               :item="item"
+                               :action="changeItem({ item, newId: nActivate + 1 })" />
                 </v-list-tile-action>
               </v-list-tile>
             </transition-group>
@@ -71,7 +79,6 @@ export default {
       items: null,
       draggableOpt: {
         chosenClass: 'primary',
-        dragClass: 'white--text',
         dataIdAttr: 'id'
       }
     }
@@ -82,14 +89,25 @@ export default {
   methods: {
     setData (data) {
       this.items = data.sort((r, l) => {
+        if (r.seminarId === l.seminarId) return 0
         if (r.seminarId === 0) return 1
         if (l.seminarId === 0) return -1
         return r.seminarId > l.seminarId ? 1 : -1
       })
     },
-    assignId ({ newIndex, oldIndex }) {
-      for (let i = 0; i <= newIndex || i <= oldIndex; i++) {
+    assignId ({ newIndex }) {
+      this.items[newIndex].seminarId = newIndex + 1
+      this.setData(this.items)
+      let n = this.nActivate
+      for (let i = 0; i < n; i++) {
         this.items[i].seminarId = i + 1
+      }
+    },
+    changeItem ({ item, newId }) {
+      return item => {
+        item.seminarId = newId
+        this.setData(this.items)
+        if (this.nActivate) this.assignId({ newIndex: this.nActivate - 1 })
       }
     },
     submit () {
@@ -97,7 +115,10 @@ export default {
     }
   },
   computed: {
-    model: () => '/contactList'
+    model: () => '/contactList',
+    nActivate () {
+      return this.items.reduce((pre, cur) => pre + !!cur.seminarId, 0)
+    }
   }
 }
 </script>
@@ -107,4 +128,3 @@ export default {
 .draggable-move
   transition transform 0.3s
 </style>
-

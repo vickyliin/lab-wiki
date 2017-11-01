@@ -43,11 +43,12 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat
-               @click="crud()">Reset</v-btn>
+               @click="reset"
+               :loading="loading.reset">Reset</v-btn>
         <v-btn flat
                primary
                @click="submit"
-               :loading="loading">Submit</v-btn>
+               :loading="loading.submit">Submit</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -71,11 +72,17 @@ export default {
     },
     value: {
       type: Array
+    },
+    target: {
+      type: String
     }
   },
   data () {
     return {
-      loading: false,
+      loading: {
+        reset: false,
+        submit: false
+      },
       items: null,
       draggableOpt: {
         chosenClass: 'primary',
@@ -110,14 +117,36 @@ export default {
         if (this.nActivate) this.assignId({ newIndex: this.nActivate - 1 })
       }
     },
-    submit () {
-      return 0
+    async reset () {
+      this.loading.reset = true
+      await this.crud()
+      this.loading.reset = false
+    },
+    async submit () {
+      this.loading.submit = true
+      let newData = await this.crud({
+        type: 'update',
+        path: this.target,
+        id: 'schedule',
+        data: {
+          idList: this.items.slice(0, this.nActivate).map(item => item.id),
+          date: new Date().toJSON()
+        }
+      })
+      this.$emit('submit', newData)
+      this.$emit('update:display', false)
+      this.loading.submit = false
     }
   },
   computed: {
     model: () => '/contactList',
     nActivate () {
       return this.items.reduce((pre, cur) => pre + !!cur.seminarId, 0)
+    }
+  },
+  watch: {
+    display (newVal) {
+      if (newVal) this.crud()
     }
   }
 }

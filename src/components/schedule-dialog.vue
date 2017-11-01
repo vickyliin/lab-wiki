@@ -11,14 +11,15 @@
       </v-card-title>
       <v-card-text>
         <v-list>
-          <v-list-tile v-for="item in items"
-                       :key="item.id"
-                       >
-            <v-list-tile-content>{{ item.name }}</v-list-tile-content>
-            <v-list-tile-action>
-              <v-icon>delete</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
+          <draggable v-model="items">
+            <v-list-tile v-for="item in items"
+                        :key="item.id">
+              <v-list-tile-content>{{ item.name }}</v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon>delete</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+          </draggable>
         </v-list>
       </v-card-text>
       <v-card-actions>
@@ -35,7 +36,10 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
+  components: { draggable },
   props: {
     width: {
       type: [ String, Number ]

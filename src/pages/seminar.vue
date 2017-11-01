@@ -202,10 +202,8 @@ export default {
     },
     toPageOfNow () {
       let { pagination, items } = this.table
-      let { rowsPerPage, sortBy, descending } = pagination
-      if (sortBy !== 'date') {
-        throw Error('should sort by date to call toPageOfNow()')
-      }
+      let { rowsPerPage, descending } = pagination
+      pagination.sortBy = 'date'
       let nRowsBefore = items.reduce((pre, cur) => pre + (Date.parse(cur.date) > Date.now()), 0)
       if (!descending) nRowsBefore = items.length - nRowsBefore
       pagination.page = Math.ceil(nRowsBefore / rowsPerPage)

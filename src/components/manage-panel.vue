@@ -56,12 +56,17 @@ export default {
     title: {
       type: String
     },
+    schedule: {
+      type: Boolean,
+      default: false
+    },
     show: {
       type: Function,
       default (name) {
         return {
           delete: !!(this.selected && this.selected.length),
-          create: true
+          create: true,
+          schedule: this.schedule
         }[name]
       }
     },
@@ -85,6 +90,15 @@ export default {
             color: 'primary',
             action: () => {
               Object.assign(this.dialog, this.dialogs.create)
+              this.dialog.display = true
+            }
+          },
+          {
+            name: 'schedule',
+            icon: 'mdi-calendar',
+            color: 'success',
+            action: () => {
+              Object.assign(this.dialog, this.dialogs.schedule)
               this.dialog.display = true
             }
           }

@@ -16,6 +16,7 @@
                :title="dialog.title"
                :fields="dialog.fields"
                :display.sync="dialog.display"
+               :target="dialog.target"
                v-model="dialog.value"
                @submit="dialog.onSubmit"
                width="35rem">
@@ -105,7 +106,8 @@ export default {
         value: null,
         onSubmit: this.updateData,
         display: false,
-        item: null
+        item: null,
+        target: null
       },
       dialogs: {
         item: { topic: {} },
@@ -132,7 +134,10 @@ export default {
           }
         },
         schedule: {
-          component: 'schedule-dialog'
+          component: 'schedule-dialog',
+          title: 'Schedule Seminar',
+          target: this.$route.path,
+          onSubmit: (data) => this.setData(data)
         }
       }
     }

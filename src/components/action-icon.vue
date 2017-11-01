@@ -4,8 +4,11 @@
          v-if="show(item)"
          :href="href? href(item): ''"
          @click.stop="action(item)"
+         @mousedown.stop
+         @dragenter.stop
+         @pointerdown.stop
          style="margin: 0"
-         :class="color? color+'--text': ''">
+         :class="color+'--text'">
     <v-icon>{{ icon }}</v-icon>
   </v-btn>
 </template>
@@ -15,7 +18,7 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
+      default: null
     },
     icon: {
       type: String,
@@ -32,7 +35,8 @@ export default {
       type: Function
     },
     action: {
-      type: Function
+      type: Function,
+      default: () => {}
     }
   }
 }

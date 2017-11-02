@@ -12,17 +12,20 @@
                v-model="table.value"
                :pagination.sync="table.pagination">
     </datatable>
-    <form-dialog :title="dialog.title"
-                 :fields="dialog.fields"
-                 :display.sync="dialog.display"
-                 v-model="dialog.value"
-                 @submit="dialog.onSubmit"
-                 width="35rem">
-    </form-dialog>
+    <component :is="dialog.component"
+               :title="dialog.title"
+               :fields="dialog.fields"
+               :display.sync="dialog.display"
+               :target="dialog.target"
+               v-model="dialog.value"
+               @submit="dialog.onSubmit"
+               width="35rem">
+    </component>
     <manage-panel :dialog="dialog"
                   :dialogs="dialogs"
                   :selected="table.value"
                   :tooltip="tooltip"
+                  :schedule="true"
                   :set-data="setData"></manage-panel>
   </v-container>
 </template>
@@ -34,6 +37,7 @@ import { mapGetters } from 'vuex'
 import { gDriveSlidesFolderID, gSuiteDomain } from 'config'
 import datatable from 'components/datatable.vue'
 import formDialog from 'components/form-dialog.vue'
+import scheduleDialog from 'components/schedule-dialog.vue'
 import managePanel from 'components/manage-panel.vue'
 
 const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
@@ -51,7 +55,7 @@ ${fileContent}
 --${boundary}--`
 
 export default {
-  components: { datatable, formDialog, managePanel },
+  components: { datatable, formDialog, scheduleDialog, managePanel },
   data () {
     return {
       table: {
@@ -102,13 +106,15 @@ export default {
         value: null,
         onSubmit: this.updateData,
         display: false,
-        item: null
+        item: null,
+        target: null
       },
       dialogs: {
         item: { topic: {} },
         updateData: this.updateData,
         localeString: this.localeString,
         create: {
+          component: 'form-dialog',
           title: 'Add Seminar',
           value: null,
           item: null
@@ -116,6 +122,7 @@ export default {
         get update () {
           let item = this.item
           return {
+            component: 'form-dialog',
             title: 'Update Seminar',
             value: {
               date: item.date,
@@ -125,6 +132,12 @@ export default {
             },
             item
           }
+        },
+        schedule: {
+          component: 'schedule-dialog',
+          title: 'Schedule Seminar',
+          target: this.$route.path,
+          onSubmit: (data) => this.setData(data)
         }
       }
     }
@@ -206,7 +219,7 @@ export default {
       pagination.sortBy = 'date'
       let nRowsBefore = items.reduce((pre, cur) => pre + (Date.parse(cur.date) > Date.now()), 0)
       if (!descending) nRowsBefore = items.length - nRowsBefore
-      pagination.page = Math.ceil(nRowsBefore / rowsPerPage)
+      pagination.page = Math.ceil(nRowsBefore / rowsPerPage) || 1
       return nRowsBefore
     }
   },

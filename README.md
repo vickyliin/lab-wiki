@@ -145,9 +145,10 @@ src\
 - Postpone, advance, exchange dates
 - Google Drive Upload :heavy_check_mark:
 
-### Take out garbage
+### Clean Our Lab
 
 - Table :heavy_check_mark:
+- Scheduling :heavy_check_mark:
 
 ### Call for Papers
 

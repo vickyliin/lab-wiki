@@ -18,6 +18,7 @@
                :display.sync="dialog.display"
                :target="dialog.target"
                :reset="dialog.reset"
+               id-field="seminarId"
                v-model="dialog.value"
                @submit="dialog.onSubmit"
                width="35rem">

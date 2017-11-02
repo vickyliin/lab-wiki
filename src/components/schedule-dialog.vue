@@ -79,6 +79,9 @@ export default {
     },
     target: {
       type: String
+    },
+    idField: {
+      type: String
     }
   },
   data () {
@@ -101,23 +104,23 @@ export default {
   methods: {
     setData (data) {
       this.items = data.sort((r, l) => {
-        if (r.seminarId === l.seminarId) return 0
-        if (r.seminarId === 0) return 1
-        if (l.seminarId === 0) return -1
-        return r.seminarId > l.seminarId ? 1 : -1
+        if (r[this.idField] === l[this.idField]) return 0
+        if (r[this.idField] === 0) return 1
+        if (l[this.idField] === 0) return -1
+        return r[this.idField] > l[this.idField] ? 1 : -1
       })
     },
     assignId ({ newIndex }) {
-      this.items[newIndex].seminarId = newIndex + 1
+      this.items[newIndex][this.idField] = newIndex + 1
       this.setData(this.items)
       let n = this.nActivate
       for (let i = 0; i < n; i++) {
-        this.items[i].seminarId = i + 1
+        this.items[i][this.idField] = i + 1
       }
     },
     changeItem ({ item, newId }) {
       return item => {
-        item.seminarId = newId
+        item[this.idField] = newId
         this.setData(this.items)
         if (this.nActivate) this.assignId({ newIndex: this.nActivate - 1 })
       }
@@ -148,7 +151,7 @@ export default {
   computed: {
     model: () => '/contactList',
     nActivate () {
-      return this.items.reduce((pre, cur) => pre + !!cur.seminarId, 0)
+      return this.items.reduce((pre, cur) => pre + !!cur[this.idField], 0)
     }
   },
   watch: {

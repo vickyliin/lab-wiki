@@ -31,16 +31,13 @@
 export default {
   props: {
     dialog: {
-      type: Object,
-      required: true
+      type: Object
     },
     dialogs: {
-      type: Object,
-      required: true
+      type: Object
     },
     setData: {
-      type: Function,
-      required: true
+      type: Function
     },
     selected: {
       type: [Object, Array]

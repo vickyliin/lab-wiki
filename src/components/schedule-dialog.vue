@@ -25,11 +25,11 @@
                           :key="item.id"
                           class="items-tile">
                 <v-list-tile-action>
-                  {{ item.seminarId || '' }}
+                  {{ item[idField] || '' }}
                 </v-list-tile-action>
                 <v-list-tile-content>{{ item.name }}</v-list-tile-content>
                 <v-list-tile-action>
-                  <action-icon v-if="item.seminarId"
+                  <action-icon v-if="item[idField]"
                                icon="delete"
                                color="grey"
                                :item="item"
@@ -138,6 +138,7 @@ export default {
         type: 'update',
         path: this.target,
         id: 'schedule',
+        readAfter: false,
         data: {
           idList: this.items.slice(0, this.nActivate).map(item => item.id),
           date: new Date(this.date).toJSON()

@@ -52,7 +52,7 @@ export default {
         'divider',
         { header: 'Others' },
         { icon: 'highlight', path: 'news' },
-        { icon: 'delete', path: 'takeOutGarbage' },
+        { icon: 'mdi-broom', path: 'cleanOurLab' },
         { icon: 'perm_contact_calendar', path: 'contactList' }
         // {icon: 'email', path: 'emailSchedule'},
       ]

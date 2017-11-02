@@ -27,10 +27,14 @@ deploy:
     skip_cleanup: true
     script: rsync -rzv -e 'ssh -p $DEPLOY_PORT' static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     on:
-      branch:
-        - master
-        - hotfix/1.0.9
-        
+      branch: master
+  - provider: script
+    skip_cleanup: true
+    script: rsync -rzv -e 'ssh -p $DEPLOY_PORT' static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH-beta
+    on:
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^release.*$
+
 notifications:
   email:
     recipients:

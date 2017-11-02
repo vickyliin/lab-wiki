@@ -46,13 +46,11 @@ export default {
       data.forEach((d, i) => {
         this.$set(this.name2index, d.name, i)
       })
-    }
-  },
-  watch: {
-    value (newVal) {
-      if (newVal && newVal.constructor === String) {
-        this.$emit('input', this.people[ this.name2index[newVal] ])
-      }
+      this.$watch('value', newVal => {
+        if (newVal && newVal.constructor === String) {
+          this.$emit('input', this.people[ this.name2index[newVal] ])
+        }
+      }, { immediate: true })
     }
   },
   computed: {

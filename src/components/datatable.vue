@@ -17,7 +17,7 @@
       <tr>
         <th v-if="enableSelect">
           <v-checkbox v-if="selectAll"
-                      primary
+                      color="primary"
                       hide-details
                       @click.native="toggleAll"
                       :input-value="props.all"
@@ -42,7 +42,7 @@
       <tr :active="props.selected"
           @click="props.selected = !props.selected">
         <td v-if="enableSelect">
-          <v-checkbox primary
+          <v-checkbox color="primary"
                       hide-details
                       :input-value="props.selected"></v-checkbox>
         </td>

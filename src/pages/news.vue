@@ -7,7 +7,7 @@
                 :key="i">
           <v-container @click="news.selected = !news.selected">
             <v-layout mb-2>
-              <v-checkbox primary
+              <v-checkbox color="primary"
                           hide-details
                           v-if="isAdmin"
                           :input-value="news.selected"

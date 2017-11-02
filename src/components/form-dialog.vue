@@ -29,7 +29,7 @@
         <v-btn flat
                @click="clear">Clear</v-btn>
         <v-btn flat
-               primary
+               color="primary"
                @click="submit"
                :loading="loading">Submit</v-btn>
       </v-card-actions>

@@ -11,7 +11,7 @@
     </p>
     <v-layout justify-end>
       <v-btn @click="signIn"
-             primary
+             color="primary"
              round>
         <v-icon left>mdi-google</v-icon>
         Sign In

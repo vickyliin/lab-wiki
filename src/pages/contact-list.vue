@@ -19,7 +19,7 @@
               @click="person.selected = !person.selected">
         <v-container>
           <v-layout mb-1>
-            <v-checkbox primary
+            <v-checkbox color="primary"
                         hide-details
                         v-if="isAdmin"
                         :label="person.name"

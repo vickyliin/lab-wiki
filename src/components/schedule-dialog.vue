@@ -52,7 +52,7 @@
                @click="reset"
                :loading="loading.reset">Reset</v-btn>
         <v-btn flat
-               primary
+               color="primary"
                @click="submit"
                :loading="loading.submit">Submit</v-btn>
       </v-card-actions>

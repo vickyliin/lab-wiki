@@ -19,7 +19,7 @@
            v-for="(btn, i) in buttons"
            :key="i+1"
            v-if="show(btn.name)"
-           :class="btn.color"
+           :color="btn.color"
            :outline="btn.outline"
            @click.stop="btn.action">
       <v-icon>{{ btn.icon }}</v-icon>

@@ -1,11 +1,12 @@
 <template>
   <v-navigation-drawer class="pb-0 pt-1"
+                       app
                        floating
+                       clipped
                        persistent
                        enable-resize-watcher
                        :value="value"
                        @input="e => $emit('input', e)"
-                       height="100%"
                        id="sidebar">
     <v-list dense>
       <template v-for="(item, i) in items">
@@ -67,6 +68,4 @@ export default {
     vertical-align: middle
   .router-link-active>li
     background-color: #303030
-  .navigation-drawer__border
-    width: 0
 </style>

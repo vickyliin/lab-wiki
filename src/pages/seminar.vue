@@ -86,6 +86,7 @@ export default {
             action: item => {
               this.dialogs.item = item
               Object.assign(this.dialog, this.dialogs.update)
+              this.dialog.fields[2].display = fp => this.dialog.title === 'Update Seminar' ? fp || item.topic.slides : fp
               this.dialog.display = true
             }
           }

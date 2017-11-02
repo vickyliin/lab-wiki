@@ -84,7 +84,7 @@ let authentications = {
 
 export default {
   ...authentications,
-  async crud ({ commit, dispatch }, { type, path, data, id }) {
+  async crud ({ commit, dispatch }, { type, path, data, id, readAfter = true }) {
     let reqType = {
       create: 'post',
       read: 'get',
@@ -99,7 +99,7 @@ export default {
     commit('status', status)
 
     if (status !== 200) return null
-    if (type !== 'read') return dispatch('crud', { path, type: 'read' })
+    if (type !== 'read' && readAfter) return dispatch('crud', { path, type: 'read' })
     return response
   }
 }

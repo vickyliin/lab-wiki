@@ -17,6 +17,7 @@
                :fields="dialog.fields"
                :display.sync="dialog.display"
                :target="dialog.target"
+               :reset="dialog.reset"
                v-model="dialog.value"
                @submit="dialog.onSubmit"
                width="35rem">
@@ -114,24 +115,28 @@ export default {
         item: { topic: {} },
         updateData: this.updateData,
         localeString: this.localeString,
+        vm: this,
         create: {
           component: 'form-dialog',
           title: 'Add Seminar',
           value: null,
-          item: null
+          item: null,
+          reset: null
         },
         get update () {
           let item = this.item
+          let value = {
+            date: item.date,
+            presenter: item.presenter,
+            slide: '',
+            topic: item.topic.text
+          }
           return {
             component: 'form-dialog',
             title: 'Update Seminar',
-            value: {
-              date: item.date,
-              presenter: item.presenter,
-              slide: '',
-              topic: item.topic.text
-            },
-            item
+            value,
+            item,
+            reset: () => { this.vm.dialog.value = value }
           }
         },
         schedule: {

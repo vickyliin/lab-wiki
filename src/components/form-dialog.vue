@@ -27,7 +27,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat
-               @click="clear">Clear</v-btn>
+               @click="reset ? reset() : clear()">Reset</v-btn>
         <v-btn flat
                color="primary"
                @click="submit"
@@ -42,7 +42,27 @@ import * as components from './*.vue'
 
 export default {
   components,
-  props: ['width', 'display', 'title', 'fields', 'value'],
+  props: {
+    width: {
+      type: [String, Number]
+    },
+    display: {
+      type: Boolean
+    },
+    title: {
+      type: String
+    },
+    fields: {
+      type: Array
+    },
+    value: {
+      type: Object
+    },
+    reset: {
+      type: [Function, Object],
+      default: null
+    }
+  },
   data () {
     return {
       loading: false

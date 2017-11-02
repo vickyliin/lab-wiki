@@ -14,7 +14,7 @@
                   @focus="$emit('focus')"
                   @blur="$emit('blur')"
                   :required="required !== undefined"></v-text-field>
-    <v-date-picker :value="new Date(value).toJSON()"
+    <v-date-picker :value="value ? new Date(value).toJSON() : null"
                    @input="e => $emit('input', e)"
                    no-title
                    dark

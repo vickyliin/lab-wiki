@@ -77,9 +77,6 @@ export default {
     title: {
       type: String
     },
-    value: {
-      type: Array
-    },
     target: {
       type: String
     }

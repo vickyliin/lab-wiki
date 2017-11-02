@@ -15,9 +15,8 @@
       <v-card v-for="person in filteredData"
               :key="person.id"
               class="contact-card"
-              :class="{link: isAdmin}"
-              @click="person.selected = !person.selected">
-        <v-container>
+              :class="{link: isAdmin}">
+        <v-container @click="person.selected = !person.selected">
           <v-layout mb-1>
             <v-checkbox color="primary"
                         hide-details

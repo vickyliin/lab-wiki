@@ -10,6 +10,12 @@
         </v-container>
       </v-card-title>
       <v-card-text>
+        <v-container pb-0 pt-3 pl-3 fluid>
+          <date-picker label="Start Date"
+                       v-model="date"
+                       :required="true"
+                       :error="!date" />
+        </v-container>
         <v-list>
           <draggable v-model="items"
                      :options="draggableOpt"
@@ -57,9 +63,10 @@
 <script>
 import draggable from 'vuedraggable'
 import actionIcon from 'components/action-icon.vue'
+import datePicker from 'components/date-picker.vue'
 
 export default {
-  components: { draggable, actionIcon },
+  components: { draggable, actionIcon, datePicker },
   props: {
     width: {
       type: [ String, Number ]
@@ -87,7 +94,8 @@ export default {
       draggableOpt: {
         chosenClass: 'primary',
         dataIdAttr: 'id'
-      }
+      },
+      date: null
     }
   },
   created () {
@@ -120,9 +128,11 @@ export default {
     async reset () {
       this.loading.reset = true
       await this.crud()
+      this.date = null
       this.loading.reset = false
     },
     async submit () {
+      if (!this.date) return
       this.loading.submit = true
       let newData = await this.crud({
         type: 'update',
@@ -130,7 +140,7 @@ export default {
         id: 'schedule',
         data: {
           idList: this.items.slice(0, this.nActivate).map(item => item.id),
-          date: new Date().toJSON()
+          date: new Date(this.date).toJSON()
         }
       })
       this.$emit('submit', newData)

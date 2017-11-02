@@ -120,7 +120,7 @@ export default {
             value: {
               date: item.date,
               presenter: item.presenter,
-              slide: null,
+              slide: '',
               topic: item.topic.text
             },
             item
@@ -143,7 +143,7 @@ export default {
         topic: {
           sort: d.topic,
           text: d.topic,
-          slides: d.slides
+          slides: d.slides || ''
         },
         owner: d.owner,
         id: d.id
@@ -198,7 +198,7 @@ export default {
     tooltip (selectedItem) {
       return selectedItem.map(item =>
         `${this.localeString(item.date, 'Date')} ${item.presenter}`
-      ).join('\n')
+      )
     },
     toPageOfNow () {
       let { pagination, items } = this.table

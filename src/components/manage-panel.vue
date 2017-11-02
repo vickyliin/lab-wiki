@@ -2,11 +2,17 @@
   <transition-group name="fade-transition"
                     class="manage-panel"
                     v-if="isAdmin">
-    <span v-if="selected && selected.length"
-          :key="0"
-          v-tooltip:top="{ html: tooltipValue, visible: !!tooltipValue }">
-      {{ selected.length | localeString }} selected
-    </span>
+    <v-tooltip left
+               :key="0"
+               :debounce="0">
+      <div v-for="v in tooltipValue" :key="v">
+        {{ v }}
+      </div>
+      <span flat v-if="selected && selected.length"
+            slot="activator">
+        {{ selected.length | localeString }} selected
+      </span>
+    </v-tooltip>
     <v-btn fab
            small
            ripple
@@ -44,7 +50,7 @@ export default {
       default (items) {
         return items.map(
           item => this.localeString(item[this.title], 'Date')
-        ).filter(x => x != null).join('\n')
+        ).filter(x => x != null)
       }
     },
     title: {

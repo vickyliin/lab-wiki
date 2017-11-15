@@ -1,4 +1,3 @@
-import 'assets/js/platform'
 import { gClientSettings, entry } from 'config'
 import $ from 'ajax'
 

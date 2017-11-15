@@ -13,7 +13,7 @@
                 @update:pagination="e => $emit('update:pagination', e)"
                 @input="e => $emit('input', e)">
     <template slot="headers"
-              scope="props">
+              slot-scope="props">
       <tr>
         <th v-if="enableSelect">
           <v-checkbox v-if="selectAll"
@@ -38,7 +38,7 @@
       </tr>
     </template>
     <template slot="items"
-              scope="props">
+              slot-scope="props">
       <tr :active="props.selected"
           @click="props.selected = !props.selected">
         <td v-if="enableSelect">

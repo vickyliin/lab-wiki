@@ -15,7 +15,7 @@
       @focus="$emit('focus')"
       @blur="$emit('blur')"
       autocomplete>
-    <template slot="item" scope="data">
+    <template slot="item" slot-scope="data">
       <v-list-tile-content>
         <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
         <v-list-tile-sub-title v-html="data.item.account"></v-list-tile-sub-title>

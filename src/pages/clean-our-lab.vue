@@ -95,7 +95,7 @@ export default {
     duty () {
       let now = new Date()
       for (let item of this.table.items) {
-        if (item.startDate <= now && now <= item.endDate) {
+        if (item.startDate <= now && now < item.endDate.valueOf() + 86400000) {
           return `${item.contact.name} (${item.date.display})`
         }
       }

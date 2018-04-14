@@ -1,7 +1,26 @@
 import Vue from 'vue'
 import {
   Vuetify,
-  VApp
+  VApp,
+  VBtn,
+  VIcon,
+  VGrid,
+  VDataTable,
+  VCheckbox,
+  VMenu,
+  VTextField,
+  VDatePicker,
+  VDialog,
+  VCard,
+  VTooltip,
+  VSelect,
+  VList,
+  VNavigationDrawer,
+  VDivider,
+  VSubheader,
+  VToolbar,
+  VAvatar,
+  VProgressCircular
 } from 'vuetify'
 import App from 'App.vue'
 import router from 'router'
@@ -11,6 +30,25 @@ import 'composition'
 Vue.use(Vuetify, {
   components: {
     VApp,
+    VBtn,
+    VIcon,
+    VGrid,
+    VDataTable,
+    VCheckbox,
+    VMenu,
+    VTextField,
+    VDatePicker,
+    VDialog,
+    VCard,
+    VTooltip,
+    VSelect,
+    VList,
+    VNavigationDrawer,
+    VDivider,
+    VSubheader,
+    VToolbar,
+    VAvatar,
+    VProgressCircular
   }
 })
 

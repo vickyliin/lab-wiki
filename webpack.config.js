@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   entry: ['babel-polyfill', './src/main.js'],
@@ -73,7 +74,7 @@ module.exports = {
       template: path.resolve(__dirname, 'src/index.ejs'),
       inject: false,
       base: process.env.WIKI_HOME
-    })
+    }),
   ],
   devtool: '#eval-source-map'
 }
@@ -84,10 +85,12 @@ if (isProd) {
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
-      }
+      },
+      sourceMap: true
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    })
+    }),
+    new BundleAnalyzerPlugin()
   ])
 }

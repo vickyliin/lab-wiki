@@ -64,8 +64,9 @@ export default {
 <style lang="stylus">
   #sidebar a
     text-decoration: none
+    color: #fff
   td, th
     vertical-align: middle
-  .router-link-active>li
+  .router-link-active>div
     background-color: #303030
 </style>

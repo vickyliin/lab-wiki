@@ -1,9 +1,9 @@
 {
   "presets": [
     [
-      "env",
-      {
-        "targets": { "browsers": "> 5%" }
+      "env", {
+        "targets": { "browsers": "> 5%" },
+        "modules": false
       }
     ]
   ],
@@ -11,6 +11,12 @@
     "import-glob",
     "transform-object-rest-spread",
     "transform-async-to-generator",
-    "transform-remove-strict-mode"
+    "transform-remove-strict-mode",
+    ["transform-imports", {
+        "vuetify":{
+           "transform": "vuetify/es5/components/${member}",
+           "preventFullImport": true
+        }
+    }]
   ]
 }

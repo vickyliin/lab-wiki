@@ -5,7 +5,7 @@
                 appear>
       <v-container fluid
                   :key="title">
-        <h5 class="mb-4">{{ title | spaceSeparated }}</h5>
+        <h2 class="mb-4">{{ title | spaceSeparated }}</h2>
 
         <v-container v-if="status === 0"
                     row

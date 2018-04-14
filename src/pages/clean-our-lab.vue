@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h6>On duty this week: <b>{{ duty }}</b></h6>
+    <h4>On duty this week: <b>{{ duty }}</b></h4>
     <v-layout column>
       <datatable v-bind="table"
                  :pagination.sync="table.pagination"

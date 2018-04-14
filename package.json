@@ -30,6 +30,7 @@
     "babel-loader": "^6.0.0",
     "babel-plugin-import-glob": "^2.0.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-imports": "^1.5.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "babel-preset-env": "^1.6.0",
@@ -45,11 +46,12 @@
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.30.1",
     "raw-loader": "^0.5.1",
+    "style-loader": "^0.20.3",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "vue-loader": "^11.1.4",
     "vue-template-compiler": "^2.5.0",
-    "webpack": "^2.2.0",
+    "webpack": "^2.6.1",
     "webpack-dev-server": "^2.2.0"
   },
   "eslintIgnore": [

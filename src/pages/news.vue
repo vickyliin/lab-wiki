@@ -21,7 +21,7 @@
             </v-layout>
             <v-subheader>{{ news.date | localeString('Date') }}</v-subheader>
             <v-container>
-              <vue-markdown :source="news.content"></vue-markdown>
+              {{ news.content }}
             </v-container>
             <v-divider></v-divider>
           </v-container>
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown'
 import formDialog from 'components/form-dialog.vue'
 import managePanel from 'components/manage-panel.vue'
 import actionIcon from 'components/action-icon.vue'
@@ -52,7 +51,7 @@ import actionIcon from 'components/action-icon.vue'
 const autoText = 'Congratulations to'
 
 export default {
-  components: { VueMarkdown, managePanel, formDialog, actionIcon },
+  components: { managePanel, formDialog, actionIcon },
   data () {
     return {
       data: [],

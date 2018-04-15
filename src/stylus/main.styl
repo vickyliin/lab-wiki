@@ -31,10 +31,8 @@ $theme := {
 }
 @import '~vuetify/src/stylus/app.styl'
 
-.application.application--dark h
-  for i in (1..6)
-    &{i}
-      color: inherit
+.application.theme--dark a
+  color: $blue.base
 
 td:after, td span:after
   padding-left: .3rem

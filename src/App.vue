@@ -2,6 +2,9 @@
   <v-app dark>
     <navigator v-model="drawer"></navigator>
     <toolbar v-model="drawer"></toolbar>
+    <v-btn icon top left fixed @click.native.stop="drawer = !drawer">
+      <v-icon>menu</v-icon>
+    </v-btn>
     <page></page>
   </v-app>
 </template>

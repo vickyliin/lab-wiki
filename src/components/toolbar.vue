@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar app clipped-left fixed>
+  <v-toolbar app clipped-left fixed scroll-off-screen :scroll-threshold=10>
     <v-btn icon @click.native.stop="$emit('input', !value)">
       <v-icon>menu</v-icon>
     </v-btn>

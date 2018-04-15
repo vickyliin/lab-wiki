@@ -4,6 +4,7 @@
                        floating
                        clipped
                        persistent
+                       hide-overlay
                        enable-resize-watcher
                        :value="value"
                        @input="e => $emit('input', e)"

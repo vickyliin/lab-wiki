@@ -1,37 +1,34 @@
 <template>
-  <v-container>
-    <v-layout column>
-      <v-container fluid>
-        <v-layout row
-                  justify-center
-                  class="text-xs">
-          <v-flex>
-            Last Update: {{ lastUpdate | localeString }}
-            <v-icon class="ml-1 link"
-                    :class="{ rotate: pulling }"
-                    @click="refresh()">refresh</v-icon>
-          </v-flex>
-          <v-flex class="text-xs-right">
-            Latest Logtime: {{ latestLogtime | localeString }}
-          </v-flex>
-        </v-layout>
-      </v-container>
-      <v-flex>
-        <v-container fluid>
-          <chart v-bind="chart"></chart>
-        </v-container>
-      </v-flex>
-      <v-flex>
-        <v-container fluid>
-          <datatable v-bind="table"
-                     :pagination.sync="table.pagination"
-                     @sorted="items => this.sortedItems = items"
-                     @clickSort="sorting = true">
-          </datatable>
-        </v-container>
-      </v-flex>
+  <v-layout column mx-2>
+    <v-layout row justify-center text-xs>
+        <v-flex>
+          <v-layout row d-inline-flex wrap>
+            <v-flex mr-1 xs12> Last Update: </v-flex>
+            <v-flex>
+              {{ lastUpdate | localeString }}
+              <v-icon class="ml-1 link"
+                      :class="{ rotate: pulling }"
+                      @click="refresh()">refresh</v-icon>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex text-xs-right hidden-sm-and-down>
+          Latest Logtime: {{ latestLogtime | localeString }}
+        </v-flex>
     </v-layout>
-  </v-container>
+    <v-layout>
+      <chart v-bind="chart"></chart>
+    </v-layout>
+    <v-layout hidden-sm-and-down>
+      <v-container>
+        <datatable v-bind="table"
+                   :pagination.sync="table.pagination"
+                   @sorted="items => this.sortedItems = items"
+                   @clickSort="sorting = true">
+        </datatable>
+      </v-container>
+    </v-layout>
+  </v-layout>
 </template>
 
 <script>

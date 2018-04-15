@@ -5,7 +5,7 @@
                 appear>
       <v-container fluid
                   :key="title">
-        <h2 class="mb-4">{{ title | spaceSeparated }}</h2>
+        <h2 class="my-4 mx-2">{{ title | spaceSeparated }}</h2>
 
         <v-container v-if="status === 0"
                     row
@@ -63,6 +63,8 @@ export default {
 </script>
 
 <style lang="stylus">
-  main>.container
+  main .container
     padding: 2.5rem 2rem
+    @media screen and (max-width: 30rem)
+      padding: 0
 </style>

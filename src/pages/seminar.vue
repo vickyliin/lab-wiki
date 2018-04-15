@@ -34,7 +34,7 @@
 
 <script>
 
-import _ from 'lodash'
+import debounce from 'lodash.debounce'
 import { mapGetters } from 'vuex'
 import { gDriveSlidesFolderID, gSuiteDomain } from 'config'
 import datatable from 'components/datatable.vue'
@@ -245,7 +245,7 @@ export default {
     ...mapGetters(['userEmail'])
   },
   watch: {
-    search: _.debounce(function () {
+    search: debounce(function () {
       this.table.search = this.search
     }, 500),
     userRole (newVal) {

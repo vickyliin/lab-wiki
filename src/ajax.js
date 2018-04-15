@@ -13,7 +13,7 @@ function XhrWrapper (opt) {
     return { response, status }
   }
 }
-export function load_script (src) {
+export function loadScript (src) {
   let script = document.createElement('script')
   script.src = src
   script.async = false

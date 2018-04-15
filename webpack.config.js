@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const ExtractTextPlugin = require("extract-text-webpack-plugin")
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   entry: ['babel-polyfill', './src/main.js'],
@@ -48,7 +48,7 @@ module.exports = {
         loader: ExtractTextPlugin.extract({
           use: ['css-loader', 'stylus-loader']
         })
-      },
+      }
     ]
   },
   resolve: {

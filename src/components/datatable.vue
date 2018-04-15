@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import escaperegexp from 'lodash.escaperegexp'
+import escapeRegExp from 'lodash.escaperegexp'
 import actionIcon from 'components/action-icon.vue'
 
 const sortOrder = {

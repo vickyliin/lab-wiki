@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { load_script } from 'ajax'
+import { loadScript } from 'ajax'
 import page from 'page.vue'
 import navigator from 'components/navigator.vue'
 import toolbar from 'components/toolbar.vue'
@@ -20,8 +20,8 @@ export default {
     }
   },
   methods: {
-    async auth_init() {
-      await load_script('https://apis.google.com/js/platform.js')
+    async auth_init () {
+      await loadScript('https://apis.google.com/js/platform.js')
       this.$store.dispatch('authInit')
     }
   },
@@ -30,4 +30,3 @@ export default {
   }
 }
 </script>
-

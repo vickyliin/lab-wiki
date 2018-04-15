@@ -1,6 +1,5 @@
 import { gClientSettings, entry } from 'config'
-import $ from 'ajax'
-import { load_script } from 'ajax'
+import { loadScript, default as $ } from 'ajax'
 
 const loginUrl = entry + '/login'
 const logoutUrl = entry + '/logout'
@@ -103,9 +102,9 @@ export default {
     return response
   },
   async initChartjs ({ commit, state: { chartjs } }) {
-    if (chartjs) return;
-    await load_script('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js')
-    await load_script('https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels')
+    if (chartjs) return
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js')
+    await loadScript('https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels')
     let glob = Chart.defaults.global
     Chart.defaults.global = {
       ...glob,

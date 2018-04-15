@@ -18,7 +18,7 @@ export default {
     }
   },
   methods: {
-    async draw_chart() {
+    async drawChart () {
       await this.chart
       this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
     }
@@ -27,7 +27,7 @@ export default {
     this.chart = this.$store.dispatch('initChartjs')
   },
   mounted () {
-    this.draw_chart()
+    this.drawChart()
     this.$emit('init', this.chart)
   },
   computed: {

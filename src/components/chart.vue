@@ -5,32 +5,6 @@
 </template>
 
 <script>
-import Chart from 'chart.js'
-import 'chartjs-plugin-datalabels'
-let glob = Chart.defaults.global
-Chart.defaults.global = {
-  ...glob,
-  defaultFontColor: 'rgba(255,255,255,.8)',
-  defaultFontSize: 14,
-  defaultFontFamily: 'Roboto, Sans-serif'
-}
-glob.tooltips.callbacks.label = (
-  {
-    datasetIndex: i,
-    yLabel
-  },
-  {
-    datasets
-  }
-) => `${datasets[i].label}: ${yLabel.toLocaleString()} ${datasets[i].yAxisID}`
-glob.plugins.datalabels = {
-  display: false,
-  font: {
-    size: 9,
-    family: 'Verdana, Sans-serif'
-  }
-}
-
 export default {
   props: ['type', 'data', 'options'],
   data () {
@@ -43,8 +17,17 @@ export default {
       }
     }
   },
+  methods: {
+    async draw_chart() {
+      await this.chart
+      this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
+    }
+  },
+  created () {
+    this.chart = this.$store.dispatch('initChartjs')
+  },
   mounted () {
-    this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
+    this.draw_chart()
     this.$emit('init', this.chart)
   },
   computed: {
@@ -56,7 +39,8 @@ export default {
     }
   },
   watch: {
-    dataWatched () {
+    async dataWatched () {
+      await this.chart
       this.chart.update()
     }
   }

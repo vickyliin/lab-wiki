@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import debounce from 'lodash.debounce'
 import formDialog from 'components/form-dialog.vue'
 import managePanel from 'components/manage-panel.vue'
 import actionIcon from 'components/action-icon.vue'
@@ -156,7 +156,7 @@ export default {
     }
   },
   watch: {
-    search: _.debounce(function () {
+    search: debounce(function () {
       this.debouncedSearch = this.search
     }, 500)
   }

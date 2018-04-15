@@ -1,7 +1,24 @@
+@import '~assets/css/NotoSansTC.css'
+@import './computers'
 /** Stylus Styles */
-@require '../../node_modules/vuetify/src/stylus/settings/_colors'
-@import 'assets/css/NotoSansTC.css'
-
+$blue := {
+  "lighten-1":  #42A5F5,
+  "accent-2":   #448AFF,
+  "base":       #2196F3,
+}
+$grey := {
+  "lighten-1":  #bdbdbd,
+  "darken-3":   #424242,
+}
+$amber := {
+  "base":       #ffc107,
+}
+$red := {
+  "accent-2":   #FF5252,
+}
+$green := {
+  "base":       #4CAF50,
+}
 $body-font-family := 'Roboto', 'Noto Sans TC', sans-serif
 $theme := {
   primary: $blue.lighten-1
@@ -12,8 +29,7 @@ $theme := {
   error: $red.accent-2
   success: $green.base
 }
-
-@import '../../node_modules/vuetify/src/stylus/main'
+@import '~vuetify/src/stylus/app.styl'
 
 .application.application--dark h
   for i in (1..6)
@@ -33,10 +49,10 @@ td:after, td span:after
   align-content: center
   align-items: center
 
-
 .slide-y-enter-active, .slide-y-leave-active
   transition: all .4s
 
 .slide-y-enter, .slide-y-leave-to
   opacity: 0
   transform: translateY(30px)
+

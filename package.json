@@ -13,12 +13,10 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "chart.js": "^2.6.0",
-    "chartjs-plugin-datalabels": "^0.1.0",
-    "lodash": "^4.17.4",
+    "lodash.debounce": "^4.0.8",
+    "lodash.escaperegexp": "^4.1.2",
     "mdi": "^2.0.46",
     "vue": "^2.5.0",
-    "vue-markdown": "^2.2.4",
     "vue-router": "^2.7.0",
     "vuedraggable": "^2.14.1",
     "vuetify": "^1.0.14",
@@ -43,6 +41,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-vue": "^3.13.0",
+    "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.30.1",
     "raw-loader": "^0.5.1",
@@ -52,6 +51,7 @@
     "vue-loader": "^11.1.4",
     "vue-template-compiler": "^2.5.0",
     "webpack": "^2.6.1",
+    "webpack-bundle-analyzer": "^2.11.1",
     "webpack-dev-server": "^2.2.0"
   },
   "eslintIgnore": [

@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import datatable from 'components/datatable.vue'
+import debounce from 'lodash.debounce'
 
 const searchPath = '/search'
 
@@ -123,7 +123,7 @@ export default {
     }
   },
   watch: {
-    search: _.debounce(async function (newVal) {
+    search: debounce(async function (newVal) {
       await this.searchData(newVal)
       this.table.highlightText = newVal
     }, 800),

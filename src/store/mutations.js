@@ -14,5 +14,8 @@ export default{
     if (user) state.userProfile = user.getBasicProfile()
     else state.userProfile = null
   },
+  chartjs (state) {
+    state.chartjs = 1
+  },
   ...setStateMutation('status gAuth userRole'.split(' '))
 }

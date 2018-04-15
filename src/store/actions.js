@@ -1,5 +1,6 @@
 import { gClientSettings, entry } from 'config'
 import $ from 'ajax'
+import { load_script } from 'ajax'
 
 const loginUrl = entry + '/login'
 const logoutUrl = entry + '/logout'
@@ -100,5 +101,34 @@ export default {
     if (status !== 200) return null
     if (type !== 'read' && readAfter) return dispatch('crud', { path, type: 'read' })
     return response
+  },
+  async initChartjs ({ commit, state: { chartjs } }) {
+    if (chartjs) return;
+    await load_script('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js')
+    await load_script('https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels')
+    let glob = Chart.defaults.global
+    Chart.defaults.global = {
+      ...glob,
+      defaultFontColor: 'rgba(255,255,255,.8)',
+      defaultFontSize: 14,
+      defaultFontFamily: 'Roboto, Sans-serif'
+    }
+    glob.tooltips.callbacks.label = (
+      {
+        datasetIndex: i,
+        yLabel
+      },
+      {
+        datasets
+      }
+    ) => `${datasets[i].label}: ${yLabel.toLocaleString()} ${datasets[i].yAxisID}`
+    glob.plugins.datalabels = {
+      display: false,
+      font: {
+        size: 9,
+        family: 'Verdana, Sans-serif'
+      }
+    }
+    commit('chartjs')
   }
 }

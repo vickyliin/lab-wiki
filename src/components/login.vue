@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container pa-3>
     <p v-if="userName">
       Hi,
       <em>{{ userName }}</em>! <br> You have signed in to

@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <h4>On duty this week: <b>{{ duty }}</b></h4>
+    <v-subheader class="px-2 mb-1">
+      <v-layout wrap>
+        <div class="mr-2">On duty this week:</div>
+        <v-flex>{{ duty }}</v-flex>
+      </v-layout>
+    </v-subheader>
     <v-layout column>
       <datatable v-bind="table"
                  :pagination.sync="table.pagination"

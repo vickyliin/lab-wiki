@@ -1,6 +1,6 @@
 <template>
-  <v-layout column mx-2>
-    <v-layout row justify-center text-xs>
+  <v-layout column>
+    <v-layout row justify-center mx-2>
         <v-flex>
           <v-layout row d-inline-flex wrap>
             <v-flex mr-1 xs12> Last Update: </v-flex>

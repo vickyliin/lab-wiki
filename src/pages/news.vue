@@ -5,8 +5,8 @@
                         tag="div">
         <v-flex v-for="(news,i) in displayData"
                 :key="i">
-          <v-container @click="news.selected = !news.selected">
-            <v-layout mb-2>
+          <v-container px-2 pb-2 @click="news.selected = !news.selected">
+            <v-layout mb-2 px-1>
               <v-checkbox color="primary"
                           hide-details
                           v-if="isAdmin"
@@ -20,11 +20,11 @@
                            :item="news"> </action-icon>
             </v-layout>
             <v-subheader>{{ news.date | localeString('Date') }}</v-subheader>
-            <v-container>
+            <v-container px-3>
               {{ news.content }}
             </v-container>
-            <v-divider></v-divider>
           </v-container>
+          <v-divider></v-divider>
         </v-flex>
       </transition-group>
     </v-layout>

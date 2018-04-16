@@ -16,7 +16,7 @@
               :key="person.id"
               class="contact-card"
               :class="{link: isAdmin}">
-        <v-container @click="person.selected = !person.selected">
+        <v-container @click="person.selected = !person.selected" pa-3>
           <v-layout mb-1>
             <v-checkbox color="primary"
                         hide-details

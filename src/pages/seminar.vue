@@ -159,7 +159,11 @@ export default {
     setData (data) {
       this.table.items = data.map(d => ({
         date: d.date,
-        presenter: d.presenter,
+        presenter: {
+          display: d.presenter,
+          search: d.owner + ' ' + d.presenter,
+          sort: d.presenter
+        },
         topic: {
           sort: d.topic,
           text: d.topic,

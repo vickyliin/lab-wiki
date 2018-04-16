@@ -1,8 +1,8 @@
 <template>
-  <v-toolbar 
-    app 
-    clipped-left 
-    fixed 
+  <v-toolbar
+    app
+    clipped-left
+    fixed
     :scroll-off-screen="$vuetify.breakpoint.xsOnly"
     :scroll-threshold="10">
     <v-btn icon @click.native.stop="$emit('input', !value)">

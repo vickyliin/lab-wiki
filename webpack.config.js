@@ -94,7 +94,10 @@ if (isProd) {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    }),
-    new BundleAnalyzerPlugin()
+    })
   ])
+}
+
+if (process.env.NODE_ENV === 'analyze') {
+  module.exports.plugins.push(new BundleAnalyzerPlugin())
 }

@@ -53,7 +53,7 @@ let authentications = {
       try {
         user = await dispatch('gSignIn')
       } catch (e) {
-        return
+        throw e
       }
     }
     let { status } = await $.post({

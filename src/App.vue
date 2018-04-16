@@ -19,7 +19,7 @@ export default {
   components: { navigator, toolbar, page },
   data () {
     return {
-      drawer: true
+      drawer: false
     }
   },
   methods: {

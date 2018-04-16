@@ -128,7 +128,7 @@ export default {
           let item = this.item
           let value = {
             date: item.date,
-            presenter: item.presenter,
+            presenter: item.presenter.display,
             slide: '',
             topic: item.topic.text
           }

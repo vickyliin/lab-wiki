@@ -10,7 +10,7 @@
     </v-layout>
     <datatable v-bind="table"
                v-model="table.value"
-               :pagination.sync="table.pagination">
+               @update:pagination="updatePagination">
     </datatable>
     <component :is="dialog.component"
                :title="dialog.title"
@@ -168,7 +168,7 @@ export default {
         owner: d.owner,
         id: d.id
       }))
-      this.toPageOfNow()
+      this.$once('update:pagination', this.toPageOfNow)
       this.table.loading = false
     },
     async uploadFile (file) {
@@ -228,6 +228,13 @@ export default {
       if (!descending) nRowsBefore = items.length - nRowsBefore
       pagination.page = Math.ceil(nRowsBefore / rowsPerPage) || 1
       return nRowsBefore
+    },
+    updatePagination (pagination) {
+      // the v-data-table will update pagination after new datatable items being set,
+      // so, we can only get our custom pagination update **after** that
+      // (using $once to catch the resulting pagination change event)
+      this.table.pagination = pagination
+      this.$emit('update:pagination')
     }
   },
   computed: {

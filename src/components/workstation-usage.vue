@@ -20,7 +20,7 @@
       <chart v-bind="chart"></chart>
     </v-container>
     <v-layout>
-      <v-container>
+      <v-container class="workstation">
         <datatable v-bind="table"
                    :pagination.sync="table.pagination"
                    @sorted="items => this.sortedItems = items"
@@ -69,7 +69,8 @@ export default {
           sortBy: 'memory',
           rowsPerPage: -1,
           descending: true
-        }
+        },
+        value: []
       },
       chart: {
         type: 'bar',
@@ -184,6 +185,15 @@ export default {
       this.lastUpdate = new Date()
       this.latestLogtime = new Date(
         Math.max.apply(null, this.table.items.map(d => d.logtime)))
+      this.selectDead()
+    },
+    selectDead () {
+      this.table.value = []
+      this.table.items.forEach(d => {
+        if (d.logtime < Date.now() - 300000) {
+          this.table.value.push(d)
+        }
+      })
     },
     refresh () {
       if (this.pulling) return
@@ -228,4 +238,11 @@ export default {
         transform: rotate(360deg)
       }
   }
+</style>
+
+<style>
+.workstation .table tbody tr[active] {
+  color: #f55;
+  background: inherit
+}
 </style>

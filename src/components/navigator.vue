@@ -1,11 +1,13 @@
 <template>
   <v-navigation-drawer class="pb-0 pt-1"
+                       app
                        floating
-                       persistent
+                       clipped
+                       temporary
+                       hide-overlay
                        enable-resize-watcher
                        :value="value"
                        @input="e => $emit('input', e)"
-                       height="100%"
                        id="sidebar">
     <v-list dense>
       <template v-for="(item, i) in items">
@@ -51,7 +53,7 @@ export default {
         'divider',
         { header: 'Others' },
         { icon: 'highlight', path: 'news' },
-        { icon: 'delete', path: 'takeOutGarbage' },
+        { icon: 'mdi-broom', path: 'cleanOurLab' },
         { icon: 'perm_contact_calendar', path: 'contactList' }
         // {icon: 'email', path: 'emailSchedule'},
       ]
@@ -63,10 +65,9 @@ export default {
 <style lang="stylus">
   #sidebar a
     text-decoration: none
+    color: #fff
   td, th
     vertical-align: middle
-  .router-link-active>li
+  .router-link-active>div
     background-color: #303030
-  .navigation-drawer__border
-    width: 0
 </style>

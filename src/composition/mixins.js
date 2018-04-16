@@ -11,9 +11,9 @@ export default {
     }
   },
   methods: {
-    async crud ({type = 'read', path = this.model, data, id} = {}) {
+    async crud ({ type = 'read', path = this.model, ...opts } = {}) {
       this.pulling = true
-      let response = await dispatch('crud', { type, path, data, id })
+      let response = await dispatch('crud', { type, path, ...opts })
       this.pulling = false
       if (!response) return
       if (path === this.model) this.setData(response)

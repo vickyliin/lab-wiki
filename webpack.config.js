@@ -2,6 +2,8 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   entry: ['babel-polyfill', './src/main.js'],
@@ -43,17 +45,9 @@ module.exports = {
       },
       {
         test: /\.styl$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'stylus-loader'
-          }
-        ]
+        loader: ExtractTextPlugin.extract({
+          use: ['css-loader', 'stylus-loader']
+        })
       }
     ]
   },
@@ -83,7 +77,8 @@ module.exports = {
       template: path.resolve(__dirname, 'src/index.ejs'),
       inject: false,
       base: process.env.WIKI_HOME
-    })
+    }),
+    new ExtractTextPlugin('style.css')
   ],
   devtool: '#eval-source-map'
 }
@@ -94,10 +89,15 @@ if (isProd) {
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
-      }
+      },
+      sourceMap: true
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ])
+}
+
+if (process.env.NODE_ENV === 'analyze') {
+  module.exports.plugins.push(new BundleAnalyzerPlugin())
 }

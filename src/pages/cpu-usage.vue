@@ -15,6 +15,7 @@ export default {
       headers: 'server cpu usage memory'.split(' '),
       itemsMapper (d) {
         return {
+          id: d.hostname,
           server: d.hostname.replace('nlg-wks-', ''),
           cpu: {
             display: d.cpuinfo.type

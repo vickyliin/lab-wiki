@@ -1,27 +1,21 @@
 <template>
-  <main>
+  <v-content>
     <transition name="slide-y"
                 mode="out-in"
                 appear>
       <v-container fluid
-                   :key="title">
-        <h5 class="mb-4">{{ title | spaceSeparated }}</h5>
+                  :key="title">
+        <h2 class="my-4 mx-2">{{ title | spaceSeparated }}</h2>
 
-        <v-container v-if="status === 0"
-                     row
-                     class="text-xs-center">
+        <v-container v-if="status === 0" row class="text-xs-center">
           <v-progress-circular :indeterminate="true"></v-progress-circular>
         </v-container>
 
         <login v-else-if="status === 401 || status === 403"></login>
 
-        <router-view v-else-if="status === 200"
-                     class="fluid"></router-view>
+        <router-view v-else-if="status === 200"></router-view>
 
-        <v-container v-else
-                     row
-                     class="v-center"
-                     fluid>
+        <v-container v-else row class="v-center">
           <p>
             <v-icon class="mr-1">error</v-icon>
             The page data is unavailable now. Please
@@ -32,7 +26,7 @@
 
       </v-container>
     </transition>
-  </main>
+  </v-content>
 </template>
 <script>
 
@@ -63,6 +57,8 @@ export default {
 </script>
 
 <style lang="stylus">
-  main>.container
+  main .container
     padding: 2.5rem 2rem
+    @media screen and (max-width: 800px)
+      padding: 0
 </style>

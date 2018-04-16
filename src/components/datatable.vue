@@ -17,7 +17,7 @@
       <tr>
         <th v-if="enableSelect">
           <v-checkbox v-if="selectAll"
-                      primary
+                      color="primary"
                       hide-details
                       @click.native="toggleAll"
                       :input-value="props.all"
@@ -42,7 +42,7 @@
       <tr :active="props.selected"
           @click="props.selected = !props.selected">
         <td v-if="enableSelect">
-          <v-checkbox primary
+          <v-checkbox color="primary"
                       hide-details
                       :input-value="props.selected"></v-checkbox>
         </td>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import escapeRegExp from 'lodash.escaperegexp'
 import actionIcon from 'components/action-icon.vue'
 
 const sortOrder = {
@@ -212,7 +212,7 @@ export default {
       try {
         return new RegExp(`(${text})`, 'ig')
       } catch (e) {
-        return new RegExp(`(${_.escapeRegExp(text)})`, 'ig')
+        return new RegExp(`(${escapeRegExp(text)})`, 'ig')
       }
     }
   }

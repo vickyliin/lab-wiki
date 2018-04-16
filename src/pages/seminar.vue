@@ -10,30 +10,36 @@
     </v-layout>
     <datatable v-bind="table"
                v-model="table.value"
-               :pagination.sync="table.pagination">
+               @update:pagination="updatePagination">
     </datatable>
-    <form-dialog :title="dialog.title"
-                 :fields="dialog.fields"
-                 :display.sync="dialog.display"
-                 v-model="dialog.value"
-                 @submit="dialog.onSubmit"
-                 width="35rem">
-    </form-dialog>
+    <component :is="dialog.component"
+               :title="dialog.title"
+               :fields="dialog.fields"
+               :display.sync="dialog.display"
+               :target="dialog.target"
+               :reset="dialog.reset"
+               id-field="seminarId"
+               v-model="dialog.value"
+               @submit="dialog.onSubmit"
+               width="35rem">
+    </component>
     <manage-panel :dialog="dialog"
                   :dialogs="dialogs"
                   :selected="table.value"
                   :tooltip="tooltip"
+                  :schedule="true"
                   :set-data="setData"></manage-panel>
   </v-container>
 </template>
 
 <script>
 
-import _ from 'lodash'
+import debounce from 'lodash.debounce'
 import { mapGetters } from 'vuex'
 import { gDriveSlidesFolderID, gSuiteDomain } from 'config'
 import datatable from 'components/datatable.vue'
 import formDialog from 'components/form-dialog.vue'
+import scheduleDialog from 'components/schedule-dialog.vue'
 import managePanel from 'components/manage-panel.vue'
 
 const boundary = '-------henry_is_god__henrygod_is_soooooo_god'
@@ -51,7 +57,7 @@ ${fileContent}
 --${boundary}--`
 
 export default {
-  components: { datatable, formDialog, managePanel },
+  components: { datatable, formDialog, scheduleDialog, managePanel },
   data () {
     return {
       table: {
@@ -82,6 +88,7 @@ export default {
             action: item => {
               this.dialogs.item = item
               Object.assign(this.dialog, this.dialogs.update)
+              this.dialog.fields[2].display = fp => this.dialog.title === this.dialogs.update.title ? fp || item.topic.slides : fp
               this.dialog.display = true
             }
           }
@@ -102,29 +109,42 @@ export default {
         value: null,
         onSubmit: this.updateData,
         display: false,
-        item: null
+        item: null,
+        target: null
       },
       dialogs: {
         item: { topic: {} },
         updateData: this.updateData,
         localeString: this.localeString,
+        vm: this,
         create: {
+          component: 'form-dialog',
           title: 'Add Seminar',
           value: null,
-          item: null
+          item: null,
+          reset: null
         },
         get update () {
           let item = this.item
-          return {
-            title: 'Update Seminar',
-            value: {
-              date: item.date,
-              presenter: item.presenter,
-              slide: null,
-              topic: item.topic.text
-            },
-            item
+          let value = {
+            date: item.date,
+            presenter: item.presenter,
+            slide: '',
+            topic: item.topic.text
           }
+          return {
+            component: 'form-dialog',
+            title: 'Update Seminar',
+            value,
+            item,
+            reset: () => { this.vm.dialog.value = value }
+          }
+        },
+        schedule: {
+          component: 'schedule-dialog',
+          title: 'Schedule Seminar',
+          target: this.$route.path,
+          onSubmit: (data) => this.setData(data)
         }
       }
     }
@@ -139,16 +159,20 @@ export default {
     setData (data) {
       this.table.items = data.map(d => ({
         date: d.date,
-        presenter: d.presenter,
+        presenter: {
+          display: d.presenter,
+          search: d.owner + ' ' + d.presenter,
+          sort: d.presenter
+        },
         topic: {
           sort: d.topic,
           text: d.topic,
-          slides: d.slides
+          slides: d.slides || ''
         },
         owner: d.owner,
         id: d.id
       }))
-      this.toPageOfNow()
+      this.$once('update:pagination', this.toPageOfNow)
       this.table.loading = false
     },
     async uploadFile (file) {
@@ -198,7 +222,7 @@ export default {
     tooltip (selectedItem) {
       return selectedItem.map(item =>
         `${this.localeString(item.date, 'Date')} ${item.presenter}`
-      ).join('\n')
+      )
     },
     toPageOfNow () {
       let { pagination, items } = this.table
@@ -206,8 +230,15 @@ export default {
       pagination.sortBy = 'date'
       let nRowsBefore = items.reduce((pre, cur) => pre + (Date.parse(cur.date) > Date.now()), 0)
       if (!descending) nRowsBefore = items.length - nRowsBefore
-      pagination.page = Math.ceil(nRowsBefore / rowsPerPage)
+      pagination.page = Math.ceil(nRowsBefore / rowsPerPage) || 1
       return nRowsBefore
+    },
+    updatePagination (pagination) {
+      // the v-data-table will update pagination after new datatable items being set,
+      // so, we can only get our custom pagination update **after** that
+      // (using $once to catch the resulting pagination change event)
+      this.table.pagination = pagination
+      this.$emit('update:pagination')
     }
   },
   computed: {
@@ -225,7 +256,7 @@ export default {
     ...mapGetters(['userEmail'])
   },
   watch: {
-    search: _.debounce(function () {
+    search: debounce(function () {
       this.table.search = this.search
     }, 500),
     userRole (newVal) {

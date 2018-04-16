@@ -1,20 +1,31 @@
 <template>
   <v-container>
-    <h6>On duty this week: <b>{{ duty }}</b></h6>
+    <v-subheader class="px-2 mb-1">
+      <v-layout wrap>
+        <div class="mr-2">On duty this week:</div>
+        <v-flex>{{ duty }}</v-flex>
+      </v-layout>
+    </v-subheader>
     <v-layout column>
       <datatable v-bind="table"
                  :pagination.sync="table.pagination"
                  class="garbage">
       </datatable>
     </v-layout>
+    <scheduleDialog v-bind="scheduleDialog"
+                    @submit="data => setData(data)"
+                    @update:display="d => { scheduleDialog.display = d }" />
+    <manage-panel v-bind="managePanel" />
   </v-container>
 </template>
 
 <script>
 import datatable from 'components/datatable.vue'
+import managePanel from 'components/manage-panel.vue'
+import scheduleDialog from 'components/schedule-dialog.vue'
 
 export default {
-  components: { datatable },
+  components: { datatable, managePanel, scheduleDialog },
   data () {
     return {
       table: {
@@ -44,6 +55,26 @@ export default {
             href: item => 'mailto:' + item.contact.email
           }
         ]
+      },
+      managePanel: {
+        show: () => true,
+        buttons: [{
+          name: 'schedule',
+          icon: 'mdi-calendar',
+          color: 'success',
+          action: () => {
+            this.scheduleDialog.display = true
+          }
+        }],
+        setData: this.setData,
+        selected: []
+      },
+      scheduleDialog: {
+        display: false,
+        title: 'Cleaner Schedule',
+        idField: 'garbageId',
+        target: '/garbage',
+        width: '30rem'
       }
     }
   },
@@ -69,11 +100,12 @@ export default {
     duty () {
       let now = new Date()
       for (let item of this.table.items) {
-        if (item.startDate <= now && now <= item.endDate) {
+        if (item.startDate <= now && now < item.endDate.valueOf() + 86400000) {
           return `${item.contact.name} (${item.date.display})`
         }
       }
-    }
+    },
+    model: () => '/takeOutGarbage'
   }
 }
 </script>

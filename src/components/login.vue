@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container pa-3>
     <p v-if="userName">
       Hi,
       <em>{{ userName }}</em>! <br> You have signed in to
@@ -11,7 +11,7 @@
     </p>
     <v-layout justify-end>
       <v-btn @click="signIn"
-             primary
+             color="primary"
              round>
         <v-icon left>mdi-google</v-icon>
         Sign In

@@ -15,11 +15,10 @@
       <v-card v-for="person in filteredData"
               :key="person.id"
               class="contact-card"
-              :class="{link: isAdmin}"
-              @click="person.selected = !person.selected">
-        <v-container>
+              :class="{link: isAdmin}">
+        <v-container @click="person.selected = !person.selected" pa-3>
           <v-layout mb-1>
-            <v-checkbox primary
+            <v-checkbox color="primary"
                         hide-details
                         v-if="isAdmin"
                         :label="person.name"
@@ -66,7 +65,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import debounce from 'lodash.debounce'
 import formDialog from 'components/form-dialog.vue'
 import managePanel from 'components/manage-panel.vue'
 import actionIcon from 'components/action-icon.vue'
@@ -157,7 +156,7 @@ export default {
     }
   },
   watch: {
-    search: _.debounce(function () {
+    search: debounce(function () {
       this.debouncedSearch = this.search
     }, 500)
   }

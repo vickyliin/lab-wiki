@@ -1,37 +1,34 @@
 <template>
-  <v-container>
-    <v-layout column>
-      <v-container fluid>
-        <v-layout row
-                  justify-center
-                  class="text-xs">
-          <v-flex>
-            Last Update: {{ lastUpdate | localeString }}
-            <v-icon class="ml-1 link"
-                    :class="{ rotate: pulling }"
-                    @click="refresh()">refresh</v-icon>
-          </v-flex>
-          <v-flex class="text-xs-right">
-            Latest Logtime: {{ latestLogtime | localeString }}
-          </v-flex>
-        </v-layout>
-      </v-container>
-      <v-flex>
-        <v-container fluid>
-          <chart v-bind="chart"></chart>
-        </v-container>
-      </v-flex>
-      <v-flex>
-        <v-container fluid>
-          <datatable v-bind="table"
-                     :pagination.sync="table.pagination"
-                     @sorted="items => this.sortedItems = items"
-                     @clickSort="sorting = true">
-          </datatable>
-        </v-container>
-      </v-flex>
+  <v-layout column>
+    <v-layout row justify-center mx-2>
+        <v-flex>
+          <v-layout row d-inline-flex wrap>
+            <v-flex mr-1 xs12> Last Update: </v-flex>
+            <v-flex>
+              {{ lastUpdate | localeString }}
+              <v-icon class="ml-1 link"
+                      :class="{ rotate: pulling }"
+                      @click="refresh()">refresh</v-icon>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex text-xs-right hidden-sm-and-down>
+          Latest Logtime: {{ latestLogtime | localeString }}
+        </v-flex>
     </v-layout>
-  </v-container>
+    <v-container :style="{'overflow-x': 'auto'}">
+      <chart v-bind="chart"></chart>
+    </v-container>
+    <v-layout>
+      <v-container class="workstation">
+        <datatable v-bind="table"
+                   :pagination.sync="table.pagination"
+                   @sorted="items => this.sortedItems = items"
+                   @clickSort="sorting = true">
+        </datatable>
+      </v-container>
+    </v-layout>
+  </v-layout>
 </template>
 
 <script>
@@ -72,7 +69,8 @@ export default {
           sortBy: 'memory',
           rowsPerPage: -1,
           descending: true
-        }
+        },
+        value: []
       },
       chart: {
         type: 'bar',
@@ -108,6 +106,8 @@ export default {
           ]
         },
         options: {
+          responsive: false,
+          maintainAspectRatio: false,
           scales: {
             xAxes: [{
               stacked: true,
@@ -185,6 +185,15 @@ export default {
       this.lastUpdate = new Date()
       this.latestLogtime = new Date(
         Math.max.apply(null, this.table.items.map(d => d.logtime)))
+      this.selectDead()
+    },
+    selectDead () {
+      this.table.value = []
+      this.table.items.forEach(d => {
+        if (d.logtime < Date.now() - 300000) {
+          this.table.value.push(d)
+        }
+      })
     },
     refresh () {
       if (this.pulling) return
@@ -229,4 +238,11 @@ export default {
         transform: rotate(360deg)
       }
   }
+</style>
+
+<style>
+.workstation .table tbody tr[active] {
+  color: #f55;
+  background: inherit
+}
 </style>

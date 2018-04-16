@@ -13,12 +13,25 @@ function XhrWrapper (opt) {
     return { response, status }
   }
 }
+export function loadScript (src) {
+  let script = document.createElement('script')
+  script.src = src
+  script.async = false
+  document.head.appendChild(script)
+  return new Promise(resolve => { script.onload = resolve })
+}
 export default {
   params (data) {
     let parameters
     if (data !== undefined) {
       parameters = Object.entries(data)
-        .map(pair => pair.map(encodeURIComponent).join('='))
+        .map(pair => {
+          let [ k, v ] = pair
+          if (v instanceof Array) {
+            return v.map(v => [k, v].map(encodeURIComponent).join('[]=')).join('&')
+          }
+          return pair.map(encodeURIComponent).join('=')
+        })
         .join('&')
     } else {
       parameters = ''

@@ -13,6 +13,13 @@ function XhrWrapper (opt) {
     return { response, status }
   }
 }
+export function loadScript (src) {
+  let script = document.createElement('script')
+  script.src = src
+  script.async = false
+  document.head.appendChild(script)
+  return new Promise(resolve => { script.onload = resolve })
+}
 export default {
   params (data) {
     let parameters

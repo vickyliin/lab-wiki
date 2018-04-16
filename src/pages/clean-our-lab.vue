@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <h6>On duty this week: <b>{{ duty }}</b></h6>
+    <v-subheader class="px-2 mb-1">
+      <v-layout wrap>
+        <div class="mr-2">On duty this week:</div>
+        <v-flex>{{ duty }}</v-flex>
+      </v-layout>
+    </v-subheader>
     <v-layout column>
       <datatable v-bind="table"
                  :pagination.sync="table.pagination"
@@ -95,7 +100,7 @@ export default {
     duty () {
       let now = new Date()
       for (let item of this.table.items) {
-        if (item.startDate <= now && now <= item.endDate) {
+        if (item.startDate <= now && now < item.endDate.valueOf() + 86400000) {
           return `${item.contact.name} (${item.date.display})`
         }
       }

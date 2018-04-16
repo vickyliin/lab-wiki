@@ -1,35 +1,11 @@
 <template>
-  <v-container fluid>
+  <v-layout v-resize="e => resize()">
     <canvas></canvas>
-  </v-container>
+  </v-layout>
 </template>
 
 <script>
-import Chart from 'chart.js'
-import 'chartjs-plugin-datalabels'
-let glob = Chart.defaults.global
-Chart.defaults.global = {
-  ...glob,
-  defaultFontColor: 'rgba(255,255,255,.8)',
-  defaultFontSize: 14,
-  defaultFontFamily: 'Roboto, Sans-serif'
-}
-glob.tooltips.callbacks.label = (
-  {
-    datasetIndex: i,
-    yLabel
-  },
-  {
-    datasets
-  }
-) => `${datasets[i].label}: ${yLabel.toLocaleString()} ${datasets[i].yAxisID}`
-glob.plugins.datalabels = {
-  display: false,
-  font: {
-    size: 9,
-    family: 'Verdana, Sans-serif'
-  }
-}
+import debounce from 'lodash.debounce'
 
 export default {
   props: ['type', 'data', 'options'],
@@ -40,11 +16,74 @@ export default {
         type: this.type,
         data: this.data,
         options: this.options
+      },
+      size: {
+        h: null,
+        w: null,
+        portrait: null
       }
     }
   },
+  methods: {
+    async drawChart (config) {
+      let { h, w, portrait } = this.size
+      if (portrait) {
+        config.options.scales.yAxes.forEach(
+          yAxes => { yAxes.display = false })
+      }
+      await this.chart
+      if (this.chart && this.chart.destroy) { this.chart.destroy() }
+      let canvas = this.setCanvas(h, w)
+      this.chart = new Chart(canvas, config)
+    },
+    resize: debounce(function () {
+      let { h, w, portrait } = this.size
+      this.calcSize()
+      if (h !== this.size.h ||
+          w !== this.size.w ||
+          portrait !== this.size.portrait) {
+        if (this.chart.config) {
+          this.drawChart({
+            type: this.chart.config.type,
+            data: this.chart.config.data,
+            options: this.chart.config.options
+          })
+        }
+      }
+    }, 300),
+    calcSize () {
+      const ratio = 2
+      let w = window.innerWidth
+      let h = window.innerHeight
+      let portrait = false
+
+      if (!this.$vuetify.breakpoint.xsOnly) w *= 0.9
+      if (w < h) {
+        h = w
+        w = parseInt(h * ratio, 10)
+        portrait = true
+      } else {
+        h = parseInt(w / ratio, 10)
+      }
+      this.size = {h, w, portrait}
+    },
+    setCanvas (h, w) {
+      let canvas = this.$el.querySelector('canvas')
+      canvas.parentNode.style.height = h + 'px'
+      canvas.parentNode.style.width = w + 'px'
+      canvas.width = w
+      canvas.height = h
+      canvas.style.height = h + 'px'
+      canvas.style.width = w + 'px'
+      return canvas
+    }
+  },
+  created () {
+    this.chart = this.$store.dispatch('initChartjs')
+  },
   mounted () {
-    this.chart = new Chart(this.$el.querySelector('canvas'), this.initialize)
+    this.calcSize()
+    this.drawChart(this.initialize)
     this.$emit('init', this.chart)
   },
   computed: {
@@ -56,16 +95,10 @@ export default {
     }
   },
   watch: {
-    dataWatched () {
+    async dataWatched () {
+      await this.chart
       this.chart.update()
     }
   }
 }
 </script>
-
-<style scoped>
-  .container {
-    display: flex;
-    justify-content: center;
-  }
-</style>

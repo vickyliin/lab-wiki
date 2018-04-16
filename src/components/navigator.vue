@@ -3,7 +3,8 @@
                        app
                        floating
                        clipped
-                       persistent
+                       temporary
+                       hide-overlay
                        enable-resize-watcher
                        :value="value"
                        @input="e => $emit('input', e)"
@@ -64,8 +65,9 @@ export default {
 <style lang="stylus">
   #sidebar a
     text-decoration: none
+    color: #fff
   td, th
     vertical-align: middle
-  .router-link-active>li
+  .router-link-active>div
     background-color: #303030
 </style>

@@ -7,7 +7,8 @@ module.exports = {
     parser: 'babel-eslint'
   },
   globals: {
-    gapi: true
+    gapi: false,
+    Chart: false
   },
   rules: {
     'vue/mustache-interpolation-spacing': [2, 'always'],

@@ -19,7 +19,8 @@ export default {
           sortBy: 'server',
           rowsPerPage: -1,
           descending: false
-        }
+        },
+        value: []
       }
     }
   },
@@ -29,6 +30,7 @@ export default {
   methods: {
     setData (data) {
       this.table.items = data.map(d => ({
+        id: d.hostname,
         server: d.hostname.replace(/nlg-wks-/, ''),
         cpu: d.cpuinfo.type.replace(/Intel|\(R\)|\(TM\)|CPU/g, ''),
         clock: d.cpuinfo.clock,
@@ -40,9 +42,19 @@ export default {
         os: {
           display: d.os // prevent from parsed to date
         },
-        ssh: d.ssh
+        ssh: d.ssh,
+        logtime: new Date(d.logtime)
       }))
       this.table.loading = false
+      this.selectDead()
+    },
+    selectDead () {
+      this.table.value = []
+      this.table.items.forEach(d => {
+        if (d.logtime < Date.now() - 300000) {
+          this.table.value.push(d)
+        }
+      })
     }
   }
 }

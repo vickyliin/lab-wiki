@@ -18,6 +18,7 @@ export default {
       itemsFilter: d => Object.keys(d.gpu).length !== 0,
       itemsMapper (d) {
         return d.gpu.map(gpu => ({
+          id: d.hostname + '-' + gpu.gid,
           server: d.hostname.replace('nlg-wks-', ''),
           gpu: {
             display: d.gpu.length > 1 ? `${gpu.type} [${gpu.gid}]` : gpu.type

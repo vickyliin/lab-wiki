@@ -22,6 +22,7 @@ import {
   VAvatar,
   VProgressCircular
 } from 'vuetify'
+import { Resize } from 'vuetify/es5/directives'
 import App from 'App.vue'
 import router from 'router'
 import store from 'store'
@@ -50,6 +51,9 @@ Vue.use(Vuetify, {
     VToolbar,
     VAvatar,
     VProgressCircular
+  },
+  directives: {
+    Resize
   }
 })
 

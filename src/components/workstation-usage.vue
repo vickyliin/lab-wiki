@@ -16,10 +16,10 @@
           Latest Logtime: {{ latestLogtime | localeString }}
         </v-flex>
     </v-layout>
-    <v-layout>
+    <v-container :style="{'overflow-x': 'auto'}">
       <chart v-bind="chart"></chart>
-    </v-layout>
-    <v-layout hidden-sm-and-down>
+    </v-container>
+    <v-layout>
       <v-container>
         <datatable v-bind="table"
                    :pagination.sync="table.pagination"
@@ -105,6 +105,8 @@ export default {
           ]
         },
         options: {
+          responsive: false,
+          maintainAspectRatio: false,
           scales: {
             xAxes: [{
               stacked: true,

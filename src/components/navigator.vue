@@ -3,7 +3,7 @@
                        app
                        floating
                        clipped
-                       persistent
+                       temporary
                        hide-overlay
                        enable-resize-watcher
                        :value="value"

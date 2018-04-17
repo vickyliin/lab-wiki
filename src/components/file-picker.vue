@@ -56,7 +56,7 @@ export default{
     let input = document.createElement('input')
     input.type = 'file'
     input.onchange = () => {
-      this.filePath = this.input.value
+      this.filePath = this.input.files[0].name
       this.$emit('input', this.input.files[0])
     }
     this.input = input

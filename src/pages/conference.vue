@@ -1,18 +1,20 @@
 <template>
   <v-container>
-    <v-layout mb-3
-              v-if="isAdmin">
-      <v-spacer></v-spacer>
-      <v-text-field append-icon="search"
-                    label="Search and Add Conference to list"
-                    placeholder="NLP"
-                    hide-details
-                    v-model="search"></v-text-field>
+    <v-layout
+      v-if="isAdmin"
+      mb-3>
+      <v-spacer/>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search and Add Conference to list"
+        placeholder="NLP"
+        hide-details/>
     </v-layout>
     <v-layout column>
-      <datatable v-bind="table"
-                 :pagination.sync="table.pagination">
-      </datatable>
+      <datatable
+        v-bind="table"
+        :pagination.sync="table.pagination"/>
     </v-layout>
   </v-container>
 </template>
@@ -69,6 +71,24 @@ export default {
       }
     }
   },
+  computed: {
+    tableItems () {
+      let { saved, unsaved } = this.items
+      return Object.values({ ...unsaved, ...saved })
+    }
+  },
+  watch: {
+    search: debounce(async function (newVal) {
+      await this.searchData(newVal)
+      this.table.highlightText = newVal
+    }, 800),
+    tableItems (items) {
+      this.table.items = items
+    },
+    pulling (newVal) {
+      this.table.loading = newVal
+    }
+  },
   created () {
     this.crud()
   },
@@ -114,24 +134,6 @@ export default {
     },
     deleteData (item) {
       this.crud({ type: 'delete', id: item.id })
-    }
-  },
-  computed: {
-    tableItems () {
-      let { saved, unsaved } = this.items
-      return Object.values({ ...unsaved, ...saved })
-    }
-  },
-  watch: {
-    search: debounce(async function (newVal) {
-      await this.searchData(newVal)
-      this.table.highlightText = newVal
-    }, 800),
-    tableItems (items) {
-      this.table.items = items
-    },
-    pulling (newVal) {
-      this.table.loading = newVal
     }
   }
 }

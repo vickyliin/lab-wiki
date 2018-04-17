@@ -10,15 +10,17 @@
       <em>NLG account</em> to view this page.
     </p>
     <v-layout justify-end>
-      <v-btn @click="signIn"
-             color="primary"
-             round>
+      <v-btn
+        color="primary"
+        round
+        @click="signIn">
         <v-icon left>mdi-google</v-icon>
         Sign In
       </v-btn>
-      <v-btn @click="signOut"
-             outline
-             round>
+      <v-btn
+        outline
+        round
+        @click="signOut">
         Sign Out
       </v-btn>
     </v-layout>
@@ -35,6 +37,12 @@ export default {
       auth2: null
     }
   },
+  computed: {
+    available () {
+      return this.userDomain === gSuiteDomain
+    },
+    ...mapGetters(['userName', 'userDomain', 'userEmail'])
+  },
   methods: {
     signIn () {
       this.$store.dispatch('signIn')
@@ -42,12 +50,6 @@ export default {
     signOut () {
       this.$store.dispatch('signOut')
     }
-  },
-  computed: {
-    available () {
-      return this.userDomain === gSuiteDomain
-    },
-    ...mapGetters(['userName', 'userDomain', 'userEmail'])
   }
 }
 </script>

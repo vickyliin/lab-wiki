@@ -1,34 +1,36 @@
 <template>
   <v-container>
     <v-layout mb-3>
-      <v-spacer></v-spacer>
-      <v-text-field append-icon="search"
-                    label="Search (support regex)"
-                    single-line
-                    hide-details
-                    v-model="search"></v-text-field>
+      <v-spacer/>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search (support regex)"
+        single-line
+        hide-details/>
     </v-layout>
-    <datatable v-bind="table"
-               v-model="table.value"
-               @update:pagination="updatePagination">
-    </datatable>
-    <component :is="dialog.component"
-               :title="dialog.title"
-               :fields="dialog.fields"
-               :display.sync="dialog.display"
-               :target="dialog.target"
-               :reset="dialog.reset"
-               id-field="seminarId"
-               v-model="dialog.value"
-               @submit="dialog.onSubmit"
-               width="35rem">
-    </component>
-    <manage-panel :dialog="dialog"
-                  :dialogs="dialogs"
-                  :selected="table.value"
-                  :tooltip="tooltip"
-                  :schedule="true"
-                  :set-data="setData"></manage-panel>
+    <datatable
+      v-bind="table"
+      v-model="table.value"
+      @update:pagination="updatePagination"/>
+    <component
+      :is="dialog.component"
+      v-model="dialog.value"
+      :title="dialog.title"
+      :fields="dialog.fields"
+      :display.sync="dialog.display"
+      :target="dialog.target"
+      :reset="dialog.reset"
+      id-field="seminarId"
+      width="35rem"
+      @submit="dialog.onSubmit"/>
+    <manage-panel
+      :dialog="dialog"
+      :dialogs="dialogs"
+      :selected="table.value"
+      :tooltip="tooltip"
+      :schedule="true"
+      :set-data="setData"/>
   </v-container>
 </template>
 
@@ -102,7 +104,7 @@ export default {
         title: null,
         fields: [
           { name: 'date', label: 'Date', required: true, component: 'date-picker' },
-          { name: 'presenter', label: 'Presenter', required: true, icon: 'account_circle', component: 'member-selector' },
+          { name: 'presenter', label: 'Presenter', required: true, component: 'member-selector' },
           { name: 'slide', label: 'Slide', icon: 'slideshow', component: 'file-picker' },
           { name: 'topic', label: 'Topic', multiLine: true, component: 'v-text-field' }
         ],
@@ -128,7 +130,8 @@ export default {
           let item = this.item
           let value = {
             date: item.date,
-            presenter: item.presenter,
+            // preventing error when item.presenter is null (for vue debugger)
+            presenter: item.presenter && item.presenter.display,
             slide: '',
             topic: item.topic.text
           }
@@ -147,6 +150,28 @@ export default {
           onSubmit: (data) => this.setData(data)
         }
       }
+    }
+  },
+  computed: {
+    serverFormatData () {
+      let { date, presenter, topic } = this.dialog.value
+      let { item } = this.dialog
+      return {
+        date,
+        slides: item ? item.topic.slides : '',
+        topic: topic || '',
+        presenter: presenter.name,
+        owner: presenter.account + '@' + gSuiteDomain
+      }
+    },
+    ...mapGetters(['userEmail'])
+  },
+  watch: {
+    search: debounce(function () {
+      this.table.search = this.search
+    }, 500),
+    userRole (newVal) {
+      this.table.enableSelect = this.isAdmin
     }
   },
   created () {
@@ -221,7 +246,7 @@ export default {
     },
     tooltip (selectedItem) {
       return selectedItem.map(item =>
-        `${this.localeString(item.date, 'Date')} ${item.presenter}`
+        `${this.localeString(item.date, 'Date')} ${item.presenter.display}`
       )
     },
     toPageOfNow () {
@@ -239,28 +264,6 @@ export default {
       // (using $once to catch the resulting pagination change event)
       this.table.pagination = pagination
       this.$emit('update:pagination')
-    }
-  },
-  computed: {
-    serverFormatData () {
-      let { date, presenter, topic } = this.dialog.value
-      let { item } = this.dialog
-      return {
-        date,
-        slides: item ? item.topic.slides : '',
-        topic: topic || '',
-        presenter: presenter.name,
-        owner: presenter.account + '@' + gSuiteDomain
-      }
-    },
-    ...mapGetters(['userEmail'])
-  },
-  watch: {
-    search: debounce(function () {
-      this.table.search = this.search
-    }, 500),
-    userRole (newVal) {
-      this.table.enableSelect = this.isAdmin
     }
   }
 }

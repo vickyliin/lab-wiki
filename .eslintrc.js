@@ -1,8 +1,12 @@
 module.exports = {
+  plugins: [
+    'vue'
+  ],
   extends: [
     'standard',
     'plugin:vue/recommended'
   ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     parser: 'babel-eslint'
   },
@@ -11,10 +15,15 @@ module.exports = {
     Chart: false
   },
   rules: {
-    'vue/mustache-interpolation-spacing': [2, 'always'],
-    'vue/attribute-hyphenation': [2, 'always'],
-    'vue/name-property-casing': [2, 'kebab-case'],
-    'vue/no-multi-spaces': 2,
-    'vue/v-on-style': [2, 'shorthand']
+    'vue/html-indent': [2, 2],
+    'vue/html-self-closing': [2, {
+      html: {
+        void: 'never',
+        normal: 'always',
+        component: 'always'
+      },
+      svg: 'always',
+      math: 'always'
+    }]
   }
 };

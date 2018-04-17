@@ -3,8 +3,7 @@
     :headers="headers"
     :items-mapper="itemsMapper"
     :items-filter="itemsFilter"
-    :items-reducer="itemsReducer">
-  </workstation-usage>
+    :items-reducer="itemsReducer"/>
 </template>
 
 <script>

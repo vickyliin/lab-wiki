@@ -1,32 +1,60 @@
 <template>
-  <v-menu :close-on-content-click="true"
-          class="date-picker"
-          offset-y
-          max-width="290px">
-    <v-text-field slot="activator"
-                  :label="label"
-                  :value="value | localeString('Date')"
-                  :name="name"
-                  prepend-icon="event"
-                  readonly
-                  :error="error"
-                  :rules="rules"
-                  @focus="$emit('focus')"
-                  @blur="$emit('blur')"
-                  :required="required !== undefined"></v-text-field>
-    <v-date-picker :value="value ? new Date(value).toJSON() : null"
-                   @input="e => $emit('input', e)"
-                   no-title
-                   dark
-                   scrollable>
-    </v-date-picker>
+  <v-menu
+    :close-on-content-click="true"
+    class="date-picker"
+    offset-y
+    max-width="290px">
+    <v-text-field
+      slot="activator"
+      :label="label"
+      :value="dateObj | localeString('Date')"
+      :name="name"
+      :error="error"
+      :required="required !== undefined"
+      prepend-icon="event"
+      readonly
+      hide-details
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"/>
+    <v-date-picker
+      :value="dateObj && dateObj.toJSON()"
+      no-title
+      dark
+      scrollable
+      @input="e => $emit('input', e)"/>
   </v-menu>
 </template>
 
 <script>
 
 export default {
-  name: 'date-picker',
-  props: ['value', 'label', 'required', 'name', 'error', 'rules']
+  name: 'DatePicker',
+  props: {
+    value: {
+      type: [Date, Number, String],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    },
+    required: {
+      type: Boolean,
+      default: null
+    },
+    name: {
+      type: String,
+      default: null
+    },
+    error: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    dateObj () {
+      return this.value && new Date(this.value)
+    }
+  }
 }
 </script>

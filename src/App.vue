@@ -1,11 +1,16 @@
 <template>
   <v-app dark>
-    <navigator v-model="drawer"></navigator>
-    <toolbar v-model="drawer"></toolbar>
-    <v-btn icon top left fixed @click.native.stop="drawer = !drawer">
+    <navigator v-model="drawer"/>
+    <toolbar v-model="drawer"/>
+    <v-btn
+      icon
+      top
+      left
+      fixed
+      @click.native.stop="drawer = !drawer">
       <v-icon>menu</v-icon>
     </v-btn>
-    <page></page>
+    <page/>
   </v-app>
 </template>
 
@@ -22,14 +27,14 @@ export default {
       drawer: false
     }
   },
+  created () {
+    this.auth_init()
+  },
   methods: {
     async auth_init () {
       await loadScript('https://apis.google.com/js/platform.js')
       this.$store.dispatch('authInit')
     }
-  },
-  created () {
-    this.auth_init()
   }
 }
 </script>

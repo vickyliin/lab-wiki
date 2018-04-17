@@ -1,28 +1,32 @@
 <template>
-  <v-text-field :value="display(filePath)"
-                readonly
-                :label="label"
-                :single-line="singleLine"
-                class="file-picker"
-                :prepend-icon="icon"
-                @focus="$emit('focus')"
-                @blur="$emit('blur')"
-                @click.prevent="selectFile">
-  </v-text-field>
+  <v-text-field
+    :value="display(filePath)"
+    :label="label"
+    :single-line="singleLine"
+    :prepend-icon="icon"
+    class="file-picker"
+    readonly
+    hide-details
+    @focus="$emit('focus')"
+    @blur="$emit('blur')"
+    @click.prevent="selectFile"/>
 </template>
 
 <script>
 export default{
-  name: 'file-picker',
+  name: 'FilePicker',
   props: {
     value: {
-      type: [File, String]
+      type: [File, String],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: 'File'
     },
     icon: {
-      type: String
+      type: String,
+      default: 'slideshow'
     },
     display: {
       type: Function,
@@ -33,20 +37,6 @@ export default{
     return {
       input: null,
       filePath: ''
-    }
-  },
-  created () {
-    let input = document.createElement('input')
-    input.type = 'file'
-    input.onchange = () => {
-      this.filePath = this.input.value
-      this.$emit('input', this.input.files[0])
-    }
-    this.input = input
-  },
-  methods: {
-    selectFile () {
-      this.input.click()
     }
   },
   computed: {
@@ -60,6 +50,20 @@ export default{
         this.input.value = ''
         this.filePath = ''
       }
+    }
+  },
+  created () {
+    let input = document.createElement('input')
+    input.type = 'file'
+    input.onchange = () => {
+      this.filePath = this.input.files[0].name
+      this.$emit('input', this.input.files[0])
+    }
+    this.input = input
+  },
+  methods: {
+    selectFile () {
+      this.input.click()
     }
   }
 }

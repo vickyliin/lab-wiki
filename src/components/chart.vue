@@ -1,6 +1,8 @@
 <template>
-  <v-layout v-resize="e => resize()">
-    <canvas></canvas>
+  <v-layout
+    v-resize="e => resize()"
+    justify-center>
+    <canvas/>
   </v-layout>
 </template>
 
@@ -8,7 +10,20 @@
 import debounce from 'lodash.debounce'
 
 export default {
-  props: ['type', 'data', 'options'],
+  props: {
+    type: {
+      type: String,
+      default: 'bar'
+    },
+    data: {
+      type: Object,
+      default: () => {}
+    },
+    options: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data () {
     return {
       chart: null,
@@ -24,68 +39,6 @@ export default {
       }
     }
   },
-  methods: {
-    async drawChart (config) {
-      let { h, w, portrait } = this.size
-      if (portrait) {
-        config.options.scales.yAxes.forEach(
-          yAxes => { yAxes.display = false })
-      }
-      await this.chart
-      if (this.chart && this.chart.destroy) { this.chart.destroy() }
-      let canvas = this.setCanvas(h, w)
-      this.chart = new Chart(canvas, config)
-    },
-    resize: debounce(function () {
-      let { h, w, portrait } = this.size
-      this.calcSize()
-      if (h !== this.size.h ||
-          w !== this.size.w ||
-          portrait !== this.size.portrait) {
-        if (this.chart.config) {
-          this.drawChart({
-            type: this.chart.config.type,
-            data: this.chart.config.data,
-            options: this.chart.config.options
-          })
-        }
-      }
-    }, 300),
-    calcSize () {
-      const ratio = 2
-      let w = window.innerWidth
-      let h = window.innerHeight
-      let portrait = false
-
-      if (!this.$vuetify.breakpoint.xsOnly) w *= 0.9
-      if (w < h) {
-        h = w
-        w = parseInt(h * ratio, 10)
-        portrait = true
-      } else {
-        h = parseInt(w / ratio, 10)
-      }
-      this.size = {h, w, portrait}
-    },
-    setCanvas (h, w) {
-      let canvas = this.$el.querySelector('canvas')
-      canvas.parentNode.style.height = h + 'px'
-      canvas.parentNode.style.width = w + 'px'
-      canvas.width = w
-      canvas.height = h
-      canvas.style.height = h + 'px'
-      canvas.style.width = w + 'px'
-      return canvas
-    }
-  },
-  created () {
-    this.chart = this.$store.dispatch('initChartjs')
-  },
-  mounted () {
-    this.calcSize()
-    this.drawChart(this.initialize)
-    this.$emit('init', this.chart)
-  },
   computed: {
     dataWatched () {
       return {
@@ -98,6 +51,69 @@ export default {
     async dataWatched () {
       await this.chart
       this.chart.update()
+    }
+  },
+  created () {
+    this.chart = this.$store.dispatch('initChartjs')
+  },
+  mounted () {
+    this.calcSize()
+    this.drawChart(this.initialize)
+    this.$emit('init', this.chart)
+  },
+  methods: {
+    async drawChart (config) {
+      let { h, w } = this.size
+      if (window.innerWidth < 600) {
+        config.options.scales.yAxes.forEach(
+          yAxes => { yAxes.display = false })
+      } else {
+        config.options.scales.yAxes.forEach(
+          yAxes => { yAxes.display = true })
+      }
+      await this.chart
+      if (this.chart && this.chart.destroy) { this.chart.destroy() }
+      let canvas = this.setCanvas(h, w)
+      this.chart = new Chart(canvas, config)
+    },
+    resize: debounce(function () {
+      let { h, w } = this.size
+      this.calcSize()
+      if (h !== this.size.h || w !== this.size.w) {
+        if (this.chart.config) {
+          this.drawChart({
+            type: this.chart.config.type,
+            data: this.chart.config.data,
+            options: this.chart.config.options
+          })
+        }
+      }
+      this.setLayout(h, w)
+    }, 300),
+    calcSize () {
+      const ratio = 1.8
+      let w = window.innerWidth * 0.9
+      let h = window.innerHeight
+
+      w = w < 568 ? 560 : w
+      h = w / ratio
+      this.size = {h, w}
+    },
+    setCanvas (h, w) {
+      let canvas = this.$el.querySelector('canvas')
+      canvas.parentNode.style.height = h + 'px'
+      canvas.parentNode.style.width = window.innerWidth < w ? w + 'px' : null
+      canvas.width = w
+      canvas.height = h
+      canvas.style.height = h + 'px'
+      canvas.style.width = w + 'px'
+      return canvas
+    },
+    setLayout (h, w) {
+      let canvas = this.$el.querySelector('canvas')
+      // don't set width for large enough width to center the chart
+      canvas.parentNode.style.width = window.innerWidth < w ? w + 'px' : null
+      canvas.parentNode.style.height = h + 'px'
     }
   }
 }

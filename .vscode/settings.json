@@ -1,0 +1,21 @@
+{
+    "files.autoSave": "off",
+    "eslint.validate": [
+        "javascript",
+        { "language": "vue", "autoFix": true }
+    ],
+    "eslint.autoFixOnSave": true,
+    "eslint.enable": true,
+    "eslint.packageManager": "npm",
+    "emmet.includeLanguages": {
+        "vue-html": "html"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "cSpell.words": [
+        "chartjs",
+        "gapi",
+        "styl",
+        "verdana",
+        "vuetify"
+    ]
+}

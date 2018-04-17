@@ -1,7 +1,8 @@
 <template>
   <v-container class="workstation">
-    <datatable v-bind="table"
-               :pagination.sync="table.pagination"></datatable>
+    <datatable
+      v-bind="table"
+      :pagination.sync="table.pagination"/>
   </v-container>
 </template>
 <script>

@@ -56,7 +56,7 @@
               hide-details
               hide-selected
               multiple
-              @change="items => { items[items.length - 1][idField] = items.length }">
+              @change="items => changeMember(items)">
               <template
                 slot="item"
                 slot-scope="data">
@@ -199,6 +199,7 @@ export default {
   },
   methods: {
     setData (data) {
+      data.forEach(d => { d.text = d.name + ' ' + d.account })
       this.items = data
       this.selectedItems = data.filter(d => d[this.idField]).sort(
         (r, l) => {
@@ -211,6 +212,13 @@ export default {
       for (let i = oldIndex; i !== newIndex + step; i += step) {
         this.selectedItems[i][this.idField] = i + 1
       }
+    },
+    changeMember (items) {
+      // this may be a vuetify bug,
+      // a default onchange event will be fired
+      // only when one searches and then clicks a selection.
+      if (items.constructor === Event) return
+      items[items.length - 1][this.idField] = items.length
     },
     clear () {
       this.selectedItems = []

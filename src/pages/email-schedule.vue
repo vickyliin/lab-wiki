@@ -1,27 +1,26 @@
 <template>
   <v-container>
     <v-layout mb-3>
-      <v-spacer></v-spacer>
+      <v-spacer/>
       <v-text-field
-          append-icon="search"
-          label="Search (support regex)"
-          single-line
-          hide-details
-          v-model="search"
-      ></v-text-field>
+        v-model="search"
+        single-line
+        hide-details
+        append-icon="search"
+        label="Search (support regex)"/>
     </v-layout>
-    <datatable v-bind="table"
-               v-model="table.value"
-               :pagination.sync="table.pagination">
-    </datatable>
-    <form-dialog :title="dialog.title"
-                 :fields="dialog.fields"
-                 :display.sync="dialog.display"
-                 v-model="dialog.value"
-                 @submit="dialog.onSubmit"
-                 @activate="beforeCreateData"
-                 width="35rem">
-    </form-dialog>
+    <datatable
+      v-bind="table"
+      v-model="table.value"
+      :pagination.sync="table.pagination"/>
+    <form-dialog
+      :title="dialog.title"
+      :fields="dialog.fields"
+      :display.sync="dialog.display"
+      v-model="dialog.value"
+      width="35rem"
+      @submit="dialog.onSubmit"
+      @activate="beforeCreateData"/>
   </v-container>
 </template>
 
@@ -91,6 +90,26 @@ export default {
       }
     }
   },
+  computed: {
+    serverFormatData () {
+      let { mailto, subject, body, time } = this.dialog.value
+      return {
+        execTime: time || new Date(),
+        mailto,
+        subject,
+        body
+      }
+    },
+    ...mapGetters(['userEmail'])
+  },
+  watch: {
+    search: debounce(function () {
+      this.table.search = this.search
+    }, 500),
+    userRole (newVal) {
+      this.table.enableSelect = this.isAdmin
+    }
+  },
   created () {
     this.crud()
   },
@@ -133,26 +152,6 @@ export default {
       await $.post({ url: `${entry}${this.model}/${itemID}`, data })
       this.setData(await this.getData(this.model))
       resolve()
-    }
-  },
-  computed: {
-    serverFormatData () {
-      let { mailto, subject, body, time } = this.dialog.value
-      return {
-        execTime: time || new Date(),
-        mailto,
-        subject,
-        body
-      }
-    },
-    ...mapGetters(['userEmail'])
-  },
-  watch: {
-    search: debounce(function () {
-      this.table.search = this.search
-    }, 500),
-    userRole (newVal) {
-      this.table.enableSelect = this.isAdmin
     }
   }
 }

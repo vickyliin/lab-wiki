@@ -1,27 +1,34 @@
 <template>
-  <transition-group name="fade-transition"
-                    class="manage-panel"
-                    v-if="isAdmin">
-    <v-tooltip left
-               :key="0"
-               :debounce="0">
-      <div v-for="v in tooltipValue" :key="v">
+  <transition-group
+    v-if="isAdmin"
+    name="fade-transition"
+    class="manage-panel">
+    <v-tooltip
+      :key="0"
+      :debounce="0"
+      left>
+      <div
+        v-for="v in tooltipValue"
+        :key="v">
         {{ v }}
       </div>
-      <span flat v-if="selected && selected.length"
-            slot="activator">
+      <span
+        v-if="selected && selected.length"
+        slot="activator"
+        flat>
         {{ selected.length | localeString }} selected
       </span>
     </v-tooltip>
-    <v-btn fab
-           small
-           ripple
-           v-for="(btn, i) in buttons"
-           :key="i+1"
-           v-if="show(btn.name)"
-           :color="btn.color"
-           :outline="btn.outline"
-           @click.stop="btn.action">
+    <v-btn
+      v-for="(btn, i) in buttons"
+      v-if="show(btn.name)"
+      :key="i+1"
+      :color="btn.color"
+      :outline="btn.outline"
+      fab
+      small
+      ripple
+      @click.stop="btn.action">
       <v-icon>{{ btn.icon }}</v-icon>
     </v-btn>
   </transition-group>
@@ -31,16 +38,20 @@
 export default {
   props: {
     dialog: {
-      type: Object
+      type: Object,
+      default: null
     },
     dialogs: {
-      type: Object
+      type: Object,
+      default: null
     },
     setData: {
-      type: Function
+      type: Function,
+      default: null
     },
     selected: {
-      type: [Object, Array]
+      type: [Object, Array],
+      default: null
     },
     tooltip: {
       type: Function,
@@ -51,7 +62,8 @@ export default {
       }
     },
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     schedule: {
       type: Boolean,

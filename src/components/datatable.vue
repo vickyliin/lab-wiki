@@ -1,80 +1,92 @@
 <template>
-  <v-data-table :hide-actions="!actions"
-                :headers="vheaders"
-                :items="items"
-                :custom-sort="customSort"
-                :search="search"
-                :filter="filter"
-                :loading="loading"
-                :select-all="selectAll"
-                :selected-key="selectedKey"
-                :value="value"
-                :pagination="pagination"
-                @update:pagination="e => $emit('update:pagination', e)"
-                @input="e => $emit('input', e)">
-    <template slot="headers"
-              slot-scope="props">
+  <v-data-table
+    :hide-actions="!actions"
+    :headers="vheaders"
+    :items="items"
+    :custom-sort="customSort"
+    :search="search"
+    :filter="filter"
+    :loading="loading"
+    :select-all="selectAll"
+    :value="value"
+    :pagination="pagination"
+    @update:pagination="e => $emit('update:pagination', e)"
+    @input="e => $emit('input', e)">
+    <template
+      slot="headers"
+      slot-scope="props">
       <tr>
         <th v-if="enableSelect">
-          <v-checkbox v-if="selectAll"
-                      color="primary"
-                      hide-details
-                      @click.native="toggleAll"
-                      :input-value="props.all"
-                      :indeterminate="props.indeterminate"></v-checkbox>
+          <v-checkbox
+            v-if="selectAll"
+            :input-value="props.all"
+            :indeterminate="props.indeterminate"
+            color="primary"
+            hide-details
+            @click.native="toggleAll"/>
         </th>
-        <th v-for="(header,i) in props.headers"
-            :key="header.text"
-            :colspan="i === props.headers.length-1? 2:1"
-            :class="['column',
-                header.disableSort? '':'sortable',
-                pagination.descending? 'desc':'asc',
-                header.value === pagination.sortBy ? 'active' : '',
-                header.text]"
-            @click="changeSort(header.value)">
+        <th
+          v-for="(header,i) in props.headers"
+          :key="header.text"
+          :colspan="i === props.headers.length-1? 2:1"
+          :class="['column',
+                   header.disableSort? '':'sortable',
+                   pagination.descending? 'desc':'asc',
+                   header.value === pagination.sortBy ? 'active' : '',
+                   header.text]"
+          @click="changeSort(header.value)">
           {{ header.text }}
           <v-icon v-if="!header.disableSort">arrow_upward</v-icon>
         </th>
       </tr>
     </template>
-    <template slot="items"
-              slot-scope="props">
-      <tr :active="props.selected"
-          @click="props.selected = !props.selected">
+    <template
+      slot="items"
+      slot-scope="props">
+      <tr
+        :active="props.selected"
+        @click="props.selected = !props.selected">
         <td v-if="enableSelect">
-          <v-checkbox color="primary"
-                      hide-details
-                      :input-value="props.selected"></v-checkbox>
+          <v-checkbox
+            :input-value="props.selected"
+            color="primary"
+            hide-details/>
         </td>
-        <td class="text-xs"
-            v-for="({value: header, display},i) in vheaders"
+        <td
+          v-for="({value: header, display},i) in vheaders"
+          :class="header"
+          :key="i"
+          :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1"
+          class="text-xs">
+          <template v-if="props.item[header] == null"/>
+          <span
+            v-else-if="search || highlightText"
+            v-html="highlight(props.item[header], display)"/>
+          <span
+            v-else-if="props.item[header].display !== undefined"
+            v-html="props.item[header].display"/>
+          <span
+            v-else-if="display"
+            v-html="display(props.item[header], props.item[header].text)"/>
+          <span
+            v-else
             :class="header"
-            :key="i"
-            :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1">
-          <template v-if="props.item[header] == null"></template>
-          <span v-else-if="search || highlightText"
-                v-html="highlight(props.item[header], display)"></span>
-          <span v-else-if="props.item[header].display !== undefined"
-                v-html="props.item[header].display"></span>
-          <span v-else-if="display"
-                v-html="display(props.item[header], props.item[header].text)"></span>
-          <span v-else
-                :class="header"
-                v-html="localeString(props.item[header], 'Date')"></span>
+            v-html="localeString(props.item[header], 'Date')"/>
         </td>
-        <td style="padding-right: 1.2rem"
-            align="right"
-            v-if="hasIcon(props.item)">
-          <action-icon v-for="(ai, i) in actionIcons"
-                       v-bind="ai"
-                       :key="i"
-                       :item="props.item">
-          </action-icon>
+        <td
+          v-if="hasIcon(props.item)"
+          style="padding-right: 1.2rem"
+          align="right">
+          <action-icon
+            v-for="(ai, i) in actionIcons"
+            v-bind="ai"
+            :key="i"
+            :item="props.item"/>
         </td>
       </tr>
     </template>
     <template slot="footer">
-      <slot name="footer"></slot>
+      <slot name="footer"/>
     </template>
   </v-data-table>
 </template>
@@ -90,21 +102,53 @@ const sortOrder = {
 }
 
 export default {
-  props: [
-    'headers',
-    'items',
-    'pagination',
-    'search',
-    'actions',
-    'actionIcons',
-    'loading',
-    'selectAll',
-    'selectedKey',
-    'enableSelect',
-    'value',
-    'highlightText'
-  ],
   components: { actionIcon },
+  props: {
+    headers: {
+      type: Array,
+      default: () => []
+    },
+    items: {
+      type: Array,
+      default: () => []
+    },
+    pagination: {
+      type: Object,
+      default: () => {}
+    },
+    search: {
+      type: String,
+      default: null
+    },
+    actions: {
+      type: Boolean,
+      default: true
+    },
+    actionIcons: {
+      type: Array,
+      default: null
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    selectAll: {
+      type: Boolean,
+      default: false
+    },
+    enableSelect: {
+      type: Boolean,
+      default: false
+    },
+    value: {
+      type: Array,
+      default: () => []
+    },
+    highlightText: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     let vheaders = this.headers.map(header => {
       if (typeof header === 'string') {
@@ -118,6 +162,21 @@ export default {
     return {
       vheaders,
       selected: []
+    }
+  },
+  computed: {
+    searchRegex () {
+      let text = this.highlightText || this.search
+      try {
+        return new RegExp(`(${text})`, 'ig')
+      } catch (e) {
+        return new RegExp(`(${escapeRegExp(text)})`, 'ig')
+      }
+    }
+  },
+  watch: {
+    items () {
+      this.$emit('input', [])
     }
   },
   methods: {
@@ -199,21 +258,6 @@ export default {
         !this.actionIcons
           .map(icon => icon.show(item))
           .every(show => !show)
-    }
-  },
-  watch: {
-    items () {
-      this.$emit('input', [])
-    }
-  },
-  computed: {
-    searchRegex () {
-      let text = this.highlightText || this.search
-      try {
-        return new RegExp(`(${text})`, 'ig')
-      } catch (e) {
-        return new RegExp(`(${escapeRegExp(text)})`, 'ig')
-      }
     }
   }
 }

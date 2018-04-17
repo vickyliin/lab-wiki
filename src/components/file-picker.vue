@@ -1,11 +1,12 @@
 <template>
   <v-text-field
-    readonly hide-details
-    class="file-picker"
     :value="display(filePath)"
     :label="label"
     :single-line="singleLine"
     :prepend-icon="icon"
+    class="file-picker"
+    readonly
+    hide-details
     @focus="$emit('focus')"
     @blur="$emit('blur')"
     @click.prevent="selectFile"/>
@@ -13,16 +14,19 @@
 
 <script>
 export default{
-  name: 'file-picker',
+  name: 'FilePicker',
   props: {
     value: {
-      type: [File, String]
+      type: [File, String],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: 'File'
     },
     icon: {
-      type: String
+      type: String,
+      default: 'slideshow'
     },
     display: {
       type: Function,
@@ -33,6 +37,19 @@ export default{
     return {
       input: null,
       filePath: ''
+    }
+  },
+  computed: {
+    singleLine () {
+      return !this.display(this.filePath)
+    }
+  },
+  watch: {
+    value (newVal) {
+      if (!newVal) {
+        this.input.value = ''
+        this.filePath = ''
+      }
     }
   },
   created () {
@@ -47,19 +64,6 @@ export default{
   methods: {
     selectFile () {
       this.input.click()
-    }
-  },
-  computed: {
-    singleLine () {
-      return !this.display(this.filePath)
-    }
-  },
-  watch: {
-    value (newVal) {
-      if (!newVal) {
-        this.input.value = ''
-        this.filePath = ''
-      }
     }
   }
 }

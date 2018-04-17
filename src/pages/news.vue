@@ -1,45 +1,56 @@
 <template>
   <v-container>
     <v-layout column>
-      <transition-group name="slide-y"
-                        tag="div">
-        <v-flex v-for="(news,i) in displayData"
-                :key="i">
-          <v-container px-2 pb-2 @click="news.selected = !news.selected">
-            <v-layout mb-2 px-1>
-              <v-checkbox color="primary"
-                          hide-details
-                          v-if="isAdmin"
-                          :input-value="news.selected"
-                          :label="news.title"
-                          style="padding: 0"></v-checkbox>
-              <span class="title"
-                    v-else>{{ news.title }}</span>
-              <action-icon v-bind="editIcon"
-                           v-if="isAdmin"
-                           :item="news"> </action-icon>
+      <transition-group
+        name="slide-y"
+        tag="div">
+        <v-flex
+          v-for="(news,i) in displayData"
+          :key="i">
+          <v-container
+            px-2
+            pb-2
+            @click="news.selected = !news.selected">
+            <v-layout
+              mb-2
+              px-1>
+              <v-checkbox
+                v-if="isAdmin"
+                :input-value="news.selected"
+                :label="news.title"
+                hide-details
+                color="primary"
+                style="padding: 0"/>
+              <span
+                v-else
+                class="title">{{ news.title }}</span>
+              <action-icon
+                v-if="isAdmin"
+                v-bind="editIcon"
+                :item="news"/>
             </v-layout>
             <v-subheader>{{ news.date | localeString('Date') }}</v-subheader>
             <v-container px-3>
               {{ news.content }}
             </v-container>
           </v-container>
-          <v-divider></v-divider>
+          <v-divider/>
         </v-flex>
       </transition-group>
     </v-layout>
-    <form-dialog :title="dialog.title"
-                 :fields="dialog.fields"
-                 :display.sync="dialog.display"
-                 v-model="dialog.value"
-                 @submit="dialog.onSubmit"
-                 width="70%">
-    </form-dialog>
-    <manage-panel :dialog="dialog"
-                  :dialogs="dialogs"
-                  :set-data="setData"
-                  title="date"
-                  :selected="selectedItems"></manage-panel>
+    <form-dialog
+      :title="dialog.title"
+      :fields="dialog.fields"
+      :display.sync="dialog.display"
+      v-model="dialog.value"
+      width="70%"
+      @submit="dialog.onSubmit"/>
+    <manage-panel
+      :dialog="dialog"
+      :dialogs="dialogs"
+      :set-data="setData"
+      :selected="selectedItems"
+      title="date"/>
   </v-container>
 </template>
 
@@ -100,6 +111,14 @@ export default {
       }
     }
   },
+  computed: {
+    displayData () {
+      return this.data.slice(0, 10)
+    },
+    selectedItems () {
+      return this.data.filter(d => d.selected)
+    }
+  },
   created () {
     this.crud()
   },
@@ -118,14 +137,6 @@ export default {
       let id = this.dialog.item ? this.dialog.item.id : undefined
       await this.crud({ type: 'post', data, id })
       resolve()
-    }
-  },
-  computed: {
-    displayData () {
-      return this.data.slice(0, 10)
-    },
-    selectedItems () {
-      return this.data.filter(d => d.selected)
     }
   }
 }

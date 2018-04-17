@@ -7,14 +7,15 @@
       </v-layout>
     </v-subheader>
     <v-layout column>
-      <datatable v-bind="table"
-                 :pagination.sync="table.pagination"
-                 class="garbage">
-      </datatable>
+      <datatable
+        v-bind="table"
+        :pagination.sync="table.pagination"
+        class="garbage"/>
     </v-layout>
-    <scheduleDialog v-bind="scheduleDialog"
-                    @submit="data => setData(data)"
-                    @update:display="d => { scheduleDialog.display = d }" />
+    <scheduleDialog
+      v-bind="scheduleDialog"
+      @submit="data => setData(data)"
+      @update:display="d => { scheduleDialog.display = d }" />
     <manage-panel v-bind="managePanel" />
   </v-container>
 </template>
@@ -78,6 +79,17 @@ export default {
       }
     }
   },
+  computed: {
+    duty () {
+      let now = new Date()
+      for (let item of this.table.items) {
+        if (item.startDate <= now && now < item.endDate.valueOf() + 86400000) {
+          return `${item.contact.name} (${item.date.display})`
+        }
+      }
+    },
+    model: () => '/takeOutGarbage'
+  },
   created () {
     this.crud()
   },
@@ -95,17 +107,6 @@ export default {
       }))
       this.table.loading = false
     }
-  },
-  computed: {
-    duty () {
-      let now = new Date()
-      for (let item of this.table.items) {
-        if (item.startDate <= now && now < item.endDate.valueOf() + 86400000) {
-          return `${item.contact.name} (${item.date.display})`
-        }
-      }
-    },
-    model: () => '/takeOutGarbage'
   }
 }
 </script>

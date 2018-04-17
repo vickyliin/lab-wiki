@@ -1,14 +1,15 @@
 <template>
-  <v-btn icon
-         small
-         v-if="show(item)"
-         :href="href? href(item): ''"
-         @click.stop="action(item)"
-         @mousedown.stop
-         @dragenter.stop
-         @pointerdown.stop
-         style="margin: 0"
-         :class="color+'--text'">
+  <v-btn
+    v-if="show(item)"
+    :href="href(item)"
+    :class="color+'--text'"
+    style="margin: 0"
+    icon
+    small
+    @click.stop="action(item)"
+    @mousedown.stop
+    @dragenter.stop
+    @pointerdown.stop>
     <v-icon>{{ icon }}</v-icon>
   </v-btn>
 </template>
@@ -25,14 +26,16 @@ export default {
       required: true
     },
     color: {
-      type: String
+      type: String,
+      default: ''
     },
     show: {
       type: Function,
       default: () => true
     },
     href: {
-      type: Function
+      type: Function,
+      default: () => undefined
     },
     action: {
       type: Function,

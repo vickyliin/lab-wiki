@@ -1,6 +1,6 @@
 <template>
   <v-layout v-resize="e => resize()">
-    <canvas></canvas>
+    <canvas/>
   </v-layout>
 </template>
 
@@ -8,7 +8,20 @@
 import debounce from 'lodash.debounce'
 
 export default {
-  props: ['type', 'data', 'options'],
+  props: {
+    type: {
+      type: String,
+      default: 'bar'
+    },
+    data: {
+      type: Object,
+      default: () => {}
+    },
+    options: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data () {
     return {
       chart: null,
@@ -23,6 +36,28 @@ export default {
         portrait: null
       }
     }
+  },
+  computed: {
+    dataWatched () {
+      return {
+        datasets: this.data.datasets,
+        label: this.data.labels
+      }
+    }
+  },
+  watch: {
+    async dataWatched () {
+      await this.chart
+      this.chart.update()
+    }
+  },
+  created () {
+    this.chart = this.$store.dispatch('initChartjs')
+  },
+  mounted () {
+    this.calcSize()
+    this.drawChart(this.initialize)
+    this.$emit('init', this.chart)
   },
   methods: {
     async drawChart (config) {
@@ -76,28 +111,6 @@ export default {
       canvas.style.height = h + 'px'
       canvas.style.width = w + 'px'
       return canvas
-    }
-  },
-  created () {
-    this.chart = this.$store.dispatch('initChartjs')
-  },
-  mounted () {
-    this.calcSize()
-    this.drawChart(this.initialize)
-    this.$emit('init', this.chart)
-  },
-  computed: {
-    dataWatched () {
-      return {
-        datasets: this.data.datasets,
-        label: this.data.labels
-      }
-    }
-  },
-  watch: {
-    async dataWatched () {
-      await this.chart
-      this.chart.update()
     }
   }
 }

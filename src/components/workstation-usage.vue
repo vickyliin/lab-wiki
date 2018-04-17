@@ -1,31 +1,42 @@
 <template>
   <v-layout column>
-    <v-layout row justify-center mx-2>
-        <v-flex>
-          <v-layout row d-inline-flex wrap>
-            <v-flex mr-1 xs12> Last Update: </v-flex>
-            <v-flex>
-              {{ lastUpdate | localeString }}
-              <v-icon class="ml-1 link"
-                      :class="{ rotate: pulling }"
-                      @click="refresh()">refresh</v-icon>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex text-xs-right hidden-sm-and-down>
-          Latest Logtime: {{ latestLogtime | localeString }}
-        </v-flex>
+    <v-layout
+      row
+      justify-center
+      mx-2>
+      <v-flex>
+        <v-layout
+          row
+          d-inline-flex
+          wrap>
+          <v-flex
+            mr-1
+            xs12> Last Update: </v-flex>
+          <v-flex>
+            {{ lastUpdate | localeString }}
+            <v-icon
+              :class="{ rotate: pulling }"
+              class="ml-1 link"
+              @click="refresh()">refresh</v-icon>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex
+        text-xs-right
+        hidden-sm-and-down>
+        Latest Logtime: {{ latestLogtime | localeString }}
+      </v-flex>
     </v-layout>
     <v-container :style="{'overflow-x': 'auto'}">
-      <chart v-bind="chart"></chart>
+      <chart v-bind="chart"/>
     </v-container>
     <v-layout>
       <v-container class="workstation">
-        <datatable v-bind="table"
-                   :pagination.sync="table.pagination"
-                   @sorted="items => this.sortedItems = items"
-                   @clickSort="sorting = true">
-        </datatable>
+        <datatable
+          v-bind="table"
+          :pagination.sync="table.pagination"
+          @sorted="items => sortedItems = items"
+          @clickSort="sorting = true"/>
       </v-container>
     </v-layout>
   </v-layout>
@@ -37,6 +48,7 @@ import datatable from 'components/datatable.vue'
 import chart from 'components/chart.vue'
 
 export default {
+  components: { datatable, chart },
   props: {
     headers: {
       type: Array,
@@ -55,7 +67,6 @@ export default {
       default: (arr, item) => [...arr, item]
     }
   },
-  components: { datatable, chart },
   data () {
     return {
       sortedItems: null,
@@ -154,9 +165,30 @@ export default {
       }
     }
   },
+  computed: {
+    model () {
+      return '/workstations'
+    }
+  },
+  watch: {
+    sortedItems (items) {
+      let chartData = this.chart.data
+      chartData.labels = []
+      for (let dataset of chartData.datasets) { dataset.data = [] }
+      for (let item of items) {
+        chartData.labels.push(item.label || 'wks-' + item.server)
+        chartData.datasets[0].data.push(item.memory.free)
+        chartData.datasets[1].data.push(item.memory.usage)
+        chartData.datasets[2].data.push(item.usage)
+      }
+    }
+  },
   created () {
     this.crud()
     this.interval = setInterval(this.crud, queryInterval)
+  },
+  destroyed () {
+    clearInterval(this.interval)
   },
   methods: {
     setMemory (mem) {
@@ -199,27 +231,6 @@ export default {
       if (this.pulling) return
       this.crud()
     }
-  },
-  computed: {
-    model () {
-      return '/workstations'
-    }
-  },
-  watch: {
-    sortedItems (items) {
-      let chartData = this.chart.data
-      chartData.labels = []
-      for (let dataset of chartData.datasets) { dataset.data = [] }
-      for (let item of items) {
-        chartData.labels.push(item.label || 'wks-' + item.server)
-        chartData.datasets[0].data.push(item.memory.free)
-        chartData.datasets[1].data.push(item.memory.usage)
-        chartData.datasets[2].data.push(item.usage)
-      }
-    }
-  },
-  destroyed () {
-    clearInterval(this.interval)
   }
 }
 </script>

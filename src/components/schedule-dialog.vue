@@ -1,14 +1,18 @@
 <template>
-  <v-dialog :width="width"
-            :value="display"
-            @input="e => $emit('update:display', e)"
-            :fullscreen="$vuetify.breakpoint.xsOnly">
+  <v-dialog
+    :width="width"
+    :value="display"
+    :fullscreen="$vuetify.breakpoint.xsOnly"
+    @input="e => $emit('update:display', e)">
     <v-card>
       <v-subheader class="pr-0">
         {{ title }}
         <v-layout hidden-sm-and-up>
           <v-spacer/>
-          <v-btn icon flat @click="e => $emit('update:display', false)">
+          <v-btn
+            icon
+            flat
+            @click="e => $emit('update:display', false)">
             <v-icon>close</v-icon>
           </v-btn>
         </v-layout>
@@ -16,68 +20,100 @@
       <v-divider/>
       <v-container px-0>
         <!-- start date -->
-        <v-layout pb-3 wrap justify-center>
-          <v-flex xs10 sm8 d-flex>
-            <date-picker label="Start Date"
-                         v-model="date"
-                         :required="true"
-                         :error="!date" />
+        <v-layout
+          pb-3
+          wrap
+          justify-center>
+          <v-flex
+            xs10
+            sm8
+            d-flex>
+            <date-picker
+              v-model="date"
+              :required="true"
+              :error="!date"
+              label="Start Date"/>
           </v-flex>
         </v-layout>
         <!-- add member -->
-        <v-layout pb-0 wrap justify-center>
-          <v-flex xs10 sm8 d-flex>
-            <v-select v-model="selectedItems"
-                      :items="items"
-                      @change="items => { items[items.length - 1][idField] = items.length }"
-                      label="Add Member"
-                      prepend-icon="account_circle"
-                      item-value="account"
-                      max-height="20rem"
-                      return-object
-                      autocomplete
-                      hide-details
-                      hide-selected
-                      multiple>
-              <template slot="item" slot-scope="data">
+        <v-layout
+          pb-0
+          wrap
+          justify-center>
+          <v-flex
+            xs10
+            sm8
+            d-flex>
+            <v-select
+              v-model="selectedItems"
+              :items="items"
+              label="Add Member"
+              prepend-icon="account_circle"
+              item-value="account"
+              max-height="20rem"
+              return-object
+              autocomplete
+              hide-details
+              hide-selected
+              multiple
+              @change="items => { items[items.length - 1][idField] = items.length }">
+              <template
+                slot="item"
+                slot-scope="data">
                 <v-list-tile-content>
                   <v-list-tile-title>{{ data.item.name }}</v-list-tile-title>
                   <v-list-tile-sub-title>{{ data.item.account }}</v-list-tile-sub-title>
                 </v-list-tile-content>
               </template>
-              <template slot="selection" slot-scope="data">
-              </template>
+              <template
+                slot="selection"
+                slot-scope="data"/>
             </v-select>
           </v-flex>
         </v-layout>
         <!-- reset/clear/submit -->
-        <v-layout justify-center pb-2>
-          <v-btn flat class="ma-0"
-                 @click="reset"
-                 :loading="loading.reset">Reset</v-btn>
-          <v-btn flat class="ma-0"
-                 @click="clear">Clear</v-btn>
-          <v-btn flat class="ma-0"
-                 color="primary"
-                 @click="submit"
-                 :loading="loading.submit">Submit</v-btn>
+        <v-layout
+          justify-center
+          pb-2>
+          <v-btn
+            :loading="loading.reset"
+            class="ma-0"
+            flat
+            @click="reset">Reset</v-btn>
+          <v-btn
+            class="ma-0"
+            flat
+            @click="clear">Clear</v-btn>
+          <v-btn
+            :loading="loading.submit"
+            class="ma-0"
+            color="primary"
+            flat
+            @click="submit">Submit</v-btn>
         </v-layout>
         <!-- drag board -->
         <v-layout px-5>
-          <draggable v-model="selectedItems"
-                     :options="draggableOpt"
-                     @update="assignId"
-                     :style="{width: '100%'}">
-            <transition-group name="draggable"
-                              class="layout wrap"
-                              :class="{column: $vuetify.breakpoint.smAndUp}"
-                              :style="{width: '100%',
-                                       maxHeight: $vuetify.breakpoint.smAndUp ? '30rem' : null}">
-              <v-flex xs12 d-flex align-center
-                      class="items-tile"
-                      :px-3="$vuetify.breakpoint.xsOnly"
-                      v-for="(item, i) in selectedItems"
-                      :key="item.id">
+          <draggable
+            v-model="selectedItems"
+            :options="draggableOpt"
+            :style="{width: '100%'}"
+            @update="assignId">
+            <transition-group
+              :class="{column: $vuetify.breakpoint.smAndUp}"
+              :style="{
+                width: '100%',
+                maxHeight: $vuetify.breakpoint.smAndUp ? '30rem' : null
+              }"
+              name="draggable"
+              class="layout wrap">
+              <v-flex
+                v-for="(item, i) in selectedItems"
+                :key="item.id"
+                :px-3="$vuetify.breakpoint.xsOnly"
+                class="items-tile"
+                xs12
+                d-flex
+                align-center>
                 <span>
                   <span class="pl-3 pr-2">
                     {{ item[idField] }}
@@ -85,8 +121,11 @@
                   {{ item.name }}
                 </span>
                 <span class="text-xs-right">
-                  <v-btn flat icon small
-                         @click="() => selectedItems.splice(i, 1)">
+                  <v-btn
+                    flat
+                    icon
+                    small
+                    @click="() => selectedItems.splice(i, 1)">
                     <v-icon small>
                       close
                     </v-icon>
@@ -110,19 +149,24 @@ export default {
   components: { draggable, actionIcon, datePicker },
   props: {
     width: {
-      type: [ String, Number ]
+      type: [ String, Number ],
+      default: null
     },
     display: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     title: {
-      type: String
+      type: String,
+      default: 'Schedule'
     },
     target: {
-      type: String
+      type: String,
+      default: null
     },
     idField: {
-      type: String
+      type: String,
+      default: null
     }
   },
   data () {
@@ -138,6 +182,14 @@ export default {
       },
       date: Date.now(),
       selectedItems: []
+    }
+  },
+  computed: {
+    model: () => '/contactList'
+  },
+  watch: {
+    display (newVal) {
+      if (newVal) this.crud()
     }
   },
   created () {
@@ -183,14 +235,6 @@ export default {
       this.$emit('submit', newData)
       this.$emit('update:display', false)
       this.loading.submit = false
-    }
-  },
-  computed: {
-    model: () => '/contactList'
-  },
-  watch: {
-    display (newVal) {
-      if (newVal) this.crud()
     }
   }
 }

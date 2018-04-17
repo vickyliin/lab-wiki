@@ -1,43 +1,52 @@
 <template>
   <v-container>
     <v-layout>
-      <v-spacer></v-spacer>
-      <v-text-field append-icon="search"
-                    label="Search"
-                    single-line
-                    hide-details
-                    v-model="search"></v-text-field>
+      <v-spacer/>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details/>
     </v-layout>
-    <transition-group name="slide-y"
-                      tag="div"
-                      class="layout"
-                      id="contact-layout">
-      <v-card v-for="person in filteredData"
-              :key="person.id"
-              class="contact-card"
-              :class="{link: isAdmin}">
-        <v-container @click="person.selected = !person.selected" pa-3>
+    <transition-group
+      id="contact-layout"
+      name="slide-y"
+      tag="div"
+      class="layout">
+      <v-card
+        v-for="person in filteredData"
+        :key="person.id"
+        :class="{link: isAdmin}"
+        class="contact-card">
+        <v-container
+          pa-3
+          @click="person.selected = !person.selected">
           <v-layout mb-1>
-            <v-checkbox color="primary"
-                        hide-details
-                        v-if="isAdmin"
-                        :label="person.name"
-                        :input-value="person.selected"
-                        style="padding: 0"></v-checkbox>
-            <span class="title"
-                  v-else>
+            <v-checkbox
+              v-if="isAdmin"
+              :label="person.name"
+              :input-value="person.selected"
+              style="padding: 0"
+              color="primary"
+              hide-details/>
+            <span
+              v-else
+              class="title">
               {{ person.name }}
             </span>
-            <v-spacer></v-spacer>
-            <action-icon v-bind="editIcon"
-                         v-if="isAdmin"
-                         :item="person"> </action-icon>
+            <v-spacer/>
+            <action-icon
+              v-if="isAdmin"
+              v-bind="editIcon"
+              :item="person"/>
           </v-layout>
-          <v-divider></v-divider>
+          <v-divider/>
           <v-list>
-            <v-list-tile v-for="field in fields"
-                         :key="field.name"
-                         :href="field.href? field.href(person[field.name]): undefined">
+            <v-list-tile
+              v-for="field in fields"
+              :key="field.name"
+              :href="field.href? field.href(person[field.name]): undefined">
               <v-list-tile-action>
                 <v-icon>{{ field.icon }}</v-icon>
               </v-list-tile-action>
@@ -49,18 +58,19 @@
         </v-container>
       </v-card>
     </transition-group>
-    <form-dialog :title="dialog.title"
-                 :fields="dialog.fields"
-                 :display.sync="dialog.display"
-                 v-model="dialog.value"
-                 @submit="dialog.onSubmit"
-                 width="35rem">
-    </form-dialog>
-    <manage-panel :dialog="dialog"
-                  :dialogs="dialogs"
-                  :set-data="setData"
-                  title="name"
-                  :selected="selectedItems"></manage-panel>
+    <form-dialog
+      v-model="dialog.value"
+      :title="dialog.title"
+      :fields="dialog.fields"
+      :display.sync="dialog.display"
+      width="35rem"
+      @submit="dialog.onSubmit"/>
+    <manage-panel
+      :dialog="dialog"
+      :dialogs="dialogs"
+      :set-data="setData"
+      :selected="selectedItems"
+      title="name"/>
   </v-container>
 </template>
 
@@ -124,23 +134,6 @@ export default {
       debouncedSearch: ''
     }
   },
-  created () {
-    this.crud()
-  },
-  methods: {
-    async setData (data) {
-      this.contactData = data.map(d => ({
-        ...d,
-        selected: false
-      }))
-    },
-    async updateData (resolve) {
-      let data = this.dialog.value
-      let id = this.dialog.item ? this.dialog.item.id : undefined
-      await this.crud({ type: 'post', data, id })
-      resolve()
-    }
-  },
   computed: {
     filteredData () {
       return this.contactData.filter(person => {
@@ -159,6 +152,23 @@ export default {
     search: debounce(function () {
       this.debouncedSearch = this.search
     }, 500)
+  },
+  created () {
+    this.crud()
+  },
+  methods: {
+    async setData (data) {
+      this.contactData = data.map(d => ({
+        ...d,
+        selected: false
+      }))
+    },
+    async updateData (resolve) {
+      let data = this.dialog.value
+      let id = this.dialog.item ? this.dialog.item.id : undefined
+      await this.crud({ type: 'post', data, id })
+      resolve()
+    }
   }
 }
 </script>

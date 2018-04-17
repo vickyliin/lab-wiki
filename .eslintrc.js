@@ -13,5 +13,17 @@ module.exports = {
   globals: {
     gapi: false,
     Chart: false
+  },
+  rules: {
+    'vue/html-indent': [2, 2],
+    'vue/html-self-closing': [2, {
+      html: {
+        void: 'never',
+        normal: 'always',
+        component: 'always'
+      },
+      svg: 'always',
+      math: 'always'
+    }]
   }
 };

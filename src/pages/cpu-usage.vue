@@ -1,8 +1,7 @@
 <template>
   <workstation-usage
     :headers="headers"
-    :items-mapper="itemsMapper">
-  </workstation-usage>
+    :items-mapper="itemsMapper"/>
 </template>
 
 <script>

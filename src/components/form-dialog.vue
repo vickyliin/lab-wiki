@@ -31,7 +31,7 @@
         <v-btn
           flat
           small
-          @click="$emit('update:display', false)">Close</v-btn>
+          @click="$emit('update:display', false)">Cancel</v-btn>
         <v-btn
           :loading="loading"
           flat

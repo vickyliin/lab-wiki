@@ -1,5 +1,7 @@
 <template>
-  <v-layout v-resize="e => resize()" justify-center>
+  <v-layout
+    v-resize="e => resize()"
+    justify-center>
     <canvas/>
   </v-layout>
 </template>

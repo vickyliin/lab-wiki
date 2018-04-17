@@ -7,25 +7,23 @@
       <v-subheader>
         {{ title }}
       </v-subheader>
-      <v-divider fluid></v-divider>
+      <v-divider/>
       <v-container pb-0>
-        <v-layout column>
-          <component v-for="(field, i) in fields"
-                     v-bind="field"
-                     :key="i"
+        <v-layout column pb-2 :key="i"
+                  v-for="(field, i) in fields">
+          <component v-bind="field"
                      :is="field.component"
                      :prepend-icon="field.icon"
                      :error="error[i]"
                      :value="value? value[field.name]: null"
-                     @input="data => onInput(field.name, data)">
-          </component>
+                     @input="data => onInput(field.name, data)"/>
         </v-layout>
       </v-container>
       <v-container fill-height pt-0>
-        <v-spacer></v-spacer>
-        <v-btn flat small @click="$emit('update:display', false)">Close</v-btn>
-        <v-btn flat
-               small
+        <v-spacer/>
+        <v-btn flat small
+               @click="$emit('update:display', false)">Close</v-btn>
+        <v-btn flat small
                color="primary"
                @click="submit"
                :loading="loading">Submit</v-btn>

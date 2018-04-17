@@ -5,21 +5,21 @@
           max-width="290px">
     <v-text-field slot="activator"
                   :label="label"
-                  :value="value | localeString('Date')"
+                  :value="dateObj | localeString('Date')"
                   :name="name"
                   prepend-icon="event"
                   readonly
+                  hide-details
                   :error="error"
                   :rules="rules"
                   @focus="$emit('focus')"
                   @blur="$emit('blur')"
-                  :required="required !== undefined"></v-text-field>
-    <v-date-picker :value="value ? new Date(value).toJSON() : null"
+                  :required="required !== undefined"/>
+    <v-date-picker :value="dateObj && dateObj.toJSON()"
                    @input="e => $emit('input', e)"
                    no-title
                    dark
-                   scrollable>
-    </v-date-picker>
+                   scrollable/>
   </v-menu>
 </template>
 
@@ -27,6 +27,11 @@
 
 export default {
   name: 'date-picker',
-  props: ['value', 'label', 'required', 'name', 'error', 'rules']
+  props: ['value', 'label', 'required', 'name', 'error', 'rules'],
+  computed: {
+    dateObj () {
+      return this.value && new Date(this.value)
+    }
+  }
 }
 </script>

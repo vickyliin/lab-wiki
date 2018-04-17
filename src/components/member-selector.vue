@@ -1,24 +1,24 @@
 <template>
   <v-select
-      :label="label"
-      :prepend-icon="icon"
-      :items="people"
-      :value="value"
-      :required="required !== undefined"
-      @input="e => $emit('input', e)"
-      item-text="text"
-      item-value="account"
-      max-height="20rem"
-      return-object
-      :error="error"
-      :rules="rules"
-      @focus="$emit('focus')"
-      @blur="$emit('blur')"
-      autocomplete>
+    :label="label"
+    :prepend-icon="icon"
+    :items="people"
+    :value="value"
+    :required="required !== undefined"
+    @input="e => $emit('input', e)"
+    item-value="account"
+    max-height="20rem"
+    return-object
+    :error="error"
+    :rules="rules"
+    @focus="$emit('focus')"
+    @blur="$emit('blur')"
+    autocomplete
+    hide-details>
     <template slot="item" slot-scope="data">
       <v-list-tile-content>
-        <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
-        <v-list-tile-sub-title v-html="data.item.account"></v-list-tile-sub-title>
+        <v-list-tile-title v-html="data.item.name"/>
+        <v-list-tile-sub-title v-html="data.item.account"/>
       </v-list-tile-content>
     </template>
   </v-select>

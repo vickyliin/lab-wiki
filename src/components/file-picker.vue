@@ -1,14 +1,14 @@
 <template>
-  <v-text-field :value="display(filePath)"
-                readonly
-                :label="label"
-                :single-line="singleLine"
-                class="file-picker"
-                :prepend-icon="icon"
-                @focus="$emit('focus')"
-                @blur="$emit('blur')"
-                @click.prevent="selectFile">
-  </v-text-field>
+  <v-text-field
+    readonly hide-details
+    class="file-picker"
+    :value="display(filePath)"
+    :label="label"
+    :single-line="singleLine"
+    :prepend-icon="icon"
+    @focus="$emit('focus')"
+    @blur="$emit('blur')"
+    @click.prevent="selectFile"/>
 </template>
 
 <script>

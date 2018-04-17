@@ -1,17 +1,16 @@
 <template>
   <v-container>
     <v-layout mb-3>
-      <v-spacer></v-spacer>
+      <v-spacer/>
       <v-text-field append-icon="search"
                     label="Search (support regex)"
                     single-line
                     hide-details
-                    v-model="search"></v-text-field>
+                    v-model="search"/>
     </v-layout>
     <datatable v-bind="table"
                v-model="table.value"
-               @update:pagination="updatePagination">
-    </datatable>
+               @update:pagination="updatePagination"/>
     <component :is="dialog.component"
                :title="dialog.title"
                :fields="dialog.fields"
@@ -21,14 +20,13 @@
                id-field="seminarId"
                v-model="dialog.value"
                @submit="dialog.onSubmit"
-               width="35rem">
-    </component>
+               width="35rem"/>
     <manage-panel :dialog="dialog"
                   :dialogs="dialogs"
                   :selected="table.value"
                   :tooltip="tooltip"
                   :schedule="true"
-                  :set-data="setData"></manage-panel>
+                  :set-data="setData"/>
   </v-container>
 </template>
 
@@ -128,7 +126,8 @@ export default {
           let item = this.item
           let value = {
             date: item.date,
-            presenter: item.presenter.display,
+            // preventing error when item.presenter is null (for vue debugger)
+            presenter: item.presenter && item.presenter.display,
             slide: '',
             topic: item.topic.text
           }

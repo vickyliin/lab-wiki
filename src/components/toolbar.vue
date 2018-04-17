@@ -1,6 +1,6 @@
 <template>
   <v-toolbar
-    :scroll-off-screen="$vuetify.breakpoint.xsOnly"
+    :scroll-off-screen="$vuetify.breakpoint.smAndDown"
     :scroll-threshold="10"
     app
     clipped-left

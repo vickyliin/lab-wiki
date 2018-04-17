@@ -10,6 +10,7 @@
     :select-all="selectAll"
     :value="value"
     :pagination="pagination"
+    :item-key="itemKey"
     @update:pagination="e => $emit('update:pagination', e)"
     @input="e => $emit('input', e)">
     <template
@@ -58,7 +59,7 @@
           :key="i"
           :colspan="i === vheaders.length-1 && !hasIcon(props.item)? 2:1"
           class="text-xs">
-          <template v-if="props.item[header] == null"/>
+          <span v-if="props.item[header] == null"/>
           <span
             v-else-if="search || highlightText"
             v-html="highlight(props.item[header], display)"/>
@@ -111,6 +112,10 @@ export default {
     items: {
       type: Array,
       default: () => []
+    },
+    itemKey: {
+      type: String,
+      default: 'id'
     },
     pagination: {
       type: Object,

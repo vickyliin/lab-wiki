@@ -47,7 +47,7 @@
             <v-select
               v-model="selectedItems"
               :items="items"
-              label="Add Member"
+              label="Select a member"
               prepend-icon="account_circle"
               item-value="account"
               max-height="20rem"
@@ -67,7 +67,9 @@
               </template>
               <template
                 slot="selection"
-                slot-scope="data"/>
+                slot-scope="data">{{
+                  data.index ? '' : 'Add Member'
+                }}</template>
             </v-select>
           </v-flex>
         </v-layout>

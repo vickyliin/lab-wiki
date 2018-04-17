@@ -246,7 +246,7 @@ export default {
     },
     tooltip (selectedItem) {
       return selectedItem.map(item =>
-        `${this.localeString(item.date, 'Date')} ${item.presenter}`
+        `${this.localeString(item.date, 'Date')} ${item.presenter.display}`
       )
     },
     toPageOfNow () {

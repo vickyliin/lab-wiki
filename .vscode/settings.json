@@ -2,7 +2,7 @@
     "files.autoSave": "off",
     "eslint.validate": [
         "javascript",
-        "vue"
+        { "language": "vue", "autoFix": true }
     ],
     "eslint.autoFixOnSave": true,
     "eslint.enable": true,

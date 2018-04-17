@@ -1,61 +1,102 @@
 <template>
   <v-dialog :width="width"
             :value="display"
-            @input="e => $emit('update:display', e)">
+            @input="e => $emit('update:display', e)"
+            :fullscreen="$vuetify.breakpoint.xsOnly">
     <v-card>
-      <v-card-title>
-        <v-container class="headline pb-0"
-                     fluid>
-          {{ title }}
-        </v-container>
-      </v-card-title>
-      <v-card-text>
-        <v-container pb-0 pt-3 pl-3 fluid>
-          <date-picker label="Start Date"
-                       v-model="date"
-                       :required="true"
-                       :error="!date" />
-        </v-container>
-        <v-list>
-          <draggable v-model="items"
+      <v-subheader class="pr-0">
+        {{ title }}
+        <v-layout hidden-sm-and-up>
+          <v-spacer/>
+          <v-btn icon flat @click="e => $emit('update:display', false)">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-subheader>
+      <v-divider/>
+      <v-container px-0>
+        <!-- start date -->
+        <v-layout pb-3 wrap justify-center>
+          <v-flex xs10 sm8 d-flex>
+            <date-picker label="Start Date"
+                         v-model="date"
+                         :required="true"
+                         :error="!date" />
+          </v-flex>
+        </v-layout>
+        <!-- add member -->
+        <v-layout pb-0 wrap justify-center>
+          <v-flex xs10 sm8 d-flex>
+            <v-select v-model="selectedItems"
+                      :items="items"
+                      @change="items => { items[items.length - 1][idField] = items.length }"
+                      label="Add Member"
+                      prepend-icon="account_circle"
+                      item-value="account"
+                      max-height="20rem"
+                      return-object
+                      autocomplete
+                      hide-details
+                      hide-selected
+                      multiple>
+              <template slot="item" slot-scope="data">
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ data.item.name }}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{ data.item.account }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </template>
+              <template slot="selection" slot-scope="data">
+              </template>
+            </v-select>
+          </v-flex>
+        </v-layout>
+        <!-- reset/clear/submit -->
+        <v-layout justify-center pb-2>
+          <v-btn flat class="ma-0"
+                 @click="reset"
+                 :loading="loading.reset">Reset</v-btn>
+          <v-btn flat class="ma-0"
+                 @click="clear">Clear</v-btn>
+          <v-btn flat class="ma-0"
+                 color="primary"
+                 @click="submit"
+                 :loading="loading.submit">Submit</v-btn>
+        </v-layout>
+        <!-- drag board -->
+        <v-layout px-5>
+          <draggable v-model="selectedItems"
                      :options="draggableOpt"
-                     @update="assignId">
-            <transition-group name="draggable">
-              <v-list-tile v-for="item in items"
-                          :key="item.id"
-                          class="items-tile">
-                <v-list-tile-action>
-                  {{ item[idField] || '' }}
-                </v-list-tile-action>
-                <v-list-tile-content>{{ item.name }}</v-list-tile-content>
-                <v-list-tile-action>
-                  <action-icon v-if="item[idField]"
-                               icon="delete"
-                               color="grey"
-                               :item="item"
-                               :action="changeItem({ item, newId: 0 })" />
-
-                  <action-icon v-else
-                               icon="add"
-                               color="primary"
-                               :item="item"
-                               :action="changeItem({ item, newId: nActivate + 1 })" />
-                </v-list-tile-action>
-              </v-list-tile>
+                     @update="assignId"
+                     :style="{width: '100%'}">
+            <transition-group name="draggable"
+                              class="layout wrap"
+                              :class="{column: $vuetify.breakpoint.smAndUp}"
+                              :style="{width: '100%',
+                                       maxHeight: $vuetify.breakpoint.smAndUp ? '30rem' : null}">
+              <v-flex xs12 d-flex align-center
+                      class="items-tile"
+                      :px-3="$vuetify.breakpoint.xsOnly"
+                      v-for="(item, i) in selectedItems"
+                      :key="item.id">
+                <span>
+                  <span class="pl-3 pr-2">
+                    {{ item[idField] }}
+                  </span>
+                  {{ item.name }}
+                </span>
+                <span class="text-xs-right">
+                  <v-btn flat icon small
+                         @click="() => selectedItems.splice(i, 1)">
+                    <v-icon small>
+                      close
+                    </v-icon>
+                  </v-btn>
+                </span>
+              </v-flex>
             </transition-group>
           </draggable>
-        </v-list>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn flat
-               @click="reset"
-               :loading="loading.reset">Reset</v-btn>
-        <v-btn flat
-               color="primary"
-               @click="submit"
-               :loading="loading.submit">Submit</v-btn>
-      </v-card-actions>
+        </v-layout>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>
@@ -90,12 +131,13 @@ export default {
         reset: false,
         submit: false
       },
-      items: null,
+      items: [],
       draggableOpt: {
         chosenClass: 'primary',
         dataIdAttr: 'id'
       },
-      date: null
+      date: Date.now(),
+      selectedItems: []
     }
   },
   created () {
@@ -103,32 +145,26 @@ export default {
   },
   methods: {
     setData (data) {
-      this.items = data.sort((r, l) => {
-        if (r[this.idField] === l[this.idField]) return 0
-        if (r[this.idField] === 0) return 1
-        if (l[this.idField] === 0) return -1
-        return r[this.idField] > l[this.idField] ? 1 : -1
-      })
+      this.items = data
+      this.selectedItems = data.filter(d => d[this.idField]).sort(
+        (r, l) => {
+          return r[this.idField] > l[this.idField] ? 1 : -1
+        }
+      )
     },
-    assignId ({ newIndex }) {
-      this.items[newIndex][this.idField] = newIndex + 1
-      this.setData(this.items)
-      let n = this.nActivate
-      for (let i = 0; i < n; i++) {
-        this.items[i][this.idField] = i + 1
+    assignId ({ oldIndex, newIndex }) {
+      const step = oldIndex < newIndex ? 1 : -1
+      for (let i = oldIndex; i !== newIndex + step; i += step) {
+        this.selectedItems[i][this.idField] = i + 1
       }
     },
-    changeItem ({ item, newId }) {
-      return item => {
-        item[this.idField] = newId
-        this.setData(this.items)
-        if (this.nActivate) this.assignId({ newIndex: this.nActivate - 1 })
-      }
+    clear () {
+      this.selectedItems = []
     },
     async reset () {
       this.loading.reset = true
       await this.crud()
-      this.date = null
+      this.date = Date.now()
       this.loading.reset = false
     },
     async submit () {
@@ -140,7 +176,7 @@ export default {
         id: 'schedule',
         readAfter: false,
         data: {
-          idList: this.items.slice(0, this.nActivate).map(item => item.id),
+          idList: this.selectedItems.map(item => item.id),
           date: new Date(this.date).toJSON()
         }
       })
@@ -150,10 +186,7 @@ export default {
     }
   },
   computed: {
-    model: () => '/contactList',
-    nActivate () {
-      return this.items.reduce((pre, cur) => pre + !!cur[this.idField], 0)
-    }
+    model: () => '/contactList'
   },
   watch: {
     display (newVal) {

@@ -67,6 +67,6 @@ export default {
 <style lang="stylus">
   main .container
     padding: 2.5rem 2rem
-    @media screen and (max-width: 800px)
+    @media screen and (max-width: 600px)
       padding: 0
 </style>

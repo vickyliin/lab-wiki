@@ -27,7 +27,9 @@
         Latest Logtime: {{ latestLogtime | localeString }}
       </v-flex>
     </v-layout>
-    <v-container :style="{'overflow-x': 'auto'}">
+    <v-container
+      :style="{'overflow-x': 'auto'}"
+      fluid>
       <chart v-bind="chart"/>
     </v-container>
     <v-layout>

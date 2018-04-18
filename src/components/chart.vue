@@ -1,7 +1,7 @@
 <template>
   <v-layout
     v-resize="e => resize()"
-    justify-center>
+    :justify-center="justifyCenter">
     <canvas/>
   </v-layout>
 </template>
@@ -36,7 +36,8 @@ export default {
         h: null,
         w: null,
         portrait: null
-      }
+      },
+      justifyCenter: null
     }
   },
   computed: {
@@ -101,6 +102,7 @@ export default {
     },
     setCanvas (h, w) {
       let canvas = this.$el.querySelector('canvas')
+      this.justifyCenter = window.innerWidth > w
       canvas.parentNode.style.height = h + 'px'
       canvas.parentNode.style.width = window.innerWidth < w ? w + 'px' : null
       canvas.width = w

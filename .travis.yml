@@ -33,7 +33,7 @@ deploy:
     script: rsync -rzv -e 'ssh -p $DEPLOY_PORT' static $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH-beta
     on:
       all_branches: true
-      condition: $TRAVIS_BRANCH =~ ^release.*$
+      condition: $TRAVIS_BRANCH =~ ^release.*$ || $TRAVIS_BRANCH =~ ^hotfix.*$
 
 notifications:
   email:

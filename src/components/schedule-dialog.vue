@@ -49,7 +49,6 @@
               :items="items"
               label="Select a member"
               prepend-icon="account_circle"
-              item-value="account"
               max-height="20rem"
               return-object
               autocomplete
@@ -199,7 +198,7 @@ export default {
   },
   methods: {
     setData (data) {
-      data.forEach(d => { d.text = d.name + ' ' + d.account })
+      data.forEach(d => { d.text = d.name + (d.account ? ' ' + d.account : '') })
       this.items = data
       this.selectedItems = data.filter(d => d[this.idField]).sort(
         (r, l) => {
